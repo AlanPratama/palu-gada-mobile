@@ -6,6 +6,8 @@ import OnBoarding from '../components/OnBoarding';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import ProtectedRoutes from './ProtectedRoutes';
 import PublicRoutes from './PublicRoutes';
+import EditProfileScreen from '../screens/auth/EditProfileScreen';
+import ChangePasswordScreen from '../screens/auth/ChangePasswordScreen';
 
 export default function AppNavigator() {
     const Stack = createNativeStackNavigator();
@@ -41,7 +43,11 @@ export default function AppNavigator() {
               <Stack.Screen name="OnBoarding" component={OnBoarding} />
               {
                 isAuthenticated ? (
-                  <Stack.Screen name="Protect" component={ProtectedRoutes} />
+                  <>
+                    <Stack.Screen name="Protect" component={ProtectedRoutes} />
+                    <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+                    <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
+                  </>
                 ) : (
                   <Stack.Screen name="Public" component={PublicRoutes} />
                 )
