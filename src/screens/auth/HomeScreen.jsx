@@ -13,7 +13,7 @@ export default function HomeScreen() {
   }
 
   return (
-    <View>
+    <View className="min-h-screen">
       <Text>HomeScreen</Text>
       <TouchableOpacity onPress={clearOnBoarding}><Text>REMOVE ONBOARDING</Text></TouchableOpacity>
     </View>

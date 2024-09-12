@@ -10,7 +10,7 @@ import PublicRoutes from './PublicRoutes';
 export default function AppNavigator() {
     const Stack = createNativeStackNavigator();
     
-    const isAuthenticated = false
+    const isAuthenticated = true
 
   // const [alreadyViewedOnBoarding, setAlreadyViewedOnBoarding] = useState(false);
 
@@ -34,7 +34,7 @@ export default function AppNavigator() {
 
     return (
       <SafeAreaProvider>
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView className="flex-1">
           <NavigationContainer>
             <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName="Welcome">
               <Stack.Screen name="Welcome" component={WelcomeScreen} />
