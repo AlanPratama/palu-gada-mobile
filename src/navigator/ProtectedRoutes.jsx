@@ -2,6 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import HomeScreen from '../screens/auth/HomeScreen';
+import ProfileScreen from '../screens/auth/ProfileScreen';
 
 export default function ProtectedRoutes() {
   const Tab = createBottomTabNavigator();
@@ -21,8 +22,9 @@ export default function ProtectedRoutes() {
           borderRadius: 30,
         }}
         onPress={onPress}
+        activeOpacity={0.7}
       >
-        <Ionicons name="add-outline" size={32} color="white" />
+        <Ionicons name="search-outline" size={32} color="white" />
       </TouchableOpacity>
     </View>
   );
@@ -37,13 +39,17 @@ export default function ProtectedRoutes() {
           position: 'absolute',
           backgroundColor: 'white',
           height: 70,
-          borderRadius: 20,
+          borderRadius: 200,
           margin: 12,
           shadowColor: '#4f6def',
           shadowOffset: { width: 0, height: -10 },
           shadowOpacity: 0.1,
           shadowRadius: 3.5,
           elevation: 4,
+          borderTopWidth: 0.15,
+          borderLeftWidth: 0.15,
+          borderRightWidth: 0.15,
+          borderColor: "#4f6def"
         },
       }}
     >
@@ -103,12 +109,12 @@ export default function ProtectedRoutes() {
 
       {/* Profile Tab */}
       <Tab.Screen
-        name="Profile2"
-        component={HomeScreen}
+        name="Setting"
+        component={ProfileScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <Ionicons
-              name="person-outline"
+              name="cog-outline"
               size={24}
               color={focused ? 'blue' : 'black'}
             />
