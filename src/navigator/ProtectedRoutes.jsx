@@ -45,7 +45,8 @@ export default function ProtectedRoutes() {
           height: 70,
           borderRadius: 200,
           margin: 12,
-          shadowColor: '#4f6def',
+          // shadowColor: '#4f6def',
+          shadowColor: '#343434',
           shadowOffset: { width: 0, height: -10 },
           shadowOpacity: 0.1,
           shadowRadius: 3.5,
@@ -53,9 +54,32 @@ export default function ProtectedRoutes() {
           borderTopWidth: 0.15,
           borderLeftWidth: 0.15,
           borderRightWidth: 0.15,
-          borderColor: "#4f6def"
+          // borderColor: "#4f6def"
+          borderColor: "#909090"
         },
       }}
+      // screenOptions={{
+      //   headerShown: false,
+      //   tabBarShowLabel: false,
+      //   tabBarStyle: {
+      //     position: 'absolute',
+      //     backgroundColor: 'white',
+      //     height: 70,
+      //     borderTopStartRadius: 50,
+      //     borderTopEndRadius: 50,
+      //     // shadowColor: '#4f6def',
+      //     shadowColor: '#343434',
+      //     shadowOffset: { width: 0, height: -10 },
+      //     shadowOpacity: 0.1,
+      //     shadowRadius: 3.5,
+      //     elevation: 4,
+      //     borderTopWidth: 0.15,
+      //     borderLeftWidth: 0.15,
+      //     borderRightWidth: 0.15,
+      //     // borderColor: "#4f6def"
+      //     borderColor: "#909090"
+      //   },
+      // }}
     >
       {/* Home Tab */}
       <Tab.Screen
