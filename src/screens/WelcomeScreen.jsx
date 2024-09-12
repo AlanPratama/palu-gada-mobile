@@ -7,7 +7,7 @@ import Animated, { ZoomIn } from "react-native-reanimated";
 export default function WelcomeScreen() {
   const navigate = useNavigation();
 
-  const isAuthenticated = false
+  const isAuthenticated = true
 
   const checkOnBoarding = async () => {
     try {
