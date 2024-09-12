@@ -1,13 +1,13 @@
-import { View, Text, Image } from "react-native";
-import React, { useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
+import React, { useEffect } from "react";
+import { View } from "react-native";
 import Animated, { ZoomIn } from "react-native-reanimated";
 
 export default function WelcomeScreen() {
   const navigate = useNavigation();
 
-  const isAuthenticated = true
+  const isAuthenticated = false
 
   const checkOnBoarding = async () => {
     try {
