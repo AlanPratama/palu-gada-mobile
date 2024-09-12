@@ -1,19 +1,16 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React, { useEffect, useState } from 'react';
-import WelcomeScreen from '../screens/WelcomeScreen';
-import OnBoarding from '../components/OnBoarding';
-import { ActivityIndicator } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React from 'react';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import HomeScreen from '../screens/auth/HomeScreen';
+import OnBoarding from '../components/OnBoarding';
+import WelcomeScreen from '../screens/WelcomeScreen';
 import ProtectedRoutes from './ProtectedRoutes';
 import PublicRoutes from './PublicRoutes';
 
 export default function AppNavigator() {
     const Stack = createNativeStackNavigator();
     
-    const isAuthenticated = true
+    const isAuthenticated = false
 
   // const [alreadyViewedOnBoarding, setAlreadyViewedOnBoarding] = useState(false);
 
