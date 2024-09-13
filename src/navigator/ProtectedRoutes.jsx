@@ -1,10 +1,9 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import EditProfileScreen from '../screens/auth/EditProfileScreen';
 import HomeScreen from '../screens/auth/HomeScreen';
 import ProfileScreen from '../screens/auth/ProfileScreen';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import SearchScreen from '../screens/auth/SearchScreen';
 
 export default function ProtectedRoutes() {
   const Tab = createBottomTabNavigator();
@@ -31,7 +30,6 @@ export default function ProtectedRoutes() {
     </View>
   );
 
-  const Stack = createNativeStackNavigator();
 
   return (
     <Tab.Navigator
@@ -98,7 +96,7 @@ export default function ProtectedRoutes() {
 
       {/* Search Tab */}
       <Tab.Screen
-        name="Search"
+        name="Add"
         component={HomeScreen}
         options={{
           tabBarIcon: ({ focused }) => (
@@ -113,8 +111,8 @@ export default function ProtectedRoutes() {
 
       {/* Add Tab with custom button */}
       <Tab.Screen
-        name="Add"
-        component={HomeScreen}
+        name="Search"
+        component={SearchScreen}
         options={{
           tabBarButton: (props) => <CustomAddButton {...props} />,
         }}
