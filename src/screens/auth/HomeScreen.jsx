@@ -3,8 +3,12 @@ import React from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import PagerView from "react-native-pager-view";
+import { useNavigation } from "@react-navigation/native";
 
 export default function HomeScreen() {
+
+  const navigate = useNavigation()
+  
   const clearOnBoarding = async () => {
     try {
       await AsyncStorage.removeItem("@viewedOnBoarding");
@@ -152,6 +156,10 @@ export default function HomeScreen() {
           l.map((_, i) => (
             <TouchableOpacity
             key={i}
+            onPress={() => navigate.navigate("PostDetail", {
+              id: i,
+              title: "Serba Bisa",
+            })}
           activeOpacity={0.5}
           className="my-3.5 flex-row justify-start items-start gap-x-2.5"
         >
