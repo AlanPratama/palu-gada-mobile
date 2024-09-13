@@ -148,7 +148,10 @@ export default function HomeScreen() {
           {/* <Ionicons name="chevron-forward-outline" size={18} /> */}
         </View>
 
-        <TouchableOpacity
+        {
+          l.map((_, i) => (
+            <TouchableOpacity
+            key={i}
           activeOpacity={0.5}
           className="my-3.5 flex-row justify-start items-start gap-x-2.5"
         >
@@ -186,6 +189,8 @@ export default function HomeScreen() {
             </Text>
           </View>
         </TouchableOpacity>
+          )) 
+        }
       </View>
     </ScrollView>
   );
