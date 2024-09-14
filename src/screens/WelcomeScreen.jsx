@@ -31,7 +31,7 @@ export default function WelcomeScreen() {
 
     <View className="justify-center items-center min-h-screen bg-[#fff]">
       <Animated.Image entering={ZoomIn.delay(200)} source={require("../../assets/image.png")} alt="Palu Gada" className="w-96 h-96 mb-6" />
-      <Animated.Text entering={ZoomIn.delay(300)} className="italic text-5xl text-center font-extrabold text-[#4f6def]">PALU GADA</Animated.Text>
+      <Animated.Text entering={ZoomIn.delay(300)} className="italic text-5xl text-center font-extrabold text-[#4f6def]">KERJAIN AJA</Animated.Text>
       <Animated.Text entering={ZoomIn.delay(400)} className="italic text-2xl text-center font-semibold text-[#4f6def]">Apa Lu Mau, Gue Ada</Animated.Text>
     </View>
     
