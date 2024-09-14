@@ -1,14 +1,17 @@
 import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
-import React from "react";
+import React, { useRef } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import PagerView from "react-native-pager-view";
 import { useNavigation } from "@react-navigation/native";
+import Divider from "../../components/Divider";
+import BottomSheetAddPost from "../../components/Post/BottomSheetAddPost";
 
 export default function HomeScreen() {
+  const navigate = useNavigation();
 
-  const navigate = useNavigation()
-  
+  const refSheetAddPost = useRef();
+
   const clearOnBoarding = async () => {
     try {
       await AsyncStorage.removeItem("@viewedOnBoarding");
@@ -17,7 +20,7 @@ export default function HomeScreen() {
     }
   };
 
-  const l = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
+  const l = [{}, {}, {}, {}, {}];
 
   return (
     <ScrollView
@@ -119,6 +122,30 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </View>
 
+      <View className="px-3 mb-4 flex-row justify-center items-center gap-x-2">
+        <TouchableOpacity
+          activeOpacity={0.7}
+          className="bg-orange-500 py-2.5 rounded-lg w-[48%] flex-row justify-center items-center"
+        >
+          <Ionicons name="information-outline" size={20} color="white" />
+          <Text className="text-white font-semibold text-center">
+            Cara Kerja
+          </Text>
+        </TouchableOpacity>
+
+        {/* #24bd5c */}
+        <TouchableOpacity
+          onPress={() => refSheetAddPost.current?.open()}
+          activeOpacity={0.7}
+          className="bg-green-500 py-2.5 rounded-lg w-[48%] flex-row justify-center items-center"
+        >
+          <Ionicons name="add-outline" size={20} color="white" />
+          <Text className="text-white font-semibold text-center">
+            Buat Postingan
+          </Text>
+        </TouchableOpacity>
+      </View>
+
       <View className="px-3">
         <View className="flex-row justify-between items-center">
           <Text className="text-center text-[#343434] font-bold text-[20px]">
@@ -147,59 +174,122 @@ export default function HomeScreen() {
       <View className="px-3 mt-4">
         <View className="flex-row justify-between items-center">
           <Text className="text-center text-[#343434] font-bold text-[20px]">
-            Kerjain Aja (Terbaru)
+            Kerjain Aja: Terdekat
           </Text>
           {/* <Ionicons name="chevron-forward-outline" size={18} /> */}
         </View>
 
-        {
-          l.map((_, i) => (
-            <TouchableOpacity
+        {l.map((_, i) => (
+          <TouchableOpacity
             key={i}
-            onPress={() => navigate.navigate("PostDetail", {
-              id: i,
-              title: "Serba Bisa",
-            })}
-          activeOpacity={0.5}
-          className="my-3.5 flex-row justify-start items-start gap-x-2.5"
-        >
-          <Image
-            source={{
-              uri: "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
-            }}
-            alt=""
-            className="w-[88px] h-[88px] border border-gray-200 rounded-xl"
-          />
-          <View className="w-[68%]">
-            <View className="flex-row justify-between items-center">
-              <Text className="text-sm font-bold text-[#4f6def]">
-                Serba Bisa
-              </Text>
-              <View className="flex-row justify-center items-center gap-x-1">
-                <Text className="text-sm font-normal text-[#343434]">
-                  2 jam lalu
+            onPress={() =>
+              navigate.navigate("PostDetail", {
+                id: i,
+                title: "Serba Bisa",
+              })
+            }
+            activeOpacity={0.5}
+            className="my-3.5 flex-row justify-start items-start gap-x-2.5"
+          >
+            <Image
+              source={{
+                uri: "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
+              }}
+              alt=""
+              className="w-[88px] h-[88px] border border-gray-200 rounded-xl"
+            />
+            <View className="w-[68%]">
+              <View className="flex-row justify-between items-center">
+                <Text className="text-sm font-bold text-[#4f6def]">
+                  Serba Bisa
                 </Text>
-                <Ionicons name="time-outline" size={18} />
+                <View className="flex-row justify-center items-center gap-x-1">
+                  <Text className="text-sm font-normal text-[#343434]">
+                    2 jam lalu
+                  </Text>
+                  <Ionicons name="time-outline" size={18} />
+                </View>
               </View>
+              <Text
+                numberOfLines={1}
+                className="text-[17px] font-bold text-[#343434]"
+              >
+                Kuburin kucing aku
+              </Text>
+              <Text
+                numberOfLines={2}
+                className="text-sm font-normal text-[#343434]"
+              >
+                halo banh, jadi ada kucing aku yang namanya Boni, dia kucing
+                kesayanganku, tolong bantu kuburin dong :(
+              </Text>
             </View>
-            <Text
-              numberOfLines={1}
-              className="text-[17px] font-bold text-[#343434]"
-            >
-              Kuburin kucing aku
-            </Text>
-            <Text
-              numberOfLines={2}
-              className="text-sm font-normal text-[#343434]"
-            >
-              halo banh, jadi ada kucing aku yang namanya Boni, dia kucing
-              kesayanganku, tolong bantu kuburin dong :(
-            </Text>
-          </View>
-        </TouchableOpacity>
-          )) 
-        }
+          </TouchableOpacity>
+        ))}
       </View>
+
+      <View className="px-3 mt-2">
+        <Divider color="#d9d9d9" width={2} />
+      </View>
+
+      <View className="px-3 mt-4">
+        <View className="flex-row justify-between items-center">
+          <Text className="text-center text-[#343434] font-bold text-[20px]">
+            Kerjain Aja: Terbaru
+          </Text>
+          {/* <Ionicons name="chevron-forward-outline" size={18} /> */}
+        </View>
+
+        {l.map((_, i) => (
+          <TouchableOpacity
+            key={i}
+            onPress={() =>
+              navigate.navigate("PostDetail", {
+                id: i,
+                title: "Serba Bisa",
+              })
+            }
+            activeOpacity={0.5}
+            className="my-3.5 flex-row justify-start items-start gap-x-2.5"
+          >
+            <Image
+              source={{
+                uri: "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
+              }}
+              alt=""
+              className="w-[88px] h-[88px] border border-gray-200 rounded-xl"
+            />
+            <View className="w-[68%]">
+              <View className="flex-row justify-between items-center">
+                <Text className="text-sm font-bold text-[#4f6def]">
+                  Serba Bisa
+                </Text>
+                <View className="flex-row justify-center items-center gap-x-1">
+                  <Text className="text-sm font-normal text-[#343434]">
+                    2 jam lalu
+                  </Text>
+                  <Ionicons name="time-outline" size={18} />
+                </View>
+              </View>
+              <Text
+                numberOfLines={1}
+                className="text-[17px] font-bold text-[#343434]"
+              >
+                Kuburin kucing aku
+              </Text>
+              <Text
+                numberOfLines={2}
+                className="text-sm font-normal text-[#343434]"
+              >
+                halo banh, jadi ada kucing aku yang namanya Boni, dia kucing
+                kesayanganku, tolong bantu kuburin dong :(
+              </Text>
+            </View>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      <BottomSheetAddPost refRBSheet={refSheetAddPost} />
     </ScrollView>
   );
 }
