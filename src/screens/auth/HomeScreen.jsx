@@ -27,7 +27,7 @@ export default function HomeScreen() {
       <View className='bg-[#fff] px-3 pt-4 flex-row justify-between items-center'>
         <Text className='text-[26px] font-bold text-primary'>Kerjain Aja</Text>
         <View className='flex-row justify-center items-center gap-x-2'>
-          <TouchableOpacity activeOpacity={0.5}>
+          <TouchableOpacity onPress={() => navigate.navigate("Notification")} activeOpacity={0.5}>
             <Ionicons name='notifications-outline' size={26} color='#343434' />
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={0.5}>
@@ -62,7 +62,7 @@ export default function HomeScreen() {
           elevation: 2,
         }}
       >
-        <TouchableOpacity activeOpacity={0.5} className='flex-row justify-evenly items-center w-[52%]'>
+        <TouchableOpacity onPress={() => navigate.navigate("Wallet")} activeOpacity={0.5} className='flex-row justify-evenly items-center w-[52%]'>
           {/* <View className=""><Ionicons name='wallet-outline' size={28} color='#303030' /></View> */}
           <View>
             <View className='flex-row justify-start items-center'>
