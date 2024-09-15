@@ -15,11 +15,14 @@ import PostDetailScreen from "../screens/auth/PostDetailScreen";
 import WelcomeScreen from "../screens/WelcomeScreen";
 import ProtectedRoutes from "./ProtectedRoutes";
 import PublicRoutes from "./PublicRoutes";
+import WalletScreen from "../screens/auth/WalletScreen";
+import NotificationScreen from "../screens/auth/NotificationScreen";
 
 export default function AppNavigator() {
   const Stack = createNativeStackNavigator();
 
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  // const { isAuthenticated } = useSelector((state) => state.auth);
+  const isAuthenticated = true;
   console.log("isAuthenticated: ", isAuthenticated);
 
   const setUser = async () => {
@@ -69,6 +72,8 @@ export default function AppNavigator() {
                 <Stack.Screen name='EditProfile' component={EditProfileScreen} />
                 <Stack.Screen name='ChangePassword' component={ChangePasswordScreen} />
                 <Stack.Screen name='PostDetail' component={PostDetailScreen} />
+                <Stack.Screen name='Wallet' component={WalletScreen} />
+                <Stack.Screen name='Notification' component={NotificationScreen} />
               </>
             ) : (
               <Stack.Screen name='Public' component={PublicRoutes} />
