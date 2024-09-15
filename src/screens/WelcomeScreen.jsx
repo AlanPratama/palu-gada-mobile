@@ -4,18 +4,14 @@ import React, { useEffect } from "react";
 import { View } from "react-native";
 import Animated, { ZoomIn } from "react-native-reanimated";
 
-export default function WelcomeScreen() {
+export default function WelcomeScreen({ route }) {
   const navigate = useNavigation();
-
-  const isAuthenticated = true
+  const { isAuthenticated } = route.params;
 
   const checkOnBoarding = async () => {
     try {
       const value = await AsyncStorage.getItem("@viewedOnBoarding");
-      console.log("asasa: ", value);
-
-      navigate.replace(value !== null ? isAuthenticated ? "Protect" : "Public" : "OnBoarding")
-
+      navigate.replace(value !== null ? (isAuthenticated ? "Protect" : "Public") : "OnBoarding");
     } catch (error) {
       console.log("ERROR CHECKING ONBOARDING: ", error);
     }
@@ -24,17 +20,19 @@ export default function WelcomeScreen() {
   useEffect(() => {
     setTimeout(() => {
       checkOnBoarding();
-    }, 2000)
+    }, 2000);
   }, []);
 
   return (
-
-    <View className="justify-center items-center min-h-screen bg-[#fff]">
-      <Animated.Image entering={ZoomIn.delay(200)} source={require("../../assets/image.png")} alt="Palu Gada" className="w-96 h-96 mb-6" />
-      <Animated.Text entering={ZoomIn.delay(300)} className="italic text-5xl text-center font-extrabold text-[#4f6def]">KERJAIN AJA</Animated.Text>
-      <Animated.Text entering={ZoomIn.delay(400)} className="italic text-2xl text-center font-semibold text-[#4f6def]">Apa Lu Mau, Gue Ada</Animated.Text>
+    <View className='justify-center items-center min-h-screen bg-[#fff]'>
+      <Animated.Image entering={ZoomIn.delay(200)} source={require("../../assets/image.png")} alt='Palu Gada' className='w-96 h-96 mb-6' />
+      <Animated.Text entering={ZoomIn.delay(300)} className='italic text-5xl text-center font-extrabold text-primary'>
+        KERJAIN AJA
+      </Animated.Text>
+      <Animated.Text entering={ZoomIn.delay(400)} className='italic text-2xl text-center font-semibold text-primary'>
+        Apa Lu Mau, Gue Ada
+      </Animated.Text>
     </View>
-    
 
     // <View className="relative justify-center items-center min-h-screen">
     //   <Image source={require("../../assets/welcome.png")} alt="Palu Gada" className="w-72 h-72" />
