@@ -23,15 +23,16 @@ export default function NextButton({ percentage, scrollTo }) {
 
   useEffect(() => {
     progressAnimation.addListener(
-      (value) => {  
-        const strokeDashoffset =
-          circumference - (circumference * value.value) / 100;
+      (value) => {
+        const strokeDashoffset = circumference - (circumference * value.value) / 100;
         if (progressRef?.current) {
-          progressRef.current.setNativeProps({ 
-            strokeDashoffset: strokeDashoffset
+          progressRef.current.setNativeProps({
+            strokeDashoffset: strokeDashoffset,
           });
         }
-      },[percentage]);
+      },
+      [percentage]
+    );
 
     return () => {
       progressAnimation.removeAllListeners();
@@ -43,35 +44,24 @@ export default function NextButton({ percentage, scrollTo }) {
   }, [percentage]);
 
   return (
-    <View className="flex-1 justify-center items-center">
+    <View className='flex-1 justify-center items-center'>
       <Svg height={size} width={size}>
         <G rotation={-90} origin={center}>
-          <Circle
-            cx={center}
-            cy={center}
-            r={radius}
-            stroke="#E6E7E8"
-            strokeWidth={strokeWidth}
-            fill="transparent"
-          />
+          <Circle cx={center} cy={center} r={radius} stroke='#E6E7E8' strokeWidth={strokeWidth} fill='transparent' />
           <Circle
             ref={progressRef}
             cx={center}
             cy={center}
             r={radius}
-            stroke="#4f6def"
+            stroke='#4f6def'
             strokeWidth={strokeWidth}
             strokeDasharray={circumference}
             fill={"transparent"}
           />
         </G>
       </Svg>
-      <TouchableOpacity
-        onPress={() => scrollTo(false)}
-        activeOpacity={0.6}
-        className="absolute bg-[#4f6def] rounded-[100px] p-[20px]"
-      >
-        <Ionicons name="arrow-forward" size={32} color="#fff" />
+      <TouchableOpacity onPress={() => scrollTo(false)} activeOpacity={0.6} className='absolute bg-primary rounded-[100px] p-[20px]'>
+        <Ionicons name='arrow-forward' size={32} color='#fff' />
       </TouchableOpacity>
     </View>
   );
