@@ -113,7 +113,7 @@ export default function HomeScreen() {
         </View>
         <ScrollView className='py-3.5' horizontal={true} showsHorizontalScrollIndicator={false}>
           {l.map((_, i) => (
-            <TouchableOpacity key={i} className='bg-blue-100 rounded-full px-3.5 py-1 mr-2 justify-center items-center'>
+            <TouchableOpacity onPress={() => navigate.navigate("PostByCategory", { id: 1 })} key={i} className='bg-blue-100 rounded-full px-3.5 py-1 mr-2 justify-center items-center'>
               <Text className='text-[14.5px] font-semibold text-primary'>Kurir</Text>
             </TouchableOpacity>
           ))}

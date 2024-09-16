@@ -11,13 +11,14 @@ import { login, logout } from "../redux/auth/authSlice";
 import store from "../redux/store";
 import ChangePasswordScreen from "../screens/auth/ChangePasswordScreen";
 import EditProfileScreen from "../screens/auth/EditProfileScreen";
-import PostDetailScreen from "../screens/auth/PostDetailScreen";
+import NotificationScreen from "../screens/auth/NotificationScreen";
+import PostDetailScreen from "../screens/auth/Post/PostDetailScreen";
+import WalletScreen from "../screens/auth/WalletScreen";
 import WelcomeScreen from "../screens/WelcomeScreen";
 import ProtectedRoutes from "./ProtectedRoutes";
 import PublicRoutes from "./PublicRoutes";
-import WalletScreen from "../screens/auth/WalletScreen";
-import NotificationScreen from "../screens/auth/NotificationScreen";
-import AddPostScreen from "../screens/auth/AddPostScreen";
+import AddPostScreen from "../screens/auth/Post/AddPostScreen";
+import PostByCategory from "../screens/auth/Post/PostByCategory";
 
 export default function AppNavigator() {
   const Stack = createNativeStackNavigator();
@@ -76,6 +77,7 @@ export default function AppNavigator() {
                 <Stack.Screen name='Wallet' component={WalletScreen} />
                 <Stack.Screen name='Notification' component={NotificationScreen} />
                 <Stack.Screen name='AddPost' component={AddPostScreen} />
+                <Stack.Screen name='PostByCategory' component={PostByCategory} />
               </>
             ) : (
               <Stack.Screen name='Public' component={PublicRoutes} />
