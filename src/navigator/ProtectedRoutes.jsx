@@ -3,7 +3,7 @@ import { TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import HomeScreen from '../screens/auth/HomeScreen';
 import ProfileScreen from '../screens/auth/ProfileScreen';
-import SearchScreen from '../screens/auth/SearchScreen';
+import SearchScreen from '../screens/auth/Post/SearchScreen';
 
 export default function ProtectedRoutes() {
   const Tab = createBottomTabNavigator();

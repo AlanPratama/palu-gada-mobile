@@ -1,15 +1,14 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  TextInput,
-  Switch,
-} from "react-native";
-import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import {
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function AddPostScreen() {
   const navigate = useNavigation();
@@ -26,7 +25,7 @@ export default function AddPostScreen() {
   const onSubmit = async (data) => {
     console.log(data);
     reset();
-  }
+  };
 
   return (
     <ScrollView
@@ -67,9 +66,11 @@ export default function AddPostScreen() {
                 placeholder="Bantuin buang mayat kucing..."
               />
             )}
-            />
+          />
         </View>
-        {errors.title && (<Text style={{ color: "red" }}>{errors.title.message}</Text>)}
+        {errors.title && (
+          <Text style={{ color: "red" }}>{errors.title.message}</Text>
+        )}
       </View>
 
       <View className="mb-4">
@@ -91,7 +92,9 @@ export default function AddPostScreen() {
             )}
           />
         </View>
-        {errors.description && (<Text style={{ color: "red" }}>{errors.description.message}</Text>)}
+        {errors.description && (
+          <Text style={{ color: "red" }}>{errors.description.message}</Text>
+        )}
       </View>
 
       {/* Budget */}
@@ -105,7 +108,7 @@ export default function AddPostScreen() {
               control={control}
               rules={{
                 required: "Minimal budget wajib diisi!",
-                validate: value =>
+                validate: (value) =>
                   value >= 1 || "Minimal budget harus lebih besar dari 0",
               }}
               render={({ field: { onChange, onBlur, value } }) => (
@@ -153,7 +156,9 @@ export default function AddPostScreen() {
         <Text style={{ color: "red" }}>{errors.maxBudget.message}</Text>
       )}
       {watch("minBudget") >= watch("maxBudget") && (
-        <Text style={{ color: "red" }}>Max budget harus lebih besar dari min budget</Text>
+        <Text style={{ color: "red" }}>
+          Max budget harus lebih besar dari min budget
+        </Text>
       )}
 
       {/* Tenggat Hari Pengerjaan */}
@@ -174,7 +179,7 @@ export default function AddPostScreen() {
                 control={control}
                 rules={{
                   required: "Tenggat wajib diisi!",
-                  validate: value =>
+                  validate: (value) =>
                     value >= 1 || "Tenggat hari pengerjaan minimal 1 hari",
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
@@ -197,8 +202,21 @@ export default function AddPostScreen() {
                 className="border-b-2 border-[#d1d1d1] text-[#303030] ml-2 py-2 w-[90%]"
                 placeholder="Is Urgent..."
               /> */}
-              <TouchableOpacity onPress={() => setIsUrgent(!isUrgent)} className={`${isUrgent ? "border-[#3f45f9] text-[#3f45f9] bg-[#eff6ff71]" : "border-[#d1d1d1] text-[#303030]"} rounded-[10px] border-2 ml-2 py-2 w-[90%]`}>
-                <Text className={`${isUrgent ? "text-[#3f45f9]" : "text-[#a1a1a1]"} text-center font-medium uppercase`}>Darurat</Text>
+              <TouchableOpacity
+                onPress={() => setIsUrgent(!isUrgent)}
+                className={`${
+                  isUrgent
+                    ? "border-[#3f45f9] text-[#3f45f9] bg-[#eff6ff71]"
+                    : "border-[#d1d1d1] text-[#303030]"
+                } rounded-[10px] border-2 ml-2 py-2 w-[90%]`}
+              >
+                <Text
+                  className={`${
+                    isUrgent ? "text-[#3f45f9]" : "text-[#a1a1a1]"
+                  } text-center font-medium uppercase`}
+                >
+                  Darurat
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
