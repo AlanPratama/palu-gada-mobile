@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import PagerView from "react-native-pager-view";
@@ -7,14 +7,34 @@ import { useNavigation } from "@react-navigation/native";
 import Divider from "../../components/Divider";
 import BottomSheetAddPost from "../../components/Post/BottomSheetAddPost";
 import { useSelector } from "react-redux";
+import CategoryApi from "../../apis/CategoryApi";
+import PostApi from "../../apis/PostApi";
 
 export default function HomeScreen() {
   const navigate = useNavigation();
 
   const refSheetAddPost = useRef();
   const { user } = useSelector((state) => state.auth)
-  console.log("USER: ", user);
+  const { items: catItems } = useSelector((state) => state.category)
+  const { items: postItems } = useSelector((state) => state.post)
+
+  // console.log("USER: ", user);
+  console.log("catItems: ", catItems);
+  console.log("postItems: ", postItems);
   
+  
+
+  const fetchAllData = async () => {
+    await CategoryApi.getCategories()
+    await PostApi.getPosts()
+  }
+  
+  useEffect(() => {
+    fetchAllData()
+  }, [])
+
+  console.log("catItemsss: ", catItems);
+
 
   const clearOnBoarding = async () => {
     try {
@@ -23,8 +43,24 @@ export default function HomeScreen() {
       console.log("ERROR CLEARING ONBOARDING: ", error);
     }
   };
+  
+  const l = [{}, {}, {}];
 
-  const l = [{}, {}, {}, {}, {}];
+  const calculateTimeAgo = (date) => {
+    const now = new Date();
+    const pastDate = new Date(date);
+    const diff = now - pastDate; // selisih dalam milidetik
+  
+    const diffInHours = Math.floor(diff / (1000 * 60 * 60));
+    const diffInMinutes = Math.floor(diff / (1000 * 60));
+  
+    if (diffInHours > 0) {
+      return `${diffInHours} jam lalu`;
+    } else {
+      return `${diffInMinutes} menit lalu`;
+    }
+  };
+  
 
   return (
     <ScrollView contentContainerStyle={{ paddingBottom: 110 }} className='bg-white min-h-screen '>
@@ -112,9 +148,9 @@ export default function HomeScreen() {
           {/* <Ionicons name="chevron-forward-outline" size={18} /> */}
         </View>
         <ScrollView className='py-3.5' horizontal={true} showsHorizontalScrollIndicator={false}>
-          {l.map((_, i) => (
-            <TouchableOpacity onPress={() => navigate.navigate("PostByCategory", { id: 1 })} key={i} className='bg-blue-100 rounded-full px-3.5 py-1 mr-2 justify-center items-center'>
-              <Text className='text-[14.5px] font-semibold text-primary'>Kurir</Text>
+          {catItems.map((cat, i) => (
+            <TouchableOpacity onPress={() => navigate.navigate("PostByCategory", { id: cat.id })} key={cat.id + "-category" + i} className='bg-blue-100 rounded-full px-3.5 py-1 mr-2 justify-center items-center'>
+              <Text className='text-[14.5px] font-semibold text-primary'>{cat.name}</Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -126,41 +162,40 @@ export default function HomeScreen() {
           {/* <Ionicons name="chevron-forward-outline" size={18} /> */}
         </View>
 
-        {l.map((_, i) => (
+        {postItems.map((post, i) => (
           <TouchableOpacity
-            key={i}
-            onPress={() =>
-              navigate.navigate("PostDetail", {
-                id: i,
-                title: "Serba Bisa",
-              })
-            }
-            activeOpacity={0.5}
-            className='my-3.5 flex-row justify-start items-start gap-x-2.5'
-          >
-            <Image
-              source={{
-                uri: "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
-              }}
-              alt=''
-              className='w-[88px] h-[88px] border border-gray-200 rounded-xl'
-            />
-            <View className='w-[68%]'>
-              <View className='flex-row justify-between items-center'>
-                <Text className='text-sm font-bold text-primary'>Serba Bisa</Text>
-                <View className='flex-row justify-center items-center gap-x-1'>
-                  <Text className='text-sm font-normal text-[#343434]'>2 jam lalu</Text>
-                  <Ionicons name='time-outline' size={18} />
-                </View>
+          key={post.id + "-post2-" + i}
+          onPress={() =>
+            navigate.navigate("PostDetail", {
+              id: post.id,
+            })
+          }
+          activeOpacity={0.5}
+          className='my-3.5 flex-row justify-start items-start gap-x-2.5'
+        >
+          <Image
+            source={{
+              uri: "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
+            }}
+            alt=''
+            className='w-[88px] h-[88px] border border-gray-200 rounded-xl'
+          />
+          <View className='w-[68%]'>
+            <View className='flex-row justify-between items-center'>
+              <Text className='text-sm font-bold text-primary'>{post.postCategories[0] ? post.postCategories[0].name : "Apa Aja"}</Text>
+              <View className='flex-row justify-center items-center gap-x-1'>
+                <Text className='text-sm font-normal text-[#343434]'>{calculateTimeAgo("2024-09-15 15:29:07.797796")}</Text>
+                <Ionicons name='time-outline' size={18} />
               </View>
-              <Text numberOfLines={1} className='text-[17px] font-bold text-[#343434]'>
-                Kuburin kucing aku
-              </Text>
-              <Text numberOfLines={2} className='text-sm font-normal text-[#343434]'>
-                halo banh, jadi ada kucing aku yang namanya Boni, dia kucing kesayanganku, tolong bantu kuburin dong :(
-              </Text>
             </View>
-          </TouchableOpacity>
+            <Text numberOfLines={1} className='text-[17px] font-bold text-[#343434]'>
+              {post.title}
+            </Text>
+            <Text numberOfLines={2} className='text-sm font-normal text-[#343434]'>
+              {post.description}
+            </Text>
+          </View>
+        </TouchableOpacity>
         ))}
       </View>
 
@@ -174,13 +209,12 @@ export default function HomeScreen() {
           {/* <Ionicons name="chevron-forward-outline" size={18} /> */}
         </View>
 
-        {l.map((_, i) => (
+        {postItems.map((post, i) => (
           <TouchableOpacity
-            key={i}
+            key={post.id + "-post-" + i}
             onPress={() =>
               navigate.navigate("PostDetail", {
-                id: i,
-                title: "Serba Bisa",
+                id: post.id,
               })
             }
             activeOpacity={0.5}
@@ -195,17 +229,17 @@ export default function HomeScreen() {
             />
             <View className='w-[68%]'>
               <View className='flex-row justify-between items-center'>
-                <Text className='text-sm font-bold text-primary'>Serba Bisa</Text>
+                <Text className='text-sm font-bold text-primary'>{post.postCategories[0] ? post.postCategories[0].name : "Apa Aja"}</Text>
                 <View className='flex-row justify-center items-center gap-x-1'>
-                  <Text className='text-sm font-normal text-[#343434]'>2 jam lalu</Text>
+                  <Text className='text-sm font-normal text-[#343434]'>{calculateTimeAgo("2024-09-15 15:29:07.797796")}</Text>
                   <Ionicons name='time-outline' size={18} />
                 </View>
               </View>
               <Text numberOfLines={1} className='text-[17px] font-bold text-[#343434]'>
-                Kuburin kucing aku
+                {post.title}
               </Text>
               <Text numberOfLines={2} className='text-sm font-normal text-[#343434]'>
-                halo banh, jadi ada kucing aku yang namanya Boni, dia kucing kesayanganku, tolong bantu kuburin dong :(
+                {post.description}
               </Text>
             </View>
           </TouchableOpacity>
