@@ -2,9 +2,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React, { useRef } from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
-import Divider from "../../components/Divider";
-import BottomSheetAddBid from "../../components/Post/BottomSheetAddBid";
-import BottomSheetReportPost from "../../components/Post/BottomSheetReportPost";
+import Divider from "../../../components/Divider";
+import BottomSheetAddBid from "../../../components/Post/BottomSheetAddBid";
+import BottomSheetReportPost from "../../../components/Post/BottomSheetReportPost";
 
 export default function PostDetailScreen({ route }) {
   const s = route.params;
