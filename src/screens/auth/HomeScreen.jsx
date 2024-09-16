@@ -6,11 +6,15 @@ import PagerView from "react-native-pager-view";
 import { useNavigation } from "@react-navigation/native";
 import Divider from "../../components/Divider";
 import BottomSheetAddPost from "../../components/Post/BottomSheetAddPost";
+import { useSelector } from "react-redux";
 
 export default function HomeScreen() {
   const navigate = useNavigation();
 
   const refSheetAddPost = useRef();
+  const { user } = useSelector((state) => state.auth)
+  console.log("USER: ", user);
+  
 
   const clearOnBoarding = async () => {
     try {
@@ -92,7 +96,8 @@ export default function HomeScreen() {
 
         {/* #24bd5c */}
         <TouchableOpacity
-          onPress={() => refSheetAddPost.current?.open()}
+          // onPress={() => refSheetAddPost.current?.open()}
+          onPress={() => navigate.navigate("AddPost")}
           activeOpacity={0.7}
           className='bg-green-500 py-2.5 rounded-lg w-[48%] flex-row justify-center items-center'
         >

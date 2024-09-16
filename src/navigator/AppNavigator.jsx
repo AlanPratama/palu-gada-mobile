@@ -17,12 +17,13 @@ import ProtectedRoutes from "./ProtectedRoutes";
 import PublicRoutes from "./PublicRoutes";
 import WalletScreen from "../screens/auth/WalletScreen";
 import NotificationScreen from "../screens/auth/NotificationScreen";
+import AddPostScreen from "../screens/auth/AddPostScreen";
 
 export default function AppNavigator() {
   const Stack = createNativeStackNavigator();
 
-  // const { isAuthenticated } = useSelector((state) => state.auth);
-  const isAuthenticated = true;
+  const { isAuthenticated } = useSelector((state) => state.auth);
+  // const isAuthenticated = true;
   console.log("isAuthenticated: ", isAuthenticated);
 
   const setUser = async () => {
@@ -74,6 +75,7 @@ export default function AppNavigator() {
                 <Stack.Screen name='PostDetail' component={PostDetailScreen} />
                 <Stack.Screen name='Wallet' component={WalletScreen} />
                 <Stack.Screen name='Notification' component={NotificationScreen} />
+                <Stack.Screen name='AddPost' component={AddPostScreen} />
               </>
             ) : (
               <Stack.Screen name='Public' component={PublicRoutes} />
