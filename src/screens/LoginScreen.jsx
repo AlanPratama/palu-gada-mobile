@@ -39,7 +39,7 @@ export default function LoginScreen() {
               control={control}
               name='credential'
               rules={{ required: "Username / Email wajib diisi!" }}
-              defaultValue={"user@email.com"}
+              defaultValue={"alan"}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
                   onBlur={onBlur}
