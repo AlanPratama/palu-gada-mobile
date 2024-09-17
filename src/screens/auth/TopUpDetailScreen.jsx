@@ -40,12 +40,12 @@ export default function TopUpDetailScreen({ route }) {
   };
 
   const fetchPayment = async () => {
-    const res = await WalletApi.fetchPayment(13);
+    const res = await WalletApi.fetchPayment(20);
 
     if(res.status === "OK") {
       if(res.data.status === "SETTLEMENT") {
         await AuthApi.getAuthenticated()
-        alert("Payment Snavigateuccess!")
+        alert("Payment Success!")
         navigate.goBack()
       } else {
         alert("Belum Dibayar Bujang!")
