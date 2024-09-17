@@ -4,11 +4,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import BottomSheetWithDrawal from "../../components/Wallet/BottomSheetWithDrawal";
 import Animated, { FadeIn } from "react-native-reanimated";
+import { useSelector } from "react-redux";
 
 export default function WalletScreen() {
   const navigate = useNavigation();
 
   const refSheetWithDrawal = useRef();
+const { user } = useSelector((state) => state.auth)
 
   return (
     <ScrollView
@@ -36,7 +38,7 @@ export default function WalletScreen() {
             <Ionicons name="wallet-outline" size={32} color="white" />
             <Text className="text-white font-bold text-xl">Saldo</Text>
           </View>
-          <Text className="text-white font-bold text-3xl">Rp 1.000.000</Text>
+          <Text className="text-white font-bold text-3xl">Rp {user && user.balance.toLocaleString("id-ID")}</Text>
         </Animated.View>
         <Animated.View entering={FadeIn.delay(200)} className="flex-row justify-center items-center gap-x-2 -mt-5">
           <TouchableOpacity

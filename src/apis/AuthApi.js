@@ -1,11 +1,23 @@
 import { axiosInstance } from "./axiosInstance";
 import store from "../redux/store";
-import { login, logout, setError, setIsLoading } from "../redux/auth/authSlice";
+import { login, logout, setError, setIsLoading, setUser } from "../redux/auth/authSlice";
 import { jwtDecode } from "jwt-decode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ToastAndroid } from "react-native";
 
 export default class AuthApi {
+  static async getAuthenticated() {
+    try {
+      const { data } = await axiosInstance.get("/users");
+
+      console.log("data: ", data.data);
+
+      store.dispatch(setUser(data.data));
+    } catch (error) {
+      console.log("AuthApi getAuthenticated: ", error);
+    }
+  }
+
   static async login(usernameOrEmail, password) {
     try {
       store.dispatch(setError(null));
