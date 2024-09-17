@@ -21,6 +21,7 @@ import WalletScreen from "../screens/auth/WalletScreen";
 import WelcomeScreen from "../screens/WelcomeScreen";
 import ProtectedRoutes from "./ProtectedRoutes";
 import PublicRoutes from "./PublicRoutes";
+import AuthApi from "../apis/AuthApi";
 
 export default function AppNavigator() {
   const Stack = createNativeStackNavigator();
@@ -34,7 +35,8 @@ export default function AppNavigator() {
     console.log("tokenn: ", token);
 
     if (token) {
-      store.dispatch(login(jwtDecode(token)));
+      store.dispatch(login());
+      await AuthApi.getAuthenticated()
     } else {
       store.dispatch(logout());
     }

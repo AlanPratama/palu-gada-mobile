@@ -10,6 +10,7 @@ import {
   View,
 } from "react-native";
 import RBSheet from "react-native-raw-bottom-sheet";
+import WalletApi from "../../apis/WalletApi";
 
 export default function BottomSheetTopUpBCA({ refRBSheet }) {
   return (
@@ -55,9 +56,25 @@ const TopUpBCAComp = ({ refRBSheet }) => {
     reset,
   } = useForm();
 
-  const onSubmit = async () => {
-    refRBSheet.current.close();
-    navigate.navigate("TopUpDetail", { id: 1 })
+  const onSubmit = async (data) => {
+    console.log("data: ", data);
+    
+    const request = {
+      "bank": "bca",
+      "amount": data.amount,
+      "paymentType": "bank_transfer"
+    }
+    const res = await WalletApi.createPayment(request);
+    console.log("res: ", res);
+    
+
+    if(res.status === "Created") {
+      navigate.replace("TopUpDetail", { payment: res.data })
+    } else {
+      alert("Terjadi Error coyy")
+    }
+
+    // refRBSheet.current.close();
   };
 
   return (
