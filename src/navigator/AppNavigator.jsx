@@ -12,13 +12,15 @@ import store from "../redux/store";
 import ChangePasswordScreen from "../screens/auth/ChangePasswordScreen";
 import EditProfileScreen from "../screens/auth/EditProfileScreen";
 import NotificationScreen from "../screens/auth/NotificationScreen";
+import AddPostScreen from "../screens/auth/Post/AddPostScreen";
+import PostByCategory from "../screens/auth/Post/PostByCategory";
 import PostDetailScreen from "../screens/auth/Post/PostDetailScreen";
+import TopUpDetailScreen from "../screens/auth/TopUpDetailScreen";
+import TopUpScreen from "../screens/auth/TopUpScreen";
 import WalletScreen from "../screens/auth/WalletScreen";
 import WelcomeScreen from "../screens/WelcomeScreen";
 import ProtectedRoutes from "./ProtectedRoutes";
 import PublicRoutes from "./PublicRoutes";
-import AddPostScreen from "../screens/auth/Post/AddPostScreen";
-import PostByCategory from "../screens/auth/Post/PostByCategory";
 
 export default function AppNavigator() {
   const Stack = createNativeStackNavigator();
@@ -78,6 +80,8 @@ export default function AppNavigator() {
                 <Stack.Screen name='Notification' component={NotificationScreen} />
                 <Stack.Screen name='AddPost' component={AddPostScreen} />
                 <Stack.Screen name='PostByCategory' component={PostByCategory} />
+                <Stack.Screen name='TopUp' component={TopUpScreen} />
+                <Stack.Screen name='TopUpDetail' component={TopUpDetailScreen} />
               </>
             ) : (
               <Stack.Screen name='Public' component={PublicRoutes} />
