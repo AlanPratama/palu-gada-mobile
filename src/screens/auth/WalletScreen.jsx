@@ -38,11 +38,21 @@ export default function WalletScreen() {
           </View>
           <Text className="text-white font-bold text-3xl">Rp 1.000.000</Text>
         </Animated.View>
-        <Animated.View entering={FadeIn.delay(200)} className="justify-center items-center -mt-5">
+        <Animated.View entering={FadeIn.delay(200)} className="flex-row justify-center items-center gap-x-2 -mt-5">
+          <TouchableOpacity
+            onPress={() => navigate.navigate("TopUp")}
+            activeOpacity={0.7}
+            className="flex-row justify-center items-center py-1.5 px-5 bg-green-500 rounded-full"
+          >
+            <Ionicons name="arrow-up-outline" size={20} color="white" />
+            <Text className="text-center text-base text-white font-bold">
+              Top Up
+            </Text>
+          </TouchableOpacity>
           <TouchableOpacity
             onPress={() => refSheetWithDrawal.current?.open()}
             activeOpacity={0.7}
-            className="flex-row justify-center items-center py-1.5 px-5 bg-green-500 rounded-full"
+            className="flex-row justify-center items-center py-1.5 px-5 bg-orange-500 rounded-full"
           >
             <Ionicons name="arrow-down-outline" size={20} color="white" />
             <Text className="text-center text-base text-white font-bold">
