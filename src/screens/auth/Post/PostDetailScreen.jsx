@@ -30,7 +30,7 @@ export default function PostDetailScreen({ route }) {
       showsVerticalScrollIndicator={false}
       className="min-h-screen bg-white"
     >
-      <View className="border-b border-gray-300 flex-row justify-between items-center p-3">
+      <View className=" flex-row justify-between items-center p-3">
         <View className="flex-row justify-start items-center gap-x-2">
           <TouchableOpacity
             onPress={() => navigate.goBack()}
