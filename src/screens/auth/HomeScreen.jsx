@@ -109,7 +109,7 @@ export default function HomeScreen() {
               <Ionicons name='wallet-outline' size={15} color='#303030' />
               <Text className='text-[15.5px] font-semibold'> Saldo</Text>
             </View>
-            <Text className='text-[16px] leading-6 font-bold'>Rp. {user?.balance.toLocaleString("id-ID")}</Text>
+            <Text className='text-[16px] leading-6 font-bold'>Rp. {user ? user.balance.toLocaleString("id-ID") : 0}</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity activeOpacity={0.5} className='flex-row justify-evenly items-center w-[48%]'>

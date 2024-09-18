@@ -6,7 +6,7 @@ export default class UserApi {
     try {
       console.log("request: ", request);
 
-      const { data } = await axiosInstance.post("/users/change", request);
+      const { data } = await axiosInstance.put("/users/update-password", request);
       ToastAndroid.show("Password berhasil di ubah", 5000);
       return data;
     } catch (error) {
