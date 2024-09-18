@@ -115,6 +115,7 @@ export default function EditProfileScreen() {
     if(res?.status === "OK") {
       alert("Update profile success!")
       await UserApi.getAuthenticated()
+      navigate.goBack()
       // reset();
     } else {
       alert("ada yang aneh coy!")

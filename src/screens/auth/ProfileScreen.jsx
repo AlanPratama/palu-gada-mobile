@@ -35,7 +35,7 @@ console.log(user);
         <View className='-mt-16 p-4 bg-white rounded-[200px]'>
           <Image
             source={{
-              uri: "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
+              uri: user.photoUrl ? user.photoUrl : "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
             }}
             className='w-32 h-32 rounded-full'
           />
