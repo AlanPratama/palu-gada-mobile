@@ -3,6 +3,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import BidApi from '../../apis/BidApi';
+import { useNavigation } from '@react-navigation/native';
 
 export default function BottomSheetAddBid({ refRBSheet, post }) {
   return (
@@ -44,19 +45,28 @@ const AddBidComp = ({ refRBSheet, post }) => {
   
   const {
     control,
-    watch,
     handleSubmit,
     formState: { errors },
-    reset,
+    reset
   } = useForm();
+
+  const navigate = useNavigation()
 
     const onSubmit = async (data) => {
         refRBSheet.current.close()
-        await BidApi.createBid({
+        const res = await BidApi.createBid({
             postId: post.id,
             amount: parseInt(data.amount),
             message: data.message
         })
+
+        if(res) {
+            refRBSheet.current.close()
+            navigate.goBack()
+        } else {
+            alert("Gagal menawar!")
+        }
+        reset()
     }
 
     return (
