@@ -3,9 +3,15 @@ import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import AuthApi from "../../apis/AuthApi";
+import { useSelector } from "react-redux";
 
 export default function ProfileScreen() {
   const navigate = useNavigation();
+
+  const { user } = useSelector((state) => state.auth)
+
+console.log(user);
+  
 
   const handleLogout = async () => {
     try {
@@ -34,8 +40,8 @@ export default function ProfileScreen() {
             className='w-32 h-32 rounded-full'
           />
         </View>
-        <Text className='text-center text-xl font-bold text-[#343434]'>Rei Ayanami</Text>
-        <Text className='text-center text-base font-normal text-[#343434]'>rei@gmail.com</Text>
+        <Text className='text-center text-xl font-bold text-[#343434]'>{user?.username}</Text>
+        <Text className='text-center text-base font-normal text-[#343434]'>{user?.email}</Text>
       </View>
 
       <View className='bg-white pb-8 pt-6 px-4 justify-center items-start w-full'>

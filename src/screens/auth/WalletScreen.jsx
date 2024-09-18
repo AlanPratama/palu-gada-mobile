@@ -38,7 +38,7 @@ const { user } = useSelector((state) => state.auth)
             <Ionicons name="wallet-outline" size={32} color="white" />
             <Text className="text-white font-bold text-xl">Saldo</Text>
           </View>
-          <Text className="text-white font-bold text-3xl">Rp {user && user.balance.toLocaleString("id-ID")}</Text>
+          <Text className="text-white font-bold text-3xl">Rp {user.balance ? user.balance.toLocaleString("id-ID") : 0}</Text>
         </Animated.View>
         <Animated.View entering={FadeIn.delay(200)} className="flex-row justify-center items-center gap-x-2 -mt-5">
           <TouchableOpacity

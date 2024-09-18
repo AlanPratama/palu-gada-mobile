@@ -40,7 +40,7 @@ export default function TopUpDetailScreen({ route }) {
   };
 
   const fetchPayment = async () => {
-    const res = await WalletApi.fetchPayment(20);
+    const res = await WalletApi.fetchPayment(payment.id);
 
     if(res.status === "OK") {
       if(res.data.status === "SETTLEMENT") {
