@@ -15,29 +15,26 @@ export default function HomeScreen() {
   const navigate = useNavigation();
 
   const refSheetAddPost = useRef();
-  const { user } = useSelector((state) => state.auth)
-  const { items: catItems } = useSelector((state) => state.category)
-  const { items: postItems } = useSelector((state) => state.post)
-  const { district } = useSelector((state) => state.district)
+  const { user } = useSelector((state) => state.auth);
+  const { items: catItems } = useSelector((state) => state.category);
+  const { items: postItems } = useSelector((state) => state.post);
+  const { district } = useSelector((state) => state.district);
 
   // console.log("USER: ", user);
   // console.log("catItems: ", catItems);
   // console.log("postItems: ", postItems);
   // console.log("user: ", user);
   console.log("district: ", district);
-  
-  
 
   const fetchAllData = async () => {
-    await CategoryApi.getCategories()
-    await PostApi.getPosts()
-    await DistrictApi.getDistricts()
-  }
-  
-  useEffect(() => {
-    fetchAllData()
-  }, [])
+    await CategoryApi.getCategories();
+    await PostApi.getPosts();
+    await DistrictApi.getDistricts();
+  };
 
+  useEffect(() => {
+    fetchAllData();
+  }, []);
 
   const clearOnBoarding = async () => {
     try {
@@ -46,53 +43,83 @@ export default function HomeScreen() {
       console.log("ERROR CLEARING ONBOARDING: ", error);
     }
   };
-  
+
   const l = [{}, {}, {}];
 
   const calculateTimeAgo = (date) => {
     const now = new Date();
     const pastDate = new Date(date);
     const diff = now - pastDate; // selisih dalam milidetik
-  
+
     const diffInHours = Math.floor(diff / (1000 * 60 * 60));
     const diffInMinutes = Math.floor(diff / (1000 * 60));
-  
+
     if (diffInHours > 0) {
       return `${diffInHours} jam lalu`;
     } else {
       return `${diffInMinutes} menit lalu`;
     }
   };
-  
 
   return (
-    <ScrollView contentContainerStyle={{ paddingBottom: 110 }} className='bg-white min-h-screen '>
-      <View className='bg-[#fff] px-3 pt-4 flex-row justify-between items-center'>
-        <Text className='text-[26px] font-bold text-primary'>Kerjain Aja</Text>
-        <View className='flex-row justify-center items-center gap-x-2'>
-          <TouchableOpacity onPress={() => navigate.navigate("Notification")} activeOpacity={0.5}>
-            <Ionicons name='notifications-outline' size={26} color='#343434' />
+    <ScrollView
+      contentContainerStyle={{ paddingBottom: 110 }}
+      className="bg-white min-h-screen "
+    >
+      <View className="bg-[#fff] px-3 pt-4 flex-row justify-between items-center">
+        <Text className="text-[26px] font-bold text-primary">Kerjain Aja</Text>
+        <View className="flex-row justify-center items-center gap-x-2">
+          <TouchableOpacity
+            onPress={() => navigate.navigate("Notification")}
+            activeOpacity={0.5}
+          >
+            <Ionicons name="notifications-outline" size={26} color="#343434" />
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={0.5}>
-            <Ionicons name='chatbox-ellipses-outline' size={26} color='#343434' />
+            <Ionicons
+              name="chatbox-ellipses-outline"
+              size={26}
+              color="#343434"
+            />
           </TouchableOpacity>
         </View>
       </View>
 
-      <PagerView className='h-52 mt-4' initialPage={0}>
-        <View className='h-52 mx-3 rounded-[13px] justify-center items-center' key='1'>
-          <Image source={require("../../../assets/pager1.png")} alt='Pager1' className='w-full h-52 rounded-[13px]' />
+      <PagerView className="h-52 mt-4" initialPage={0}>
+        <View
+          className="h-52 mx-3 rounded-[13px] justify-center items-center"
+          key="1"
+        >
+          <Image
+            source={require("../../../assets/pager1.png")}
+            alt="Pager1"
+            className="w-full h-52 rounded-[13px]"
+          />
         </View>
-        <View className='h-52 mx-3 rounded-[13px] justify-center items-center' key='2'>
-          <Image source={require("../../../assets/pager2.png")} alt='Pager1' className='w-full h-52 rounded-[13px]' />
+        <View
+          className="h-52 mx-3 rounded-[13px] justify-center items-center"
+          key="2"
+        >
+          <Image
+            source={require("../../../assets/pager2.png")}
+            alt="Pager1"
+            className="w-full h-52 rounded-[13px]"
+          />
         </View>
-        <View className='h-52 mx-3 rounded-[13px] justify-center items-center' key='3'>
-          <Image source={require("../../../assets/pager3.png")} alt='Pager1' className='w-full h-52 rounded-[13px]' />
+        <View
+          className="h-52 mx-3 rounded-[13px] justify-center items-center"
+          key="3"
+        >
+          <Image
+            source={require("../../../assets/pager3.png")}
+            alt="Pager1"
+            className="w-full h-52 rounded-[13px]"
+          />
         </View>
       </PagerView>
 
       <View
-        className='mx-8 py-3 mb-6 -mt-8 bg-white flex-row justify-center items-center rounded-[13px]'
+        className="mx-8 py-3 mb-6 -mt-8 bg-white flex-row justify-center items-center rounded-[13px]"
         style={{
           shadowColor: "#343434",
           shadowOffset: {
@@ -105,32 +132,46 @@ export default function HomeScreen() {
           elevation: 2,
         }}
       >
-        <TouchableOpacity onPress={() => navigate.navigate("Wallet")} activeOpacity={0.5} className='flex-row justify-evenly items-center w-[52%]'>
+        <TouchableOpacity
+          onPress={() => navigate.navigate("Wallet")}
+          activeOpacity={0.5}
+          className="flex-row justify-evenly items-center w-[52%]"
+        >
           {/* <View className=""><Ionicons name='wallet-outline' size={28} color='#303030' /></View> */}
           <View>
-            <View className='flex-row justify-start items-center'>
-              <Ionicons name='wallet-outline' size={15} color='#303030' />
-              <Text className='text-[15.5px] font-semibold'> Saldo</Text>
+            <View className="flex-row justify-start items-center">
+              <Ionicons name="wallet-outline" size={15} color="#303030" />
+              <Text className="text-[15.5px] font-semibold"> Saldo</Text>
             </View>
-            <Text className='text-[16px] leading-6 font-bold'>Rp. {user.balance ? user.balance.toLocaleString("id-ID") : 0}</Text>
+            <Text className="text-[16px] leading-6 font-bold">
+              Rp. {user.balance ? user.balance.toLocaleString("id-ID") : 0}
+            </Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.5} className='flex-row justify-evenly items-center w-[48%]'>
+        <TouchableOpacity
+          activeOpacity={0.5}
+          className="flex-row justify-evenly items-center w-[48%]"
+        >
           {/* <View className=""><Ionicons name='wallet-outline' size={28} color='#303030' /></View> */}
           <View>
-            <View className='flex-row justify-start items-center'>
-              <Ionicons name='wallet-outline' size={15} color='#303030' />
-              <Text className='text-[15.5px] font-semibold'> Bekerja</Text>
+            <View className="flex-row justify-start items-center">
+              <Ionicons name="wallet-outline" size={15} color="#303030" />
+              <Text className="text-[15.5px] font-semibold"> Bekerja</Text>
             </View>
-            <Text className='text-[16px] leading-6 font-bold'>90x</Text>
+            <Text className="text-[16px] leading-6 font-bold">90x</Text>
           </View>
         </TouchableOpacity>
       </View>
 
-      <View className='px-3 mb-4 flex-row justify-center items-center gap-x-2'>
-        <TouchableOpacity activeOpacity={0.7} className='bg-orange-500 py-2.5 rounded-lg w-[48%] flex-row justify-center items-center'>
-          <Ionicons name='information-outline' size={20} color='white' />
-          <Text className='text-white font-semibold text-center'>Cara Kerja</Text>
+      <View className="px-3 mb-4 flex-row justify-center items-center gap-x-2">
+        <TouchableOpacity
+          activeOpacity={0.7}
+          className="bg-orange-500 py-2.5 rounded-lg w-[48%] flex-row justify-center items-center"
+        >
+          <Ionicons name="information-outline" size={20} color="white" />
+          <Text className="text-white font-semibold text-center">
+            Cara Kerja
+          </Text>
         </TouchableOpacity>
 
         {/* #24bd5c */}
@@ -138,80 +179,115 @@ export default function HomeScreen() {
           // onPress={() => refSheetAddPost.current?.open()}
           onPress={() => navigate.navigate("AddPost")}
           activeOpacity={0.7}
-          className='bg-green-500 py-2.5 rounded-lg w-[48%] flex-row justify-center items-center'
+          className="bg-green-500 py-2.5 rounded-lg w-[48%] flex-row justify-center items-center"
         >
-          <Ionicons name='add-outline' size={20} color='white' />
-          <Text className='text-white font-semibold text-center'>Buat Postingan</Text>
+          <Ionicons name="add-outline" size={20} color="white" />
+          <Text className="text-white font-semibold text-center">
+            Buat Postingan
+          </Text>
         </TouchableOpacity>
       </View>
 
-      <View className='px-3'>
-        <View className='flex-row justify-between items-center'>
-          <Text className='text-center text-[#343434] font-bold text-[20px]'>Kategori</Text>
+      <View className="px-3">
+        <View className="flex-row justify-between items-center">
+          <Text className="text-center text-[#343434] font-bold text-[20px]">
+            Kategori
+          </Text>
           {/* <Ionicons name="chevron-forward-outline" size={18} /> */}
         </View>
-        <ScrollView className='py-3.5' horizontal={true} showsHorizontalScrollIndicator={false}>
+        <ScrollView
+          className="py-3.5"
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+        >
           {catItems.map((cat, i) => (
-            <TouchableOpacity onPress={() => navigate.navigate("PostByCategory", { id: cat.id })} key={cat.id + "-category" + i} className='bg-blue-100 rounded-full px-3.5 py-1 mr-2 justify-center items-center'>
-              <Text className='text-[14.5px] font-semibold text-primary'>{cat.name}</Text>
+            <TouchableOpacity
+              onPress={() =>
+                navigate.navigate("PostByCategory", { id: cat.id })
+              }
+              key={cat.id + "-category" + i}
+              className="bg-blue-100 rounded-full px-3.5 py-1 mr-2 justify-center items-center"
+            >
+              <Text className="text-[14.5px] font-semibold text-primary">
+                {cat.name}
+              </Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
       </View>
 
-      <View className='px-3 mt-4'>
-        <View className='flex-row justify-between items-center'>
-          <Text className='text-center text-[#343434] font-bold text-[20px]'>Kerjain Aja: Terdekat</Text>
+      <View className="px-3 mt-4">
+        <View className="flex-row justify-between items-center">
+          <Text className="text-center text-[#343434] font-bold text-[20px]">
+            Kerjain Aja: Terdekat
+          </Text>
           {/* <Ionicons name="chevron-forward-outline" size={18} /> */}
         </View>
 
         {postItems.map((post, i) => {
           // console.log("AAA: ", post.postCategories[0]);
+          console.log("ASLAKLSA: ", post);
+
           return (
             <TouchableOpacity
-            key={post.id + "-post2-" + i}
-            onPress={() =>
-              navigate.navigate("PostDetail", {
-                id: post.id,
-              })
-            }
-            activeOpacity={0.5}
-            className='my-3.5 flex-row justify-start items-start gap-x-2.5'
-          >
-            <Image
-              source={{
-                uri: "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
-              }}
-              alt=''
-              className='w-[88px] h-[88px] border border-gray-200 rounded-xl'
-            />
-            <View className='w-[68%]'>
-              <View className='flex-row justify-between items-center'>
-                <Text className='text-sm font-bold text-primary'>{post.postCategories[0] ? post.postCategories[0].category : "Apa Aja"}</Text>
-                <View className='flex-row justify-center items-center gap-x-1'>
-                  <Text className='text-sm font-normal text-[#343434]'>{calculateTimeAgo("2024-09-15 15:29:07.797796")}</Text>
-                  <Ionicons name='time-outline' size={18} />
+              key={post.id + "-post2-" + i}
+              onPress={() =>
+                navigate.navigate("PostDetail", {
+                  id: post.id,
+                })
+              }
+              activeOpacity={0.5}
+              className="my-3.5 flex-row justify-start items-start gap-x-2.5"
+            >
+              <Image
+                source={{
+                  uri: post.imageUrl
+                    ? post.imageUrl
+                    : "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
+                }}
+                alt=""
+                className="w-[88px] h-[88px] border border-gray-200 rounded-xl"
+              />
+              <View className="w-[68%]">
+                <View className="flex-row justify-between items-center">
+                  <Text className="text-sm font-bold text-primary">
+                    {post ? post.postCategories[0].category : "Apa Aja"}
+                  </Text>
+                  <View className="flex-row justify-center items-center gap-x-1">
+                    <Text className="text-sm font-normal text-[#343434]">
+                      {calculateTimeAgo("2024-09-15 15:29:07.797796")}
+                    </Text>
+                    <Ionicons name="time-outline" size={18} />
+                  </View>
                 </View>
+                <Text
+                  numberOfLines={1}
+                  className="text-[17px] font-bold text-[#343434]"
+                >
+                  {/* {post.imageUrl} */}
+                  {post.title}
+                </Text>
+                <Text
+                  numberOfLines={2}
+                  className="text-sm font-normal text-[#343434]"
+                >
+                  {post.description}
+                </Text>
               </View>
-              <Text numberOfLines={1} className='text-[17px] font-bold text-[#343434]'>
-                {post.title}
-              </Text>
-              <Text numberOfLines={2} className='text-sm font-normal text-[#343434]'>
-                {post.description}
-              </Text>
-            </View>
-          </TouchableOpacity>
-          )
+            </TouchableOpacity>
+          );
         })}
       </View>
 
-      <View className='px-3 mt-2'>
-        <Divider color='#d9d9d9' width={2} />
+      <View className="px-3 mt-2">
+        <Divider color="#d9d9d9" width={2} />
       </View>
 
-      <View className='px-3 mt-4'>
-        <View className='flex-row justify-between items-center'>
-          <Text className='text-center text-[#343434] font-bold text-[20px]'>Kerjain Aja: Terbaru</Text>
+      <View className="px-3 mt-4">
+        <View className="flex-row justify-between items-center">
+          <Text className="text-center text-[#343434] font-bold text-[20px]">
+            Kerjain Aja: Terbaru
+          </Text>
           {/* <Ionicons name="chevron-forward-outline" size={18} /> */}
         </View>
 
@@ -224,27 +300,39 @@ export default function HomeScreen() {
               })
             }
             activeOpacity={0.5}
-            className='my-3.5 flex-row justify-start items-start gap-x-2.5'
+            className="my-3.5 flex-row justify-start items-start gap-x-2.5"
           >
             <Image
               source={{
-                uri: "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
+                uri: post.imageUrl
+                  ? post.imageUrl
+                  : "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
               }}
-              alt=''
-              className='w-[88px] h-[88px] border border-gray-200 rounded-xl'
+              alt=""
+              className="w-[88px] h-[88px] border border-gray-200 rounded-xl"
             />
-            <View className='w-[68%]'>
-              <View className='flex-row justify-between items-center'>
-                <Text className='text-sm font-bold text-primary'>{post.postCategories[0] ? post.postCategories[0].category : "Apa Aja"}</Text>
-                <View className='flex-row justify-center items-center gap-x-1'>
-                  <Text className='text-sm font-normal text-[#343434]'>{calculateTimeAgo("2024-09-15 15:29:07.797796")}</Text>
-                  <Ionicons name='time-outline' size={18} />
+            <View className="w-[68%]">
+              <View className="flex-row justify-between items-center">
+                <Text className="text-sm font-bold text-primary">
+                  {post ? post.postCategories[0].category : "Apa Aja"}
+                </Text>
+                <View className="flex-row justify-center items-center gap-x-1">
+                  <Text className="text-sm font-normal text-[#343434]">
+                    {calculateTimeAgo("2024-09-15 15:29:07.797796")}
+                  </Text>
+                  <Ionicons name="time-outline" size={18} />
                 </View>
               </View>
-              <Text numberOfLines={1} className='text-[17px] font-bold text-[#343434]'>
+              <Text
+                numberOfLines={1}
+                className="text-[17px] font-bold text-[#343434]"
+              >
                 {post.title}
               </Text>
-              <Text numberOfLines={2} className='text-sm font-normal text-[#343434]'>
+              <Text
+                numberOfLines={2}
+                className="text-sm font-normal text-[#343434]"
+              >
                 {post.description}
               </Text>
             </View>
