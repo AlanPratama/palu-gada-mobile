@@ -54,19 +54,19 @@ const AddBidComp = ({ refRBSheet, post }) => {
 
     const onSubmit = async (data) => {
         refRBSheet.current.close()
-        await BidApi.createBid({
+        const res = await BidApi.createBid({
             postId: post.id,
             amount: parseInt(data.amount),
             message: data.message
         })
 
-        // if(res) {
-        //     refRBSheet.current.close()
-        //     navigate.goBack()
-        // } else {
-        //     alert("Gagal menawar!")
-        // }
-        // reset()
+        if(res) {
+            refRBSheet.current.close()
+            navigate.goBack()
+        } else {
+            alert("Gagal menawar!")
+        }
+        reset()
     }
 
     return (
