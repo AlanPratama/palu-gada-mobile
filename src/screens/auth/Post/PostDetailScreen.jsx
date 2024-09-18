@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import Divider from "../../../components/Divider";
 import BottomSheetAddBid from "../../../components/Post/BottomSheetAddBid";
@@ -11,11 +11,17 @@ export default function PostDetailScreen({ route }) {
   const { post } = route.params;
   const { user } = useSelector((state) => state.auth);
 
+  const [alreadyBid, setAlreadyBid] = useState(false);
+
   const navigate = useNavigation();
-  const l = [{}, {}, {}, {}, {}, {}];
 
   const refSheetAddBid = useRef();
   const refSheetReportPost = useRef();
+
+  useEffect(() => {
+    const hasBid = post.bids.some((bid) => bid.user.id === user.id);
+    setAlreadyBid(hasBid);
+  }, [post.bids]); 
 
   return (
     <ScrollView
@@ -154,7 +160,8 @@ export default function PostDetailScreen({ route }) {
             <TouchableOpacity
               onPress={() => refSheetAddBid.current?.open()}
               activeOpacity={0.7}
-              className="bg-primary w-full py-3.5 rounded-full "
+              disabled={alreadyBid || post.status === "NOT_AVAILABLE" || post.status === "EXPIRED"}
+              className={`${alreadyBid ? "bg-gray-400" : "bg-primary"} w-full py-3.5 rounded-full`}
             >
               <Text className="text-base text-white text-center font-semibold">
                 Tambah Penawaran
@@ -215,8 +222,9 @@ export default function PostDetailScreen({ route }) {
         </View>
       </View>
 
-      <BottomSheetAddBid refRBSheet={refSheetAddBid} />
       <BottomSheetReportPost refRBSheet={refSheetReportPost} />
+
+      <BottomSheetAddBid refRBSheet={refSheetAddBid} post={post} />
     </ScrollView>
   );
 }
