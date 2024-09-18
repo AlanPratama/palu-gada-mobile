@@ -29,6 +29,7 @@ export default function HomeScreen() {
   const fetchAllData = async () => {
     await CategoryApi.getCategories();
     await PostApi.getPosts();
+    await PostApi.getMyPosts()
     await DistrictApi.getDistricts();
   };
 
@@ -233,7 +234,7 @@ export default function HomeScreen() {
               key={post.id + "-post2-" + i}
               onPress={() =>
                 navigate.navigate("PostDetail", {
-                  id: post.id,
+                  post
                 })
               }
               activeOpacity={0.5}
@@ -296,7 +297,7 @@ export default function HomeScreen() {
             key={post.id + "-post-" + i}
             onPress={() =>
               navigate.navigate("PostDetail", {
-                id: post.id,
+                post
               })
             }
             activeOpacity={0.5}

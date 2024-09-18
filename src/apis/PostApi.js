@@ -1,4 +1,4 @@
-import { addPost, setError, setPost } from "../redux/auth/postSlice";
+import { addPost, setError, setMyPost, setPost } from "../redux/auth/postSlice";
 import store from "../redux/store";
 import { axiosInstance } from "./axiosInstance";
 
@@ -44,4 +44,27 @@ export default class PostApi {
       console.log("PostApi getPosts: ", error);
     }
   }
+
+
+  static async getMyPosts(page, size = 99999, query) {
+    try {
+      store.dispatch(setError(null));
+
+      const { data } = await axiosInstance.get("/posts/me", {
+        params: {
+          page,
+          size,
+          name: query,
+        },
+      });
+      const items = data.data.items;
+      const total = data.data.items.length;
+
+      store.dispatch(setMyPost({ items, total }));
+    } catch (error) {
+      store.dispatch(setError(error.message));
+      console.log("PostApi getPosts: ", error);
+    }
+  }
+
 }

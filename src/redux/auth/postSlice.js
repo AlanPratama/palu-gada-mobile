@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { setIsLoading } from "./categorySlice";
 
 export const postSlice = createSlice({
   name: "post",
@@ -7,6 +6,8 @@ export const postSlice = createSlice({
     items: [],
     total: 0,
     // isLoading: false,
+    myPost: [],
+    totalMyPost: 0,
     error: null,
   },
   reducers: {
@@ -14,6 +15,12 @@ export const postSlice = createSlice({
       const { items, total } = action.payload;
       state.items = items;
       state.total = total;
+    },
+
+    setMyPost: (state, action) => {
+      const { items, total } = action.payload;
+      state.myPost = items;
+      state.totalMyPost = total;
     },
     // setIsLoading: (state, action) => {
     //     state.isLoading = action.payload
@@ -28,5 +35,5 @@ export const postSlice = createSlice({
   },
 });
 
-export const { setPost, setError, addPost } = postSlice.actions;
+export const { setPost, setMyPost, setError, addPost } = postSlice.actions;
 export default postSlice.reducer;
