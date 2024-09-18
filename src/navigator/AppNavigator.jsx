@@ -1,11 +1,11 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { jwtDecode } from "jwt-decode";
 import { useEffect } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 
+import AuthApi from "../apis/AuthApi";
 import OnBoarding from "../components/OnBoarding";
 import { login, logout } from "../redux/auth/authSlice";
 import store from "../redux/store";
@@ -21,7 +21,6 @@ import WalletScreen from "../screens/auth/WalletScreen";
 import WelcomeScreen from "../screens/WelcomeScreen";
 import ProtectedRoutes from "./ProtectedRoutes";
 import PublicRoutes from "./PublicRoutes";
-import AuthApi from "../apis/AuthApi";
 
 export default function AppNavigator() {
   const Stack = createNativeStackNavigator();

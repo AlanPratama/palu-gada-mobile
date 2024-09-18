@@ -7,7 +7,7 @@ import store from "../redux/store";
 
 export const axiosInstance = axios.create({
   baseURL: process?.env?.EXPO_PUBLIC_API_URL,
-  timeout: 5000,
+  timeout: 10000,
 });
 
 axiosInstance.interceptors.request.use(
