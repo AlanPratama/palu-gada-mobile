@@ -11,7 +11,10 @@ export default class BidApi {
             if(data.status === "Created") {
                 alert("Bid Success!")
                 await PostApi.getPosts();
+                return true
             }
+
+            return false
         } catch (error) {
             console.log("PostApi createPost: ", error);
         }

@@ -6,6 +6,7 @@ import Divider from "../../../components/Divider";
 import BottomSheetAddBid from "../../../components/Post/BottomSheetAddBid";
 import BottomSheetReportPost from "../../../components/Post/BottomSheetReportPost";
 import { useSelector } from "react-redux";
+import BottomSheetPostDetailBid from "../../../components/Post/BottomSheetPostDetailBid";
 
 export default function PostDetailScreen({ route }) {
   const { post } = route.params;
@@ -17,18 +18,19 @@ export default function PostDetailScreen({ route }) {
 
   const refSheetAddBid = useRef();
   const refSheetReportPost = useRef();
+  const refSheetPostDetailBid = useRef();
 
   useEffect(() => {
     const hasBid = post.bids.some((bid) => bid.user.id === user.id);
     setAlreadyBid(hasBid);
-  }, [post.bids]); 
+  }, [post.bids]);
 
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
       className="min-h-screen bg-white"
     >
-      <View className="border-b border-gray-300 flex-row justify-between items-center p-3">
+      <View className=" flex-row justify-between items-center p-3">
         <View className="flex-row justify-start items-center gap-x-2">
           <TouchableOpacity
             onPress={() => navigate.goBack()}
@@ -72,15 +74,17 @@ export default function PostDetailScreen({ route }) {
           {post.description}
         </Text>
 
-        <Image
-          source={{
-            uri: post.imageUrl
-              ? post.imageUrl
-              : "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
-          }}
-          alt=""
-          className="w-full h-[350px] mb-5 rounded-xl"
-        />
+        {post.imageUrl && (
+          <Image
+            source={{
+              uri: post.imageUrl
+                ? post.imageUrl
+                : "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
+            }}
+            alt=""
+            className="w-full h-[350px] mb-5 rounded-xl"
+          />
+        )}
 
         <View className="flex-row flex-wrap justify-start items-center gap-2">
           {post.postCategories.map((cat, i) => (
@@ -147,21 +151,38 @@ export default function PostDetailScreen({ route }) {
 
         <View className="mt-6">
           {post.user.id === user.id ? (
-            <TouchableOpacity
-              onPress={() => navigate.navigate("UpdatePost", { post })}
-              activeOpacity={0.7}
-              className="bg-green-500 w-full py-3.5 rounded-full "
-            >
-              <Text className="text-base text-white text-center font-semibold">
-                Edit Postingan
-              </Text>
-            </TouchableOpacity>
+            <View className="flex-row justify-between items-center">
+              <TouchableOpacity
+                onPress={() => navigate.navigate("UpdatePost", { post })}
+                activeOpacity={0.7}
+                className="bg-green-500 w-[48%] py-3.5 rounded-full "
+              >
+                <Text className="text-base text-white text-center font-semibold">
+                  Edit Postingan
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => refSheetPostDetailBid.current?.open()}
+                activeOpacity={0.7}
+                className="bg-primary w-[48%] py-3.5 rounded-full "
+              >
+                <Text className="text-base text-white text-center font-semibold">
+                  Detail Penawaran
+                </Text>
+              </TouchableOpacity>
+            </View>
           ) : (
             <TouchableOpacity
               onPress={() => refSheetAddBid.current?.open()}
               activeOpacity={0.7}
-              disabled={alreadyBid || post.status === "NOT_AVAILABLE" || post.status === "EXPIRED"}
-              className={`${alreadyBid ? "bg-gray-400" : "bg-primary"} w-full py-3.5 rounded-full`}
+              disabled={
+                alreadyBid ||
+                post.status === "NOT_AVAILABLE" ||
+                post.status === "EXPIRED"
+              }
+              className={`${
+                alreadyBid ? "bg-gray-400" : "bg-primary"
+              } w-full py-3.5 rounded-full`}
             >
               <Text className="text-base text-white text-center font-semibold">
                 Tambah Penawaran
@@ -175,12 +196,14 @@ export default function PostDetailScreen({ route }) {
             Penawar Saat Ini
           </Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {
-              post.bids.length > 0 ? post.bids.map((bid, i) => (
+            {post.bids.length > 0 ? (
+              post.bids.map((bid, i) => (
                 <Image
                   key={i + "image"}
                   source={{
-                    uri: bid.user.photoUrl ? bid.user.photoUrl : "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
+                    uri: bid.user.photoUrl
+                      ? bid.user.photoUrl
+                      : "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
                   }}
                   alt=""
                   className="w-[70px] h-[70px] mr-2.5 rounded-full"
@@ -192,12 +215,14 @@ export default function PostDetailScreen({ route }) {
                     },
                     shadowOpacity: 0.18,
                     shadowRadius: 1.0,
-  
+
                     elevation: 1,
                   }}
                 />
-              )) : <Text className="text-[#343434]">Tidak ada penawar</Text>
-            }
+              ))
+            ) : (
+              <Text className="text-[#343434]">Tidak ada penawar</Text>
+            )}
           </ScrollView>
         </View>
 
@@ -208,7 +233,9 @@ export default function PostDetailScreen({ route }) {
           <View className="flex-row justify-start items-start gap-x-3.5">
             <Image
               source={{
-                uri: post.user.photoUrl ? post.user.photoUrl : "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
+                uri: post.user.photoUrl
+                  ? post.user.photoUrl
+                  : "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
               }}
               alt=""
               className="w-[68px] h-[68px] rounded-full"
@@ -224,7 +251,16 @@ export default function PostDetailScreen({ route }) {
 
       <BottomSheetReportPost refRBSheet={refSheetReportPost} />
 
-      <BottomSheetAddBid refRBSheet={refSheetAddBid} post={post} />
+      {post.user.id === user.id ? (
+        <>
+          <BottomSheetPostDetailBid
+            refRBSheet={refSheetPostDetailBid}
+            post={post}
+          />
+        </>
+      ) : (
+        <BottomSheetAddBid refRBSheet={refSheetAddBid} post={post} />
+      )}
     </ScrollView>
   );
 }
