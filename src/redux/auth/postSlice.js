@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { setIsLoading } from "./categorySlice";
 
 export const postSlice = createSlice({
   name: "post",
@@ -36,5 +35,5 @@ export const postSlice = createSlice({
   },
 });
 
-export const { setPost, setError, addPost } = postSlice.actions;
+export const { setPost, setMyPost, setError, addPost } = postSlice.actions;
 export default postSlice.reducer;

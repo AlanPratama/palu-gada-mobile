@@ -29,6 +29,7 @@ export default function HomeScreen() {
   const fetchAllData = async () => {
     await CategoryApi.getCategories();
     await PostApi.getPosts();
+    await PostApi.getMyPosts()
     await DistrictApi.getDistricts();
   };
 
