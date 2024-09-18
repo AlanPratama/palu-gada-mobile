@@ -21,6 +21,7 @@ import WalletScreen from "../screens/auth/WalletScreen";
 import WelcomeScreen from "../screens/WelcomeScreen";
 import ProtectedRoutes from "./ProtectedRoutes";
 import PublicRoutes from "./PublicRoutes";
+import MyPostScreen from "../screens/auth/Post/MyPostScreen";
 
 export default function AppNavigator() {
   const Stack = createNativeStackNavigator();
@@ -83,6 +84,7 @@ export default function AppNavigator() {
                 <Stack.Screen name='PostByCategory' component={PostByCategory} />
                 <Stack.Screen name='TopUp' component={TopUpScreen} />
                 <Stack.Screen name='TopUpDetail' component={TopUpDetailScreen} />
+                <Stack.Screen name='MyPost' component={MyPostScreen} />
               </>
             ) : (
               <Stack.Screen name='Public' component={PublicRoutes} />
