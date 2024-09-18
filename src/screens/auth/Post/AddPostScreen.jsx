@@ -21,13 +21,14 @@ import * as ImagePicker from "expo-image-picker";
 
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useSelector } from "react-redux";
+import PostApi from "../../../apis/PostApi";
 
 export default function AddPostScreen() {
   const navigate = useNavigation();
   const [isUrgent, setIsUrgent] = useState(false);
   const { items: catItems } = useSelector((state) => state.category);
 
-  console.log("lalalal: ", catItems);
+  const { district } = useSelector((state) => state.district);
 
   const {
     control,
@@ -45,19 +46,38 @@ export default function AddPostScreen() {
   const [selected, setSelected] = useState([]);
   const [selectedDistrict, setSelectedDistrict] = useState();
 
-  const districtData = [
-    { key: 1, value: "Jakarta Barat" },
-    { key: 2, value: "Jakarta Timur" },
-    { key: 3, value: "Jakarta Selatan" },
-  ];
+  const districtData = district.map((item) => ({
+    key: item.id,
+    value: item.districtName,
+  }));
   const data = catItems.map((item) => ({ key: item.id, value: item.name }));
 
-  console.log("SELECTED: ", selected);
+  // console.log("SELECTED: ", selected);
 
   const onSubmit = async (data) => {
-    console.log(data);
+    const formData = new FormData();
+    if (image) {
+      formData.append("file", {
+        uri: image.uri,
+        type: image.type,
+        name: image.name,
+      });
+    }
 
-    reset();
+    data.isUrgent = isUrgent;
+    Object.entries(data).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+
+    formData.append("districtId", selectedDistrict);
+    formData.append("categoriesId", selected);
+
+    // console.log("KNTLLLLLLLLLLLLL", formData);
+    // console.log("ojan coli", selected);
+
+    await PostApi.createPost(formData);
+
+    // reset();
   };
 
   const [image, setImage] = useState(null);
@@ -80,10 +100,18 @@ export default function AddPostScreen() {
       quality: 1,
     });
 
-    console.log(result);
+    // console.log(result);
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      const imageUri = result.assets[0].uri;
+      const fileType = imageUri.substring(imageUri.lastIndexOf(".") + 1);
+
+      // setImage(result);
+      setImage({
+        uri: imageUri,
+        type: `image/${fileType}`, // Mendapatkan tipe file dari ekstensi
+        name: `photo.${fileType}`, // Nama file untuk dikirim ke server
+      });
     }
   };
 
@@ -169,7 +197,7 @@ export default function AddPostScreen() {
                 color="#303030"
               />
               <Controller
-                name="minBudget"
+                name="budgetMin"
                 control={control}
                 rules={{
                   required: "Minimal budget wajib diisi!",
@@ -193,11 +221,11 @@ export default function AddPostScreen() {
           <View className="w-[45%]">
             <View className="flex-row justify-start items-center w-full">
               <Controller
-                name="maxBudget"
+                name="budgetMax"
                 control={control}
                 rules={{
                   required: "Maksimal budget wajib diisi!",
-                  validate: (value, { minBudget }) =>
+                  validate: (value, { budgetMin }) =>
                     value >= 1 || "Maksimal budget harus lebih besar dari 0",
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
@@ -214,13 +242,13 @@ export default function AddPostScreen() {
             </View>
           </View>
         </View>
-        {errors.minBudget && (
-          <Text style={{ color: "red" }}>{errors.minBudget.message}</Text>
+        {errors.budgetMin && (
+          <Text style={{ color: "red" }}>{errors.budgetMin.message}</Text>
         )}
-        {errors.maxBudget && (
-          <Text style={{ color: "red" }}>{errors.maxBudget.message}</Text>
+        {errors.budgetMax && (
+          <Text style={{ color: "red" }}>{errors.budgetMax.message}</Text>
         )}
-        {watch("minBudget") >= watch("maxBudget") && (
+        {watch("budgetMin") >= watch("budgetMax") && (
           <Text style={{ color: "red" }}>
             Max budget harus lebih besar dari min budget
           </Text>
@@ -365,7 +393,7 @@ export default function AddPostScreen() {
           </View>
           {image && (
             <Image
-              source={{ uri: image }}
+              source={{ uri: image.uri }}
               className="rounded-[13px]"
               style={{ width: 200, height: 200 }}
             />
@@ -414,9 +442,9 @@ export default function AddPostScreen() {
           onPress={handleSubmit(onSubmit)}
           activeOpacity={0.8}
           className="bg-[#3f45f9] mt-4 py-3 rounded-full"
-          disabled={
-            watch("minBudget") >= watch("maxBudget") || watch("finishDay") <= 0
-          }
+          // disabled={
+          //   watch("budgetMin") >= watch("budgetMax") || watch("finishDay") <= 0
+          // }
         >
           <Text className="text-white text-lg font-semibold text-center">
             Sebarkan Postingan
