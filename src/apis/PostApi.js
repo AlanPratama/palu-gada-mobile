@@ -1,21 +1,47 @@
-import { setError, setPost } from "../redux/auth/postSlice";
+import { addPost, setError, setPost } from "../redux/auth/postSlice";
 import store from "../redux/store";
 import { axiosInstance } from "./axiosInstance";
 
 export default class PostApi {
+  static async createPost(formData) {
+    console.log("billie elis", formData);
+    try {
+      store.dispatch(setError(null));
 
-    static async getPosts() {
-        try {
-            store.dispatch(setError(null));
+      const { data } = await axiosInstance.post("/posts", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      const items = data.data;
+      console.log("ASASA: ", items);
 
-            const { data } = await axiosInstance.get("/posts");
-            const items = data.data.items
-            const total = data.data.items.length
-
-            store.dispatch(setPost({items, total}))
-        } catch (error) {
-            store.dispatch(setError(error.message))
-            console.log("PostApi getPosts: ", error);
-        } 
+      store.dispatch(addPost(items));
+      //   this.getPosts();
+    } catch (error) {
+      store.dispatch(setError(error.message));
+      console.log("PostApi createPost: ", error);
     }
+  }
+
+  static async getPosts(page, size = 99999, query) {
+    try {
+      store.dispatch(setError(null));
+
+      const { data } = await axiosInstance.get("/posts", {
+        params: {
+          page,
+          size,
+          name: query,
+        },
+      });
+      const items = data.data.items;
+      const total = data.data.items.length;
+
+      store.dispatch(setPost({ items, total }));
+    } catch (error) {
+      store.dispatch(setError(error.message));
+      console.log("PostApi getPosts: ", error);
+    }
+  }
 }
