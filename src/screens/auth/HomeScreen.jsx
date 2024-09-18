@@ -233,7 +233,7 @@ export default function HomeScreen() {
               key={post.id + "-post2-" + i}
               onPress={() =>
                 navigate.navigate("PostDetail", {
-                  id: post.id,
+                  post
                 })
               }
               activeOpacity={0.5}
@@ -296,7 +296,7 @@ export default function HomeScreen() {
             key={post.id + "-post-" + i}
             onPress={() =>
               navigate.navigate("PostDetail", {
-                id: post.id,
+                post
               })
             }
             activeOpacity={0.5}
