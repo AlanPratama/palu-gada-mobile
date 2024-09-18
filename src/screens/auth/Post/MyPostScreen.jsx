@@ -1,9 +1,12 @@
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native'
 import React from 'react'
-import Animated from 'react-native-reanimated'
+import Animated, { FadeIn } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
 
 export default function MyPostScreen() {
+
+    
+
   return (
     <ScrollView className="min-h-screen bg-white">
         <Animated.View entering={FadeIn.delay(100)} className="flex-row justify-between items-center p-3 mb-4">
@@ -22,8 +25,8 @@ export default function MyPostScreen() {
         </Animated.View>
 
         <View className="p-3">
-          <Text className="text-2xl font-bold text-[#343434]">My Post</Text>
-            
+          <Text className="text-2xl font-bold text-[#343434]">Postingan Kamu</Text>
+
         </View>
     </ScrollView>
   )

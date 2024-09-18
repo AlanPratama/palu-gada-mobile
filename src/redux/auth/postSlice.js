@@ -7,6 +7,8 @@ export const postSlice = createSlice({
     items: [],
     total: 0,
     // isLoading: false,
+    myPost: [],
+    totalMyPost: 0,
     error: null,
   },
   reducers: {
@@ -14,6 +16,12 @@ export const postSlice = createSlice({
       const { items, total } = action.payload;
       state.items = items;
       state.total = total;
+    },
+
+    setMyPost: (state, action) => {
+      const { items, total } = action.payload;
+      state.myPost = items;
+      state.totalMyPost = total;
     },
     // setIsLoading: (state, action) => {
     //     state.isLoading = action.payload

@@ -4,6 +4,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import HomeScreen from '../screens/auth/HomeScreen';
 import ProfileScreen from '../screens/auth/ProfileScreen';
 import SearchScreen from '../screens/auth/Post/SearchScreen';
+import MyPostScreen from '../screens/auth/Post/MyPostScreen';
 
 export default function ProtectedRoutes() {
   const Tab = createBottomTabNavigator();
@@ -80,6 +81,7 @@ export default function ProtectedRoutes() {
       // }}
     >
       {/* Home Tab */}
+
       <Tab.Screen
         name="Home"
         component={HomeScreen}
@@ -92,16 +94,15 @@ export default function ProtectedRoutes() {
             />
           ),
         }}
-      />
-
-      {/* Search Tab */}
-      <Tab.Screen
-        name="Add"
-        component={HomeScreen}
+        />
+        {/* My Post Tab */}
+        <Tab.Screen
+        name="MyPost"
+        component={MyPostScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <Ionicons
-              name="search-outline"
+              name="albums-outline"
               size={24}
               color={focused ? 'blue' : 'black'}
             />
