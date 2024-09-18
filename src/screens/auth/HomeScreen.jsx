@@ -10,6 +10,9 @@ import { useSelector } from "react-redux";
 import CategoryApi from "../../apis/CategoryApi";
 import PostApi from "../../apis/PostApi";
 import DistrictApi from "../../apis/DistrictApi";
+import store from "../../redux/store";
+import { login, logout } from "../../redux/auth/authSlice";
+import AuthApi from "../../apis/AuthApi";
 
 export default function HomeScreen() {
   const navigate = useNavigation();
@@ -32,8 +35,20 @@ export default function HomeScreen() {
     await PostApi.getMyPosts()
     await DistrictApi.getDistricts();
   };
+  const setUser = async () => {
+    const token = await AsyncStorage.getItem("accessToken");
+    console.log("tokenn: ", token);
+
+    if (token) {
+      store.dispatch(login());
+      await AuthApi.getAuthenticated()
+    } else {
+      store.dispatch(logout());
+    }
+  };
 
   useEffect(() => {
+    setUser()
     fetchAllData();
   }, []);
 
