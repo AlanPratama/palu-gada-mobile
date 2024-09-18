@@ -9,6 +9,7 @@ import BottomSheetAddPost from "../../components/Post/BottomSheetAddPost";
 import { useSelector } from "react-redux";
 import CategoryApi from "../../apis/CategoryApi";
 import PostApi from "../../apis/PostApi";
+import DistrictApi from "../../apis/DistrictApi";
 
 export default function HomeScreen() {
   const navigate = useNavigation();
@@ -17,23 +18,25 @@ export default function HomeScreen() {
   const { user } = useSelector((state) => state.auth)
   const { items: catItems } = useSelector((state) => state.category)
   const { items: postItems } = useSelector((state) => state.post)
+  const { district } = useSelector((state) => state.district)
 
   // console.log("USER: ", user);
-  console.log("catItems: ", catItems);
-  console.log("postItems: ", postItems);
+  // console.log("catItems: ", catItems);
+  // console.log("postItems: ", postItems);
+  // console.log("user: ", user);
+  console.log("district: ", district);
   
   
 
   const fetchAllData = async () => {
     await CategoryApi.getCategories()
     await PostApi.getPosts()
+    await DistrictApi.getDistricts()
   }
   
   useEffect(() => {
     fetchAllData()
   }, [])
-
-  console.log("catItemsss: ", catItems);
 
 
   const clearOnBoarding = async () => {
@@ -109,7 +112,7 @@ export default function HomeScreen() {
               <Ionicons name='wallet-outline' size={15} color='#303030' />
               <Text className='text-[15.5px] font-semibold'> Saldo</Text>
             </View>
-            <Text className='text-[16px] leading-6 font-bold'>Rp. {user?.balance.toLocaleString("id-ID")}</Text>
+            <Text className='text-[16px] leading-6 font-bold'>Rp. {user.balance ? user.balance.toLocaleString("id-ID") : 0}</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity activeOpacity={0.5} className='flex-row justify-evenly items-center w-[48%]'>
@@ -162,41 +165,44 @@ export default function HomeScreen() {
           {/* <Ionicons name="chevron-forward-outline" size={18} /> */}
         </View>
 
-        {postItems.map((post, i) => (
-          <TouchableOpacity
-          key={post.id + "-post2-" + i}
-          onPress={() =>
-            navigate.navigate("PostDetail", {
-              id: post.id,
-            })
-          }
-          activeOpacity={0.5}
-          className='my-3.5 flex-row justify-start items-start gap-x-2.5'
-        >
-          <Image
-            source={{
-              uri: "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
-            }}
-            alt=''
-            className='w-[88px] h-[88px] border border-gray-200 rounded-xl'
-          />
-          <View className='w-[68%]'>
-            <View className='flex-row justify-between items-center'>
-              <Text className='text-sm font-bold text-primary'>{post.postCategories[0] ? post.postCategories[0].name : "Apa Aja"}</Text>
-              <View className='flex-row justify-center items-center gap-x-1'>
-                <Text className='text-sm font-normal text-[#343434]'>{calculateTimeAgo("2024-09-15 15:29:07.797796")}</Text>
-                <Ionicons name='time-outline' size={18} />
+        {postItems.map((post, i) => {
+          // console.log("AAA: ", post.postCategories[0]);
+          return (
+            <TouchableOpacity
+            key={post.id + "-post2-" + i}
+            onPress={() =>
+              navigate.navigate("PostDetail", {
+                id: post.id,
+              })
+            }
+            activeOpacity={0.5}
+            className='my-3.5 flex-row justify-start items-start gap-x-2.5'
+          >
+            <Image
+              source={{
+                uri: "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
+              }}
+              alt=''
+              className='w-[88px] h-[88px] border border-gray-200 rounded-xl'
+            />
+            <View className='w-[68%]'>
+              <View className='flex-row justify-between items-center'>
+                <Text className='text-sm font-bold text-primary'>{post.postCategories[0] ? post.postCategories[0].category : "Apa Aja"}</Text>
+                <View className='flex-row justify-center items-center gap-x-1'>
+                  <Text className='text-sm font-normal text-[#343434]'>{calculateTimeAgo("2024-09-15 15:29:07.797796")}</Text>
+                  <Ionicons name='time-outline' size={18} />
+                </View>
               </View>
+              <Text numberOfLines={1} className='text-[17px] font-bold text-[#343434]'>
+                {post.title}
+              </Text>
+              <Text numberOfLines={2} className='text-sm font-normal text-[#343434]'>
+                {post.description}
+              </Text>
             </View>
-            <Text numberOfLines={1} className='text-[17px] font-bold text-[#343434]'>
-              {post.title}
-            </Text>
-            <Text numberOfLines={2} className='text-sm font-normal text-[#343434]'>
-              {post.description}
-            </Text>
-          </View>
-        </TouchableOpacity>
-        ))}
+          </TouchableOpacity>
+          )
+        })}
       </View>
 
       <View className='px-3 mt-2'>
@@ -229,7 +235,7 @@ export default function HomeScreen() {
             />
             <View className='w-[68%]'>
               <View className='flex-row justify-between items-center'>
-                <Text className='text-sm font-bold text-primary'>{post.postCategories[0] ? post.postCategories[0].name : "Apa Aja"}</Text>
+                <Text className='text-sm font-bold text-primary'>{post.postCategories[0] ? post.postCategories[0].category : "Apa Aja"}</Text>
                 <View className='flex-row justify-center items-center gap-x-1'>
                   <Text className='text-sm font-normal text-[#343434]'>{calculateTimeAgo("2024-09-15 15:29:07.797796")}</Text>
                   <Ionicons name='time-outline' size={18} />
