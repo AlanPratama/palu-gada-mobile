@@ -17,6 +17,7 @@ export default class PostApi {
       console.log("ASASA: ", items);
 
       store.dispatch(addPost(items));
+      return true
       //   this.getPosts();
     } catch (error) {
       store.dispatch(setError(error.message));

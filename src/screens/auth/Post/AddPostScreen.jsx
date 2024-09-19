@@ -69,12 +69,17 @@ export default function AddPostScreen() {
       formData.append(key, value);
     });
 
-    formData.append("deadline", date)
     formData.append("districtId", selectedDistrict);
     formData.append("categoriesId", selected);
 
-    await PostApi.createPost(formData);
+    // console.log("KNTLLLLLLLLLLLLL", formData);
+    // console.log("ojan coli", selected);
 
+    const res = await PostApi.createPost(formData);
+    if(res) {
+      alert("Post Success!")
+      navigate.goBack()
+    }
     // reset();
   };
 
