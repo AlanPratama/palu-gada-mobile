@@ -2,6 +2,8 @@ import React, { useRef, useState } from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import RBSheet from "react-native-raw-bottom-sheet";
 import Divider from "../Divider";
+import BidApi from "../../apis/BidApi";
+import { useNavigation } from "@react-navigation/native";
 
 export default function BottomSheetBidAlert({ refRBSheet, objBid }) {
   return (
@@ -41,25 +43,33 @@ const BidAlertComp = ({ refRBSheet, objBid }) => {
 
     console.log(objBid);
 
+    const navigate = useNavigation()
+
     const onSubmit = async () => {
-      refRBSheet.current?.close()
+      const res = await BidApi.updateBidStatus(objBid.bid.id, objBid.status)
+
+      if(res) {
+          alert("Berhasil Merubah Bid Status!")
+          refRBSheet.current?.close()
+          navigate.goBack()
+      } else {
+        alert("Gagal Merubah Bid Status!")
+      }
+
     }
     
 
   return (
     <>
-      <ScrollView
+      <View
         style={{
           borderTopLeftRadius: 10,
           borderTopRightRadius: 10,
           height: "100%",
           backgroundColor: "white",
         }}
-        contentContainerStyle={{ paddingBottom: 115 }}
-        className="min-h-screen"
-        showsVerticalScrollIndicator={false}
       >
-        <View style={{ marginTop: 26 }} className="pl-3 pr-5">
+        <View style={{ marginTop: 26 }} className="px-8">
           <Text className="text-base font-semibold text-[#343434] mb-2 text-center">Apakah kamu yakin akan mengubah status Bid ini menjadi {objBid.status}?</Text>
 
           <View className="mb-4 flex-row justify-center items-center gap-x-2 mt-3">
@@ -83,7 +93,7 @@ const BidAlertComp = ({ refRBSheet, objBid }) => {
           </TouchableOpacity>
         </View>
         </View>
-      </ScrollView>
+      </View>
     </>
   );
 };

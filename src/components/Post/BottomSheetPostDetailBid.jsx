@@ -124,7 +124,7 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
                         bid.bidStatus === "PENDING" ? (
                           <>
                           <TouchableOpacity
-                          onPress={() => openRefSheetDialogue(bid, "REJECT")}
+                          onPress={() => openRefSheetDialogue(bid, "REJECTED")}
                           className="bg-red-200 py-1 px-2 rounded-full w-[48%]"
                         >
                           <Text className="text-center text-red-500">
@@ -143,7 +143,7 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
                         ) : bid.bidStatus === "ACCEPTED" ? (
                           
                             <TouchableOpacity
-                              onPress={() => openRefSheetDialogue(bid, "FINISHED")}
+                              onPress={() => openRefSheetDialogue(bid, "FINISH")}
                               className="bg-blue-200 py-1 px-2 rounded-full w-[100%]"
                             >
                               <Text className="text-center text-blue-500">

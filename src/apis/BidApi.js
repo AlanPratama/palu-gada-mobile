@@ -16,7 +16,7 @@ export default class BidApi {
 
             return false
         } catch (error) {
-            console.log("PostApi createPost: ", error);
+            console.log("BidApi createBid: ", error);
         }
     }
 
@@ -25,17 +25,17 @@ export default class BidApi {
         console.log("STATUS: ", status);
         
         try {
-            const { data } = await axiosInstance.patch(`/bids/${bidId}?status=${status}`);
-            console.log("ASASA: ", data);
+            const res = await axiosInstance.patch(`/bids/${bidId}?status=${status}`);
+            // bids/6/status?status=ACCEPTED
+            console.log("ASASA: ", res);
             if(data.status === "OK") {
-                alert("Bid Success!")
                 await PostApi.getPosts();
                 return true
             }
 
             return false
         } catch (error) {
-            console.log("PostApi createPost: ", error);
+            console.log("BidApi updateBidStatus: ", error);
         }
     }
 }
