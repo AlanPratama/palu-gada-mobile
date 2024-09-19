@@ -35,7 +35,7 @@ export default class BidApi {
 
             return false
         } catch (error) {
-            console.log("BidApi updateBidStatus: ", error);
+            console.log("BidApi updateBidStatus: ", error.response);
         }
     }
 }

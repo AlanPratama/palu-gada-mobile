@@ -40,19 +40,18 @@ export default function BottomSheetPostDetailBid({ refRBSheet, post }) {
 }
 
 const PostDetailBidComp = ({ refRBSheet, post }) => {
-
-  const [objBid, setObjBid] = useState({})
-  const dialogueRefSheet = useRef()
-  const { user } = useSelector((state) => state.auth)
+  const [objBid, setObjBid] = useState({});
+  const dialogueRefSheet = useRef();
+  const { user } = useSelector((state) => state.auth);
 
   const openRefSheetDialogue = (bid, status) => {
     setObjBid({
       status,
-      bid
-    })
+      bid,
+    });
     console.log(objBid);
-    dialogueRefSheet.current?.open()
-  }
+    dialogueRefSheet.current?.open();
+  };
 
   return (
     <>
@@ -72,11 +71,11 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
             post.bids.map((bid, i) => {
               console.log(bid);
               return (
-                  <View
-                    key={bid.id + "-bid-" + i}
-                    className="my-3.5 flex-row justify-start items-start gap-x-2.5"
-                  >
-                    {/* <Image
+                <View
+                  key={bid.id + "-bid-" + i}
+                  className="my-3.5 flex-row justify-start items-start gap-x-2.5"
+                >
+                  {/* <Image
                     source={{
                       uri: bid.user.photoUrl
                         ? bid.user.photoUrl
@@ -85,63 +84,67 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
                     alt=""
                     className="w-[88px] h-[88px] border border-gray-200 rounded-xl"
                   /> */}
-                    <View className="w-[100%] bg-[#f6f6f6] p-2.5 rounded-xl">
-                      <View className="flex-row justify-between items-center">
-                        {/* <Text className="text-sm font-bold text-primary">
+                  <View className="w-[100%] bg-[#f6f6f6] p-2.5 rounded-xl">
+                    <View className="flex-row justify-between items-center">
+                      {/* <Text className="text-sm font-bold text-primary">
                       {post ? post.postCategories[0].category : "Apa Aja"}
                     </Text> */}
-                        {/* <View className="flex-row justify-center items-center gap-x-1">
+                      {/* <View className="flex-row justify-center items-center gap-x-1">
                       <Text className="text-sm font-normal text-[#343434]">
                         {calculateTimeAgo("2024-09-15 15:29:07.797796")}
                       </Text>
                       <Ionicons name="time-outline" size={18} />
                     </View> */}
-                      </View>
-                      <Text
-                        numberOfLines={1}
-                        className="text-[17px] font-bold text-[#343434]"
-                      >
-                        {/* {post.imageUrl} */}
-                        {bid.user.name ? bid.user.name : bid.user.username}
+                    </View>
+                    <Text
+                      numberOfLines={1}
+                      className="text-[17px] font-bold text-[#343434]"
+                    >
+                      {/* {post.imageUrl} */}
+                      {bid.user.name ? bid.user.name : bid.user.username}
+                    </Text>
+                    <Text className="text-sm font-normal text-[#343434]">
+                      {bid.message} Lorem ipsum dolor sit amet consectetur
+                      adipisicing elit. Totam repellat minima magni! Lorem ipsum
+                      dolor sit amet. Lorem ipsum dolor sit amet consectetur
+                      adipisicing elit..
+                    </Text>
+                    <Divider color="#707070" twClass="my-2.5" />
+                    <View className="flex-row justify-evenly items-center mb-2">
+                      <Text className="w-[48%] font-medium text-sm text-[#505050] text-center">
+                        Rp {bid.amount.toLocaleString("id-ID")}
                       </Text>
-                      <Text className="text-sm font-normal text-[#343434]">
-                        {bid.message} Lorem ipsum dolor sit amet consectetur
-                        adipisicing elit. Totam repellat minima magni! Lorem ipsum
-                        dolor sit amet. Lorem ipsum dolor sit amet consectetur
-                        adipisicing elit..
+                      <Text>|</Text>
+                      <Text className="w-[48%] font-medium text-sm text-[#505050] text-center">
+                        {bid.user.district
+                          ? bid.user.district.districtName
+                          : "-"}
                       </Text>
-                      <Divider color="#707070" twClass="my-2.5" />
-                      <View className="flex-row justify-evenly items-center mb-2">
-                        <Text className="w-[48%] font-medium text-sm text-[#505050] text-center">
-                          Rp {bid.amount.toLocaleString("id-ID")}
-                        </Text>
-                        <Text>|</Text>
-                        <Text className="w-[48%] font-medium text-sm text-[#505050] text-center">
-                          {bid.user.district ? bid.user.district.districtName : "-"}
-                        </Text>
-                      </View>
-                      <View className="flex-row justify-evenly items-center">
-                      {
-                        bid.bidStatus === "PENDING" ? (
-                          <>
+                    </View>
+                    <View className="flex-row justify-evenly items-center">
+                      {bid.bidStatus === "PENDING" ? (
+                        <>
                           <TouchableOpacity
-                          onPress={() => openRefSheetDialogue(bid, "REJECTED")}
-                          className="bg-red-200 py-1 px-2 rounded-full w-[48%]"
-                        >
-                          <Text className="text-center text-red-500">
-                            Reject
-                          </Text>
-                        </TouchableOpacity>
-                        {
-                          user.balance >= bid.amount ? (
+                            onPress={() =>
+                              openRefSheetDialogue(bid, "REJECTED")
+                            }
+                            className="bg-red-200 py-1 px-2 rounded-full w-[48%]"
+                          >
+                            <Text className="text-center text-red-500">
+                              Reject
+                            </Text>
+                          </TouchableOpacity>
+                          {user.balance >= bid.amount ? (
                             <TouchableOpacity
-                          onPress={() => openRefSheetDialogue(bid, "ACCEPTED")}
-                          className="bg-blue-200 py-1 px-2 rounded-full w-[48%]"
-                        >
-                          <Text className="text-center text-blue-500">
-                            Terima
-                          </Text>
-                        </TouchableOpacity>
+                              onPress={() =>
+                                openRefSheetDialogue(bid, "ACCEPTED")
+                              }
+                              className="bg-blue-200 py-1 px-2 rounded-full w-[48%]"
+                            >
+                              <Text className="text-center text-blue-500">
+                                Terima
+                              </Text>
+                            </TouchableOpacity>
                           ) : (
                             <TouchableOpacity
                               onPress={() => alert("Saldo Tidak Mencukupi")}
@@ -151,38 +154,40 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
                                 Saldo Kurang
                               </Text>
                             </TouchableOpacity>
-                          )
-                        }
-                          </>
-                        ) : bid.bidStatus === "ACCEPTED" ? (
-                          
-                            <TouchableOpacity
-                              onPress={() => openRefSheetDialogue(bid, "FINISH")}
-                              className="bg-blue-200 py-1 px-2 rounded-full w-[100%]"
-                            >
-                              <Text className="text-center text-blue-500">
-                                Selesaikan
-                              </Text>
-                            </TouchableOpacity>
-                            
-                        ) : (
-                          
-                            <TouchableOpacity
-                              onPress={() =>
-                                alert("Bid Telah Selesai!")
-                              }
-                              className="bg-green-200 py-1 px-2 rounded-full w-[100%]"
-                            >
-                              <Text className="text-center text-green-500">
-                                {bid.bidStatus}
-                              </Text>
-                            </TouchableOpacity>
-                        )
-                      }
-                      </View>
+                          )}
+                        </>
+                      ) : bid.bidStatus === "ACCEPTED" ? (
+                        <TouchableOpacity
+                          onPress={() => openRefSheetDialogue(bid, "FINISH")}
+                          className="bg-blue-200 py-1 px-2 rounded-full w-[100%]"
+                        >
+                          <Text className="text-center text-blue-500">
+                            Selesaikan
+                          </Text>
+                        </TouchableOpacity>
+                      ) : bid.bidStatus === "REJECTED" ? (
+                        <TouchableOpacity
+                          onPress={() => alert("Bid Telah Ditolak!")}
+                          className="bg-red-200 py-1 px-2 rounded-full w-[100%]"
+                        >
+                          <Text className="text-center text-red-500">
+                            DITOLAK
+                          </Text>
+                        </TouchableOpacity>
+                      ) : (
+                        <TouchableOpacity
+                          onPress={() => alert("Bid Telah Selesai!")}
+                          className="bg-green-200 py-1 px-2 rounded-full w-[100%]"
+                        >
+                          <Text className="text-center text-green-500">
+                            SELESAI
+                          </Text>
+                        </TouchableOpacity>
+                      )}
                     </View>
                   </View>
-              )
+                </View>
+              );
             })
           ) : (
             <>
@@ -200,7 +205,7 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
         >
           <Text className="text-white text-center font-semibold">Tutup</Text>
         </TouchableOpacity>
-          <BottomSheetBidAlert refRBSheet={dialogueRefSheet} objBid={objBid} />
+        <BottomSheetBidAlert refRBSheet={dialogueRefSheet} objBid={objBid} />
       </View>
     </>
   );
