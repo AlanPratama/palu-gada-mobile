@@ -283,7 +283,7 @@ export default function HomeScreen() {
                   </Text>
                   <View className="flex-row justify-center items-center gap-x-1">
                     <Text className="text-sm font-normal text-[#343434]">
-                      {calculateTimeAgo("2024-09-15 15:29:07.797796")}
+                      {calculateTimeAgo(post.createdAt)}
                     </Text>
                     <Ionicons name="time-outline" size={18} />
                   </View>
@@ -346,7 +346,7 @@ export default function HomeScreen() {
                 </Text>
                 <View className="flex-row justify-center items-center gap-x-1">
                   <Text className="text-sm font-normal text-[#343434]">
-                    {calculateTimeAgo("2024-09-15 15:29:07.797796")}
+                    {calculateTimeAgo(post.createdAt)}
                   </Text>
                   <Ionicons name="time-outline" size={18} />
                 </View>
