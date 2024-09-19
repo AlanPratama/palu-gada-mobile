@@ -69,9 +69,11 @@ export default function AddPostScreen() {
       formData.append(key, value);
     });
 
-    formData.append("deadline", date)
     formData.append("districtId", selectedDistrict);
     formData.append("categoriesId", selected);
+
+    // console.log("KNTLLLLLLLLLLLLL", formData);
+    // console.log("ojan coli", selected);
 
     await PostApi.createPost(formData);
 
