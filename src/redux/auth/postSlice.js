@@ -6,16 +6,15 @@ export const postSlice = createSlice({
     items: [],
     item: {},
     total: 0,
-    // isLoading: false,
+    isLoading: false,
     myPost: [],
     totalMyPost: 0,
     error: null,
   },
   reducers: {
     setPost: (state, action) => {
-      const { items, total } = action.payload;
-      state.items = items;
-      state.total = total;
+      state.items = [...state.items, ...action.payload];
+      state.total += action.payload.length;
     },
 
     setPostById: (state, action) => {
@@ -23,13 +22,20 @@ export const postSlice = createSlice({
     },
 
     setMyPost: (state, action) => {
-      const { items, total } = action.payload;
-      state.myPost = items;
-      state.totalMyPost = total;
+      state.myPost = [...state.myPost, ...action.payload];
+      state.totalMyPost += action.payload.length;
     },
-    // setIsLoading: (state, action) => {
-    //     state.isLoading = action.payload
-    // },
+    clearPost: (state) => {
+      state.items = [];
+      state.total = 0;
+    },
+    clearMyPost: (state) => {
+      state.myPost = [];
+      state.totalMyPost = 0;
+    },
+    setIsLoading: (state, action) => {
+      state.isLoading = action.payload
+    },
     setError: (state, action) => {
       state.error = action.payload;
     },
@@ -56,12 +62,5 @@ export const postSlice = createSlice({
   },
 });
 
-export const {
-  setPost,
-  setPostById,
-  setMyPost,
-  setError,
-  addPost,
-  updatePost,
-} = postSlice.actions;
+export const { setPost, setPostById, setMyPost, setError, addPost, setIsLoading, clearPost, clearMyPost } = postSlice.actions;
 export default postSlice.reducer;
