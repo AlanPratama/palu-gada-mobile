@@ -25,7 +25,7 @@ export default function ChangePasswordScreen() {
       passwordConfirm: data.confirmPassword,
     });
     if (res) {
-      // reset();
+      reset();
       navigate.navigate("Profile");
     }
   };

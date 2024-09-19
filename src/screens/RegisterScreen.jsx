@@ -24,7 +24,9 @@ export default function RegisterScreen() {
   const onSubmit = async (data) => {
     const res = await AuthApi.register(data);
     reset();
-    if (res) {
+    console.log('message: ', res.message);
+
+    if (!(res?.message).includes('404')) {
       navigate.navigate("Login");
     }
   };

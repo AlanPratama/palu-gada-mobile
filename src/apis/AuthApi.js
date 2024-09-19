@@ -39,9 +39,10 @@ export default class AuthApi {
       store.dispatch(login(jwtDecode(data.accessToken)));
       console.log("DIPANGGIL LOGIN dan SUKSESS");
     } catch (error) {
-      ToastAndroid.show("Sepertinya kamu sedang offline!", 5000);
+      ToastAndroid.show(error?.response?.data?.message ?? "Sepertinya kamu sedang offline!", 5000);
       store.dispatch(setError(error.message));
-      console.log("AuthApi login: ", error);
+      console.log("AuthApi login error message: ", error.message);
+      console.log("AuthApi login error data: ", error?.response?.data);
     } finally {
       store.dispatch(setIsLoading(false));
     }
@@ -64,7 +65,7 @@ export default class AuthApi {
     } catch (error) {
       store.dispatch(setError(error.message));
       console.log("AuthApi register: ", error.message);
-      ToastAndroid.show("Sepertinya kamu sedang offline!", 5000);
+      ToastAndroid.show(error?.response?.data?.message ?? "Sepertinya kamu sedang offline!", 5000);
       return error;
     } finally {
       store.dispatch(setIsLoading(false));

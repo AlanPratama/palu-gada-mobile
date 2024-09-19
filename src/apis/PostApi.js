@@ -32,7 +32,7 @@ export default class PostApi {
         params: {
           page,
           size,
-          name: query,
+          title: query,
         },
       });
       const items = data.data.items;
