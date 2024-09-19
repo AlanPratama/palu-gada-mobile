@@ -1,6 +1,7 @@
 import {
   addPost,
   setError,
+  setIsLoading,
   setMyPost,
   setPost,
   setPostById,
@@ -67,8 +68,8 @@ export default class PostApi {
           page,
           size,
           title,
-          sortField: 'createdAt',
-          sortDirection: 'desc'
+          sortField: "createdAt",
+          sortDirection: "desc",
         },
       });
 
@@ -82,7 +83,13 @@ export default class PostApi {
     }
   }
 
-  static async getPostsReturn(page = 0, size = 5, title, sortField, sortDirection) {
+  static async getPostsReturn(
+    page = 0,
+    size = 5,
+    title,
+    sortField,
+    sortDirection
+  ) {
     try {
       store.dispatch(setError(null));
       store.dispatch(setIsLoading(true));
@@ -93,11 +100,11 @@ export default class PostApi {
           size,
           title,
           sortField,
-          sortDirection
+          sortDirection,
         },
       });
       const items = data.data.items;
-      return items
+      return items;
     } catch (error) {
       store.dispatch(setError(error.message));
       console.log("PostApi getPostsReturn: ", error);
@@ -116,8 +123,8 @@ export default class PostApi {
           page,
           size,
           title,
-          sortField: 'createdAt',
-          sortDirection: 'desc'
+          sortField: "createdAt",
+          sortDirection: "desc",
         },
       });
       const items = data.data.items;

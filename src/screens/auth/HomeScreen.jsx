@@ -1,4 +1,12 @@
-import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  RefreshControl,
+  Linking,
+} from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -19,8 +27,8 @@ import ChipCategory from "../../components/Post/ChipCategory";
 
 export default function HomeScreen() {
   const navigate = useNavigation();
-  const [postClosest, setPostClosest] = useState([])
-  const [postLatest, setPostLatest] = useState([])
+  const [postClosest, setPostClosest] = useState([]);
+  const [postLatest, setPostLatest] = useState([]);
 
   const refSheetAddPost = useRef();
   const { user } = useSelector((state) => state.auth);
@@ -36,10 +44,22 @@ export default function HomeScreen() {
   const fetchAllData = async () => {
     await CategoryApi.getCategories();
     await DistrictApi.getDistricts();
-    const resPostClosest = await PostApi.getPostsReturn(0, 5, '', 'title', 'asc');
-    setPostClosest(resPostClosest)
-    const resPostLatest = await PostApi.getPostsReturn(0, 5, '', 'createdAt', 'desc');
-    setPostLatest(resPostLatest)
+    const resPostClosest = await PostApi.getPostsReturn(
+      0,
+      5,
+      "",
+      "title",
+      "asc"
+    );
+    setPostClosest(resPostClosest);
+    const resPostLatest = await PostApi.getPostsReturn(
+      0,
+      5,
+      "",
+      "createdAt",
+      "desc"
+    );
+    setPostLatest(resPostLatest);
   };
   const setUser = async () => {
     const token = await AsyncStorage.getItem("accessToken");
@@ -47,29 +67,38 @@ export default function HomeScreen() {
 
     if (token) {
       store.dispatch(login());
-      await AuthApi.getAuthenticated()
+      await AuthApi.getAuthenticated();
     } else {
       store.dispatch(logout());
     }
   };
 
+  const [refreshing, setRefreshing] = useState(false); // State for pull-to-refresh
   useEffect(() => {
-    setUser()
+    setUser();
     fetchAllData();
   }, []);
+  // useFocusEffect to refresh data when screen gains focus
+  useFocusEffect(
+    useCallback(() => {
+      fetchAllData();
+    }, [])
+  );
 
-  const clearOnBoarding = async () => {
-    try {
-      await AsyncStorage.removeItem("@viewedOnBoarding");
-    } catch (error) {
-      console.log("ERROR CLEARING ONBOARDING: ", error);
-    }
+  // Function for pull-to-refresh
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchAllData();
+    setRefreshing(false);
   };
 
   return (
     <ScrollView
       contentContainerStyle={{ paddingBottom: 110 }}
       className="bg-white min-h-screen "
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      } // Pull-to-refresh functionality
     >
       <View className="bg-[#fff] px-3 pt-4 flex-row justify-between items-center">
         <Text className="text-[26px] font-bold text-primary">Kerjain Aja</Text>
@@ -80,12 +109,11 @@ export default function HomeScreen() {
           >
             <Ionicons name="notifications-outline" size={26} color="#343434" />
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.5}>
-            <Ionicons
-              name="chatbox-ellipses-outline"
-              size={26}
-              color="#343434"
-            />
+          <TouchableOpacity
+            onPress={() => Linking.openURL("https://wa.wizard.id/b8dd7a")}
+            activeOpacity={0.5}
+          >
+            <Ionicons name="logo-whatsapp" size={26} color="#343434" />
           </TouchableOpacity>
         </View>
       </View>
@@ -220,9 +248,7 @@ export default function HomeScreen() {
         </View>
 
         {postClosest.map((post, i) => {
-          return (
-            <PostCard post={post} key={post.id + "-post-" + i} />
-          );
+          return <PostCard post={post} key={post.id + "-post-" + i} />;
         })}
       </View>
 

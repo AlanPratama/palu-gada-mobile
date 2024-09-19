@@ -65,9 +65,9 @@ export default function AddPostScreen() {
     formData.append("categoriesId", selected);
 
     const res = await PostApi.createPost(formData);
-    if(res) {
-      alert("Post Success!")
-      navigate.goBack()
+    if (res) {
+      alert("Post Success!");
+      navigate.goBack();
     }
   };
 
@@ -333,9 +333,7 @@ export default function AddPostScreen() {
         </View>
 
         <View className="mb-4">
-          <Text className="text-lg font-semibold text-start">
-            Pilih Kategori
-          </Text>
+          <Text className="text-lg font-semibold text-start">Pilih Kota</Text>
           <View className="h-auto flex-row justify-start items-center w-full">
             <SelectList
               maxHeight={500}
