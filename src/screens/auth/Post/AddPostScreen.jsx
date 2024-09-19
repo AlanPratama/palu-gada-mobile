@@ -75,8 +75,11 @@ export default function AddPostScreen() {
     // console.log("KNTLLLLLLLLLLLLL", formData);
     // console.log("ojan coli", selected);
 
-    await PostApi.createPost(formData);
-
+    const res = await PostApi.createPost(formData);
+    if(res) {
+      alert("Post Success!")
+      navigate.goBack()
+    }
     // reset();
   };
 
