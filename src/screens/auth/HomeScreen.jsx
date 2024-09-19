@@ -1,9 +1,10 @@
 import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
-import React, { useCallback, useEffect, useRef } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Ionicons } from "@expo/vector-icons";
-import PagerView from "react-native-pager-view";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import PagerView from "react-native-pager-view";
+
 import Divider from "../../components/Divider";
 import BottomSheetAddPost from "../../components/Post/BottomSheetAddPost";
 import { useSelector } from "react-redux";
@@ -13,14 +14,17 @@ import DistrictApi from "../../apis/DistrictApi";
 import store from "../../redux/store";
 import { login, logout } from "../../redux/auth/authSlice";
 import AuthApi from "../../apis/AuthApi";
+import PostCard from "../../components/Post/PostCard";
+import ChipCategory from "../../components/Post/ChipCategory";
 
 export default function HomeScreen() {
   const navigate = useNavigation();
+  const [postClosest, setPostClosest] = useState([])
+  const [postLatest, setPostLatest] = useState([])
 
   const refSheetAddPost = useRef();
   const { user } = useSelector((state) => state.auth);
   const { items: catItems } = useSelector((state) => state.category);
-  const { items: postItems } = useSelector((state) => state.post);
   const { district } = useSelector((state) => state.district);
 
   // console.log("USER: ", user);
@@ -31,13 +35,12 @@ export default function HomeScreen() {
 
   const fetchAllData = async () => {
     await CategoryApi.getCategories();
-    await PostApi.getMyPosts()
     await DistrictApi.getDistricts();
-    await fetchPosts()
+    const resPostClosest = await PostApi.getPostsReturn(0, 5, '', 'title', 'asc');
+    setPostClosest(resPostClosest)
+    const resPostLatest = await PostApi.getPostsReturn(0, 5, '', 'createdAt', 'desc');
+    setPostLatest(resPostLatest)
   };
-  const fetchPosts = async () => {
-    await PostApi.getPosts();
-  }
   const setUser = async () => {
     const token = await AsyncStorage.getItem("accessToken");
     console.log("tokenn: ", token);
@@ -55,37 +58,11 @@ export default function HomeScreen() {
     fetchAllData();
   }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchPosts();
-
-      // Cleanup function jika diperlukan
-      return () => {
-        console.log("Cleanup on leave");
-      };
-    }, [])
-  );
-
   const clearOnBoarding = async () => {
     try {
       await AsyncStorage.removeItem("@viewedOnBoarding");
     } catch (error) {
       console.log("ERROR CLEARING ONBOARDING: ", error);
-    }
-  };
-
-  const calculateTimeAgo = (date) => {
-    const now = new Date();
-    const pastDate = new Date(date);
-    const diff = now - pastDate; // selisih dalam milidetik
-
-    const diffInHours = Math.floor(diff / (1000 * 60 * 60));
-    const diffInMinutes = Math.floor(diff / (1000 * 60));
-
-    if (diffInHours > 0) {
-      return `${diffInHours} jam lalu`;
-    } else {
-      return `${diffInMinutes} menit lalu`;
     }
   };
 
@@ -229,17 +206,7 @@ export default function HomeScreen() {
           showsHorizontalScrollIndicator={false}
         >
           {catItems.map((cat, i) => (
-            <TouchableOpacity
-              onPress={() =>
-                navigate.navigate("PostByCategory", { id: cat.id })
-              }
-              key={cat.id + "-category" + i}
-              className="bg-blue-100 rounded-full px-3.5 py-1 mr-2 justify-center items-center"
-            >
-              <Text className="text-[14.5px] font-semibold text-primary">
-                {cat.name}
-              </Text>
-            </TouchableOpacity>
+            <ChipCategory cat={cat} key={cat.id + "-category" + i} />
           ))}
         </ScrollView>
       </View>
@@ -252,57 +219,9 @@ export default function HomeScreen() {
           {/* <Ionicons name="chevron-forward-outline" size={18} /> */}
         </View>
 
-        {postItems.map((post, i) => {
-          // console.log("AAA: ", post.postCategories[0]);
-          {/* console.log("ASLAKLSA: ", post); */ }
-
+        {postClosest.map((post, i) => {
           return (
-            <TouchableOpacity
-              key={post.id + "-post2-" + i}
-              onPress={() =>
-                navigate.navigate("PostDetail", {
-                  post
-                })
-              }
-              activeOpacity={0.5}
-              className="my-3.5 flex-row justify-start items-start gap-x-2.5"
-            >
-              <Image
-                source={{
-                  uri: post.imageUrl
-                    ? post.imageUrl
-                    : "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
-                }}
-                alt=""
-                className="w-[88px] h-[88px] border border-gray-200 rounded-xl"
-              />
-              <View className="w-[68%]">
-                <View className="flex-row justify-between items-center">
-                  <Text className="text-sm font-bold text-primary">
-                    {post ? post.postCategories[0].category : "Apa Aja"}
-                  </Text>
-                  <View className="flex-row justify-center items-center gap-x-1">
-                    <Text className="text-sm font-normal text-[#343434]">
-                      {calculateTimeAgo(post.createdAt)}
-                    </Text>
-                    <Ionicons name="time-outline" size={18} />
-                  </View>
-                </View>
-                <Text
-                  numberOfLines={1}
-                  className="text-[17px] font-bold text-[#343434]"
-                >
-                  {/* {post.imageUrl} */}
-                  {post.title}
-                </Text>
-                <Text
-                  numberOfLines={2}
-                  className="text-sm font-normal text-[#343434]"
-                >
-                  {post.description}
-                </Text>
-              </View>
-            </TouchableOpacity>
+            <PostCard post={post} key={post.id + "-post-" + i} />
           );
         })}
       </View>
@@ -319,52 +238,8 @@ export default function HomeScreen() {
           {/* <Ionicons name="chevron-forward-outline" size={18} /> */}
         </View>
 
-        {postItems.map((post, i) => (
-          <TouchableOpacity
-            key={post.id + "-post-" + i}
-            onPress={() =>
-              navigate.navigate("PostDetail", {
-                post
-              })
-            }
-            activeOpacity={0.5}
-            className="my-3.5 flex-row justify-start items-start gap-x-2.5"
-          >
-            <Image
-              source={{
-                uri: post.imageUrl
-                  ? post.imageUrl
-                  : "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
-              }}
-              alt=""
-              className="w-[88px] h-[88px] border border-gray-200 rounded-xl"
-            />
-            <View className="w-[68%]">
-              <View className="flex-row justify-between items-center">
-                <Text className="text-sm font-bold text-primary">
-                  {post ? post.postCategories[0].category : "Apa Aja"}
-                </Text>
-                <View className="flex-row justify-center items-center gap-x-1">
-                  <Text className="text-sm font-normal text-[#343434]">
-                    {calculateTimeAgo(post.createdAt)}
-                  </Text>
-                  <Ionicons name="time-outline" size={18} />
-                </View>
-              </View>
-              <Text
-                numberOfLines={1}
-                className="text-[17px] font-bold text-[#343434]"
-              >
-                {post.title}
-              </Text>
-              <Text
-                numberOfLines={2}
-                className="text-sm font-normal text-[#343434]"
-              >
-                {post.description}
-              </Text>
-            </View>
-          </TouchableOpacity>
+        {postLatest.map((post, i) => (
+          <PostCard post={post} key={post.id + "-post-" + i} />
         ))}
       </View>
 

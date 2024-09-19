@@ -1,4 +1,4 @@
-import { addPost, setError, setMyPost, setPost } from "../redux/auth/postSlice";
+import { addPost, setError, setIsLoading, setMyPost, setPost } from "../redux/auth/postSlice";
 import store from "../redux/store";
 import { axiosInstance } from "./axiosInstance";
 
@@ -25,46 +25,77 @@ export default class PostApi {
     }
   }
 
-  static async getPosts(page, size = 99999, query) {
+  static async getPosts(page, size = 10, title) {
     try {
       store.dispatch(setError(null));
+      store.dispatch(setIsLoading(true));
 
       const { data } = await axiosInstance.get("/posts", {
         params: {
           page,
           size,
-          title: query,
+          title,
+          sortField: 'createdAt',
+          sortDirection: 'desc'
         },
       });
-      const items = data.data.items;
-      const total = data.data.items.length;
 
-      store.dispatch(setPost({ items, total }));
+      store.dispatch(setPost(data.data.items));
     } catch (error) {
       store.dispatch(setError(error.message));
       console.log("PostApi getPosts: ", error);
+      console.log("PostApi getPosts message: ", error.message);
+    } finally {
+      store.dispatch(setIsLoading(false));
     }
   }
 
-
-  static async getMyPosts(page, size = 99999, query) {
+  static async getPostsReturn(page = 0, size = 5, title, sortField, sortDirection) {
     try {
       store.dispatch(setError(null));
+      store.dispatch(setIsLoading(true));
+
+      const { data } = await axiosInstance.get("/posts", {
+        params: {
+          page,
+          size,
+          title,
+          sortField,
+          sortDirection
+        },
+      });
+      const items = data.data.items;
+      return items
+    } catch (error) {
+      store.dispatch(setError(error.message));
+      console.log("PostApi getPostsReturn: ", error);
+    } finally {
+      store.dispatch(setIsLoading(false));
+    }
+  }
+
+  static async getMyPosts(page, size = 10, title) {
+    try {
+      store.dispatch(setError(null));
+      store.dispatch(setIsLoading(true));
 
       const { data } = await axiosInstance.get("/posts/me", {
         params: {
           page,
           size,
-          name: query,
+          title,
+          sortField: 'createdAt',
+          sortDirection: 'desc'
         },
       });
       const items = data.data.items;
-      const total = data.data.items.length;
 
-      store.dispatch(setMyPost({ items, total }));
+      store.dispatch(setMyPost(items));
     } catch (error) {
       store.dispatch(setError(error.message));
-      console.log("PostApi getPosts: ", error);
+      console.log("PostApi getMyPosts: ", error);
+    } finally {
+      store.dispatch(setIsLoading(false));
     }
   }
 

@@ -132,15 +132,15 @@ export default function PostDetailScreen({ route }) {
               {post.status === "AVAILABLE"
                 ? "Tersedia"
                 : post.status === "NOT_AVAILABLE"
-                ? "Tidak Tersedia"
-                : "Expired"}
+                  ? "Tidak Tersedia"
+                  : "Expired"}
             </Text>
           </TouchableOpacity>
           <Divider color="#9ca3af" orientation="vertical" />
 
           <View className="flex-row justify-center items-center gap-x-2">
             <Ionicons name="person-outline" size={24} color="#343434" />
-            <Text>{post.bids.length} Bids</Text>
+            <Text>{post.bids?.length} Bids</Text>
           </View>
           <Divider color="#9ca3af" orientation="vertical" />
           <View className="flex-row justify-center items-center gap-x-2">
@@ -180,9 +180,7 @@ export default function PostDetailScreen({ route }) {
                 post.status === "NOT_AVAILABLE" ||
                 post.status === "EXPIRED"
               }
-              className={`${
-                alreadyBid ? "bg-gray-400" : "bg-primary"
-              } w-full py-3.5 rounded-full`}
+              className={`${alreadyBid ? "bg-gray-400" : "bg-primary"} w-full py-3.5 rounded-full`}
             >
               <Text className="text-base text-white text-center font-semibold">
                 Tambah Penawaran
