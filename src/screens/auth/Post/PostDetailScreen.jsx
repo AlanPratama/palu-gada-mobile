@@ -7,10 +7,13 @@ import BottomSheetAddBid from "../../../components/Post/BottomSheetAddBid";
 import BottomSheetReportPost from "../../../components/Post/BottomSheetReportPost";
 import { useSelector } from "react-redux";
 import BottomSheetPostDetailBid from "../../../components/Post/BottomSheetPostDetailBid";
+import PostApi from "../../../apis/PostApi";
 
 export default function PostDetailScreen({ route }) {
   const { post } = route.params;
   const { user } = useSelector((state) => state.auth);
+  // const { item: post } = useSelector((state) => state.post);
+  console.log("ZUL JERK OFF: ", post);
 
   const [alreadyBid, setAlreadyBid] = useState(false);
 
@@ -19,6 +22,16 @@ export default function PostDetailScreen({ route }) {
   const refSheetAddBid = useRef();
   const refSheetReportPost = useRef();
   const refSheetPostDetailBid = useRef();
+
+  // const fetch = async () => {
+  //   await PostApi.getPostById(postParam.id);
+  // };
+
+  // useEffect(() => {
+  //   (async () => {
+  //     await PostApi.getPostById(postParam.id);
+  //   })();
+  // }, []);
 
   useEffect(() => {
     const hasBid = post.bids.some((bid) => bid.user.id === user.id);
@@ -43,14 +56,16 @@ export default function PostDetailScreen({ route }) {
             </Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          onPress={() => refSheetReportPost.current?.open()}
-          activeOpacity={0.7}
-          className="flex-row justify-center items-center bg-red-500 px-2 py-1 rounded"
-        >
-          <Ionicons name="megaphone-outline" size={24} color={"#fff"} />
-          <Text className="text-white ml-2 font-semibold">Laporkan</Text>
-        </TouchableOpacity>
+        {post.user.id !== user.id && (
+          <TouchableOpacity
+            onPress={() => refSheetReportPost.current?.open()}
+            activeOpacity={0.7}
+            className="flex-row justify-center items-center bg-red-500 px-2 py-1 rounded"
+          >
+            <Ionicons name="megaphone-outline" size={24} color={"#fff"} />
+            <Text className="text-white ml-2 font-semibold">Laporkan</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       <View className="p-3">
@@ -109,12 +124,18 @@ export default function PostDetailScreen({ route }) {
           </Text>
         </View>
 
-        <View className="mt-1.5 flex-row justify-start items-center">
+        {/* <View className="mt-1.5 flex-row justify-start items-center">
           <Text className="text-[17px] font-medium text-[#343434]">
             Tenggat Pilih Pekerja:{" "}
           </Text>
           <Text className="text-[17px] font-normal text-[#343434]">
             {new Date(post.deadline).toLocaleDateString("id-ID")}
+          </Text>
+        </View> */}
+        <View className="mt-1.5 flex-row justify-start items-center">
+          <Text className="text-[17px] font-medium text-[#343434]">Kota: </Text>
+          <Text className="text-[17px] font-normal text-[#343434]">
+            {post.district.districtName} ({post.district.province})
           </Text>
         </View>
 

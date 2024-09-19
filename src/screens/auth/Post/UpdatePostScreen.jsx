@@ -5,16 +5,16 @@ import * as ImagePicker from "expo-image-picker";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
-    Image,
-    ScrollView,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
+  Image,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import {
-    MultipleSelectList,
-    SelectList,
+  MultipleSelectList,
+  SelectList,
 } from "react-native-dropdown-select-list";
 
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -22,13 +22,14 @@ import { useSelector } from "react-redux";
 import PostApi from "../../../apis/PostApi";
 
 export default function UpdatePostScreen({ route }) {
-
   const { post } = route.params;
   const navigate = useNavigation();
   const [isUrgent, setIsUrgent] = useState(post.isUrgent);
   const { items: catItems } = useSelector((state) => state.category);
 
   const { district } = useSelector((state) => state.district);
+
+  console.log("ojan", post);
 
   const {
     control,
@@ -38,12 +39,12 @@ export default function UpdatePostScreen({ route }) {
     reset,
   } = useForm({
     defaultValues: {
+      id: post.id,
       title: post.title,
       description: post.description,
       budgetMin: post.budgetMin.toString(),
       budgetMax: post.budgetMax.toString(),
       finishDay: post.finishDay.toString(),
-
     },
   });
 
@@ -81,7 +82,16 @@ export default function UpdatePostScreen({ route }) {
     formData.append("districtId", selectedDistrict);
     formData.append("categoriesId", selected);
 
-    await PostApi.createPost(formData);
+    const res = await PostApi.updatePost(post.id, formData);
+
+    if (res) {
+      console.log(res);
+
+      alert("Berhasil Update Postingan");
+      navigate.navigate("PostDetail", { post: res });
+    } else {
+      alert("Gagal Update Postingan");
+    }
 
     // reset();
   };
@@ -326,64 +336,6 @@ export default function UpdatePostScreen({ route }) {
           )}
         </View>
 
-        <View className="mb-4 mt-4">
-          <Text className="text-lg font-semibold text-start">
-            {/* {date.toDateString()} */}
-            Tenggat Pilih Pekerja
-          </Text>
-          <View className="flex-row justify-start items-center w-full">
-            <Ionicons name="accessibility-outline" size={24} color="#303030" />
-            <TouchableOpacity
-              onPress={() => setShow(true)}
-              className="flex-row justify-start items-center border border-gray-200 p-2 rounded-lg mr-1"
-            >
-              <Text>Pilih Tanggal</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => setShowTime(true)}
-              className="flex-row justify-start items-center border border-gray-200 p-2 rounded-lg mr-1"
-            >
-              <Text>Pilih Waktu</Text>
-            </TouchableOpacity>
-            {show && (
-              <RNDateTimePicker
-                testID="date"
-                value={date}
-                is24Hour={true}
-                mode="date"
-                display="default"
-                minimumDate={new Date()}
-                onChange={(e) => {
-                  setShow(false);
-                  setDate(new Date(e.nativeEvent.timestamp));
-                  // console.log("ASASA: ", e.nativeEvent.timestamp);
-                }}
-              />
-            )}
-            {showTime && (
-              <RNDateTimePicker
-                testID="time"
-                value={date}
-                is24Hour={true}
-                mode="time"
-                display="default"
-                onChange={(e) => {
-                  setShowTime(false);
-                  setTime(new Date(e.nativeEvent.timestamp));
-                  console.log("ASASA: ", e);
-                }}
-              />
-            )}
-          </View>
-          <Text className="text-sm text-[#343434] mt-1">
-            {date.toDateString()} | {time.toLocaleTimeString()}
-          </Text>
-          {/* {errors.title && (
-          <Text style={{ color: "red" }}>{errors.title.message}</Text>
-        )} */}
-        </View>
-
         {/* Image Upload Section */}
         <View className="mb-4">
           <Text className="text-lg font-semibold text-start">
@@ -397,23 +349,26 @@ export default function UpdatePostScreen({ route }) {
               <Text className="text-base">Pilih Gambar</Text>
             </TouchableOpacity>
           </View>
-          {image && (
+
+          {image?.uri || post?.imageUrl ? (
             <Image
-              source={{ uri: image.uri }}
+              source={{ uri: image?.uri ?? post.imageUrl }}
               className="rounded-[13px]"
               style={{ width: 200, height: 200 }}
             />
-          )}
+          ) : null}
         </View>
 
         <View className="mb-4">
-          <Text className="text-lg font-semibold text-start">
-            Pilih Kota
-          </Text>
+          <Text className="text-lg font-semibold text-start">Pilih Kota</Text>
           <View className="h-auto flex-row justify-start items-center w-full">
             <SelectList
               maxHeight={500}
               setSelected={(key) => setSelectedDistrict(key)}
+              defaultOption={{
+                key: post.district.id,
+                value: post.district.districtName,
+              }}
               data={districtData}
               save="key"
               // onSelect={() => alert(selected)}
@@ -433,6 +388,9 @@ export default function UpdatePostScreen({ route }) {
             <MultipleSelectList
               maxHeight={500}
               setSelected={(key) => setSelected(key)}
+              defaultOption={post.postCategories.map((category) => [
+                category.category,
+              ])}
               data={data}
               save="key"
               // onSelect={() => alert(selected)}
@@ -453,10 +411,10 @@ export default function UpdatePostScreen({ route }) {
           // }
         >
           <Text className="text-white text-lg font-semibold text-center">
-            Sebarkan Postingan
+            Simpan Perubahan
           </Text>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAwareScrollView>
-  )
+  );
 }
