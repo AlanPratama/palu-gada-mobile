@@ -1,9 +1,9 @@
 import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import PagerView from "react-native-pager-view";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Divider from "../../components/Divider";
 import BottomSheetAddPost from "../../components/Post/BottomSheetAddPost";
 import { useSelector } from "react-redux";
@@ -27,14 +27,17 @@ export default function HomeScreen() {
   // console.log("catItems: ", catItems);
   // console.log("postItems: ", postItems);
   // console.log("user: ", user);
-  console.log("district: ", district);
+  // console.log("district: ", district);
 
   const fetchAllData = async () => {
     await CategoryApi.getCategories();
-    await PostApi.getPosts();
     await PostApi.getMyPosts()
     await DistrictApi.getDistricts();
+    await fetchPosts()
   };
+  const fetchPosts = async () => {
+    await PostApi.getPosts();
+  }
   const setUser = async () => {
     const token = await AsyncStorage.getItem("accessToken");
     console.log("tokenn: ", token);
@@ -52,6 +55,17 @@ export default function HomeScreen() {
     fetchAllData();
   }, []);
 
+  useFocusEffect(
+    useCallback(() => {
+      fetchPosts();
+
+      // Cleanup function jika diperlukan
+      return () => {
+        console.log("Cleanup on leave");
+      };
+    }, [])
+  );
+
   const clearOnBoarding = async () => {
     try {
       await AsyncStorage.removeItem("@viewedOnBoarding");
@@ -59,8 +73,6 @@ export default function HomeScreen() {
       console.log("ERROR CLEARING ONBOARDING: ", error);
     }
   };
-
-  const l = [{}, {}, {}];
 
   const calculateTimeAgo = (date) => {
     const now = new Date();
@@ -242,7 +254,7 @@ export default function HomeScreen() {
 
         {postItems.map((post, i) => {
           // console.log("AAA: ", post.postCategories[0]);
-          console.log("ASLAKLSA: ", post);
+          {/* console.log("ASLAKLSA: ", post); */ }
 
           return (
             <TouchableOpacity

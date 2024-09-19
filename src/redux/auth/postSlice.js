@@ -30,7 +30,9 @@ export const postSlice = createSlice({
     },
     addPost: (state, action) => {
       state.items = [...state.items, action.payload];
+      state.myPost = [...state.myPost, action.payload];
       state.total += 1;
+      state.totalMyPost += 1;
     },
   },
 });
