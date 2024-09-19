@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import RBSheet from "react-native-raw-bottom-sheet";
 import Divider from "../Divider";
+import BottomSheetBidAlert from "./BottomSheetBidAlert";
 
 export default function BottomSheetPostDetailBid({ refRBSheet, post }) {
   return (
@@ -39,12 +40,15 @@ export default function BottomSheetPostDetailBid({ refRBSheet, post }) {
 
 const PostDetailBidComp = ({ refRBSheet, post }) => {
 
-  const [status, setStatus] = React.useState("")
-  const dialogueRefSheet = React.useRef()
+  const [objBid, setObjBid] = useState({})
+  const dialogueRefSheet = useRef()
 
-  const openRefSheetDialogue = (status) => {
-    setStatus(status)
-    console.log(status);
+  const openRefSheetDialogue = (bid, status) => {
+    setObjBid({
+      status,
+      bid
+    })
+    console.log(objBid);
     dialogueRefSheet.current?.open()
   }
 
@@ -68,7 +72,7 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
               return (
                 <>
                   <View
-                    key={bid.id + "-post2-" + i}
+                    key={bid.id + "-bid-" + i}
                     className="my-3.5 flex-row justify-start items-start gap-x-2.5"
                   >
                     {/* <Image
@@ -120,7 +124,7 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
                         bid.bidStatus === "PENDING" ? (
                           <>
                           <TouchableOpacity
-                          onPress={() => openRefSheetDialogue("REJECT")}
+                          onPress={() => openRefSheetDialogue(bid, "REJECT")}
                           className="bg-red-200 py-1 px-2 rounded-full w-[48%]"
                         >
                           <Text className="text-center text-red-500">
@@ -128,7 +132,7 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
                           </Text>
                         </TouchableOpacity>
                         <TouchableOpacity
-                          onPress={() => openRefSheetDialogue("ACCEPTED")}
+                          onPress={() => openRefSheetDialogue(bid, "ACCEPTED")}
                           className="bg-blue-200 py-1 px-2 rounded-full w-[48%]"
                         >
                           <Text className="text-center text-blue-500">
@@ -139,7 +143,7 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
                         ) : bid.bidStatus === "ACCEPTED" ? (
                           
                             <TouchableOpacity
-                              onPress={() => openRefSheetDialogue("FINISHED")}
+                              onPress={() => openRefSheetDialogue(bid, "FINISHED")}
                               className="bg-blue-200 py-1 px-2 rounded-full w-[100%]"
                             >
                               <Text className="text-center text-blue-500">
@@ -184,7 +188,7 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
         >
           <Text className="text-white text-center font-semibold">Tutup</Text>
         </TouchableOpacity>
-
+          <BottomSheetBidAlert refRBSheet={dialogueRefSheet} objBid={objBid} />
       </View>
     </>
   );

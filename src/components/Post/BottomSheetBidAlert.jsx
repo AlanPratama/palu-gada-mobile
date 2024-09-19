@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import RBSheet from "react-native-raw-bottom-sheet";
 import Divider from "../Divider";
 
-export default function BottomSheetBidAlert({ refRBSheet, bid }) {
+export default function BottomSheetBidAlert({ refRBSheet, objBid }) {
   return (
     <View>
       <RBSheet
@@ -22,7 +22,7 @@ export default function BottomSheetBidAlert({ refRBSheet, bid }) {
             marginVertical: 10,
           },
           container: {
-            height: "100%",
+            height: "27%",
           },
         }}
         customModalProps={{
@@ -31,22 +31,20 @@ export default function BottomSheetBidAlert({ refRBSheet, bid }) {
         height={500}
         openDuration={250}
       >
-        <BidAlertComp refRBSheet={refRBSheet} bid={bid} />
+        <BidAlertComp refRBSheet={refRBSheet} objBid={objBid} />
       </RBSheet>
     </View>
   );
 }
 
-const BidAlertComp = ({ refRBSheet, bid }) => {
+const BidAlertComp = ({ refRBSheet, objBid }) => {
 
-  const [status, setStatus] = React.useState("")
-  const dialogueRefSheet = React.useRef()
+    console.log(objBid);
 
-  const openRefSheetDialogue = (status) => {
-    setStatus(status)
-    console.log(status);
-    dialogueRefSheet.current?.open()
-  }
+    const onSubmit = async () => {
+      refRBSheet.current?.close()
+    }
+    
 
   return (
     <>
@@ -62,7 +60,28 @@ const BidAlertComp = ({ refRBSheet, bid }) => {
         showsVerticalScrollIndicator={false}
       >
         <View style={{ marginTop: 26 }} className="pl-3 pr-5">
-          ALERT    
+          <Text className="text-base font-semibold text-[#343434] mb-2 text-center">Apakah kamu yakin akan mengubah status Bid ini menjadi {objBid.status}?</Text>
+
+          <View className="mb-4 flex-row justify-center items-center gap-x-2 mt-3">
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => refRBSheet.current?.close()} 
+            className="w-[48%] bg-[#fff] py-3.5 rounded-full"
+          >
+            <Text className="text-[#3f45f9] text-lg font-semibold text-center">
+              Batal
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => onSubmit()}
+            activeOpacity={0.8}
+            className="w-[48%] bg-[#3f45f9] py-3.5 rounded-full"
+          >
+            <Text className="text-white text-lg font-semibold text-center">
+              Ya, saya yakin
+            </Text>
+          </TouchableOpacity>
+        </View>
         </View>
       </ScrollView>
     </>
