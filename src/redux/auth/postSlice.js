@@ -4,6 +4,7 @@ export const postSlice = createSlice({
   name: "post",
   initialState: {
     items: [],
+    item: {},
     total: 0,
     isLoading: false,
     myPost: [],
@@ -15,6 +16,11 @@ export const postSlice = createSlice({
       state.items = [...state.items, ...action.payload];
       state.total += action.payload.length;
     },
+
+    setPostById: (state, action) => {
+      state.item = action.payload;
+    },
+
     setMyPost: (state, action) => {
       state.myPost = [...state.myPost, ...action.payload];
       state.totalMyPost += action.payload.length;
@@ -39,8 +45,22 @@ export const postSlice = createSlice({
       state.total += 1;
       state.totalMyPost += 1;
     },
+    // updatePost: (state, action) => {
+    //   state.items = state.items.map((item) => {
+    //     if (item.id === action.payload.id) {
+    //       return action.payload;
+    //     }
+    //     return item;
+    //   });
+    //   state.myPost = state.myPost.map((item) => {
+    //     if (item.id === action.payload.id) {
+    //       return action.payload;
+    //     }
+    //     return item;
+    //   });
+    // },
   },
 });
 
-export const { setPost, setMyPost, setError, addPost, setIsLoading, clearPost, clearMyPost } = postSlice.actions;
+export const { setPost, setPostById, setMyPost, setError, addPost, setIsLoading, clearPost, clearMyPost } = postSlice.actions;
 export default postSlice.reducer;
