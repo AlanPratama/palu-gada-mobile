@@ -3,6 +3,7 @@ import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import RBSheet from "react-native-raw-bottom-sheet";
 import Divider from "../Divider";
 import BottomSheetBidAlert from "./BottomSheetBidAlert";
+import { useSelector } from "react-redux";
 
 export default function BottomSheetPostDetailBid({ refRBSheet, post }) {
   return (
@@ -42,6 +43,7 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
 
   const [objBid, setObjBid] = useState({})
   const dialogueRefSheet = useRef()
+  const { user } = useSelector((state) => state.auth)
 
   const openRefSheetDialogue = (bid, status) => {
     setObjBid({
@@ -70,7 +72,6 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
             post.bids.map((bid, i) => {
               console.log(bid);
               return (
-                <>
                   <View
                     key={bid.id + "-bid-" + i}
                     className="my-3.5 flex-row justify-start items-start gap-x-2.5"
@@ -111,12 +112,12 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
                       </Text>
                       <Divider color="#707070" twClass="my-2.5" />
                       <View className="flex-row justify-evenly items-center mb-2">
-                        <Text className="font-medium text-sm text-[#505050]">
+                        <Text className="w-[48%] font-medium text-sm text-[#505050] text-center">
                           Rp {bid.amount.toLocaleString("id-ID")}
                         </Text>
                         <Text>|</Text>
-                        <Text className="font-medium text-sm text-[#505050]">
-                          {bid.user.district.districtName}
+                        <Text className="w-[48%] font-medium text-sm text-[#505050] text-center">
+                          {bid.user.district ? bid.user.district.districtName : "-"}
                         </Text>
                       </View>
                       <View className="flex-row justify-evenly items-center">
@@ -131,7 +132,9 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
                             Reject
                           </Text>
                         </TouchableOpacity>
-                        <TouchableOpacity
+                        {
+                          user.balance >= bid.amount ? (
+                            <TouchableOpacity
                           onPress={() => openRefSheetDialogue(bid, "ACCEPTED")}
                           className="bg-blue-200 py-1 px-2 rounded-full w-[48%]"
                         >
@@ -139,6 +142,17 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
                             Terima
                           </Text>
                         </TouchableOpacity>
+                          ) : (
+                            <TouchableOpacity
+                              onPress={() => alert("Saldo Tidak Mencukupi")}
+                              className="bg-blue-200 py-1 px-2 rounded-full w-[48%]"
+                            >
+                              <Text className="text-center text-blue-500">
+                                Saldo Kurang
+                              </Text>
+                            </TouchableOpacity>
+                          )
+                        }
                           </>
                         ) : bid.bidStatus === "ACCEPTED" ? (
                           
@@ -155,21 +169,19 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
                           
                             <TouchableOpacity
                               onPress={() =>
-                                alert("NANTI ADA BOTTOM SHEET LAGI. YES / NO")
+                                alert("Bid Telah Selesai!")
                               }
-                              className="bg-blue-200 py-1 px-2 rounded-full w-[100%]"
+                              className="bg-green-200 py-1 px-2 rounded-full w-[100%]"
                             >
-                              <Text className="text-center text-blue-500">
+                              <Text className="text-center text-green-500">
                                 {bid.bidStatus}
                               </Text>
                             </TouchableOpacity>
-                            
                         )
                       }
                       </View>
                     </View>
                   </View>
-                </>
               )
             })
           ) : (
