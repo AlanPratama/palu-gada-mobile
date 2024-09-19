@@ -30,12 +30,11 @@ export default function EditProfileScreen() {
   const districtData = district.map((item) => ({ key: item.id, value: item.districtName }));
 
   // console.log("categoriesData: ", categoriesData);
-  
 
   const [showDate, setShowDate] = useState(false);
 
   const [gender, setGender] = useState(user.userGender);
-  const [birthDate, setBirthDate] = useState(new Date());
+  const [birthDate, setBirthDate] = useState(new Date(user.birthDate));
   const [selectedDistrict, setSelectedDistrict] = useState();
   const [selectedCategories, setSelectedCategories] = useState([]);
 

@@ -35,13 +35,7 @@ export default function AddPostScreen() {
     watch,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm();
-
-  const [date, setDate] = useState(new Date());
-  const [time, setTime] = useState(new Date());
-  const [show, setShow] = useState(false);
-  const [showTime, setShowTime] = useState(false);
 
   const [selected, setSelected] = useState([]);
   const [selectedDistrict, setSelectedDistrict] = useState();
@@ -51,8 +45,6 @@ export default function AddPostScreen() {
     value: item.districtName,
   }));
   const data = catItems.map((item) => ({ key: item.id, value: item.name }));
-
-  // console.log("SELECTED: ", selected);
 
   const onSubmit = async (data) => {
     const formData = new FormData();
@@ -72,15 +64,11 @@ export default function AddPostScreen() {
     formData.append("districtId", selectedDistrict);
     formData.append("categoriesId", selected);
 
-    // console.log("KNTLLLLLLLLLLLLL", formData);
-    // console.log("ojan coli", selected);
-
     const res = await PostApi.createPost(formData);
     if(res) {
       alert("Post Success!")
       navigate.goBack()
     }
-    // reset();
   };
 
   const [image, setImage] = useState(null);
@@ -95,7 +83,6 @@ export default function AddPostScreen() {
       return;
     }
 
-    // Buka galeri untuk memilih gambar
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
@@ -321,64 +308,6 @@ export default function AddPostScreen() {
           {errors.finishDay && (
             <Text style={{ color: "red" }}>{errors.finishDay.message}</Text>
           )}
-        </View>
-
-        <View className="mb-4 mt-4">
-          <Text className="text-lg font-semibold text-start">
-            {/* {date.toDateString()} */}
-            Tenggat Pilih Pekerja
-          </Text>
-          <View className="flex-row justify-start items-center w-full">
-            <Ionicons name="accessibility-outline" size={24} color="#303030" />
-            <TouchableOpacity
-              onPress={() => setShow(true)}
-              className="flex-row justify-start items-center border border-gray-200 p-2 rounded-lg mr-1"
-            >
-              <Text>Pilih Tanggal</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => setShowTime(true)}
-              className="flex-row justify-start items-center border border-gray-200 p-2 rounded-lg mr-1"
-            >
-              <Text>Pilih Waktu</Text>
-            </TouchableOpacity>
-            {show && (
-              <RNDateTimePicker
-                testID="date"
-                value={date}
-                is24Hour={true}
-                mode="date"
-                display="default"
-                minimumDate={new Date()}
-                onChange={(e) => {
-                  setShow(false);
-                  setDate(new Date(e.nativeEvent.timestamp));
-                  // console.log("ASASA: ", e.nativeEvent.timestamp);
-                }}
-              />
-            )}
-            {showTime && (
-              <RNDateTimePicker
-                testID="time"
-                value={date}
-                is24Hour={true}
-                mode="time"
-                display="default"
-                onChange={(e) => {
-                  setShowTime(false);
-                  setTime(new Date(e.nativeEvent.timestamp));
-                  console.log("ASASA: ", e);
-                }}
-              />
-            )}
-          </View>
-          <Text className="text-sm text-[#343434] mt-1">
-            {date.toDateString()} | {time.toLocaleTimeString()}
-          </Text>
-          {/* {errors.title && (
-          <Text style={{ color: "red" }}>{errors.title.message}</Text>
-        )} */}
         </View>
 
         {/* Image Upload Section */}
