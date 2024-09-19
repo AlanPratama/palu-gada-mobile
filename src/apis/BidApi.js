@@ -1,5 +1,6 @@
 import { axiosInstance } from "./axiosInstance";
 import PostApi from "./PostApi";
+import UserApi from "./UserApi";
 
 export default class BidApi {
     static async createBid(request) {
@@ -30,6 +31,7 @@ export default class BidApi {
             console.log("ASASA: ", res);
             if(res?.data?.status === "OK") {
                 await PostApi.getPosts();
+                await UserApi.getAuthenticated()
                 return true
             }
 
