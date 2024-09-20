@@ -104,6 +104,12 @@ export default function HomeScreen() {
         <Text className="text-[26px] font-bold text-primary">Kerjain Aja</Text>
         <View className="flex-row justify-center items-center gap-x-2">
           <TouchableOpacity
+            onPress={() => navigate.push("MyReportPost")}
+            activeOpacity={0.5}
+          >
+            <Ionicons name="alert-circle-outline" size={26} color="#343434" />
+          </TouchableOpacity>
+          <TouchableOpacity
             onPress={() => navigate.navigate("Notification")}
             activeOpacity={0.5}
           >

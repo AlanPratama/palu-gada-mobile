@@ -64,7 +64,7 @@ export default function PostDetailScreen({ route }) {
             </Text>
           </TouchableOpacity>
         </View>
-        {post.user.id !== user.id && (
+        {post.user.id !== user.id ? (
           <TouchableOpacity
             onPress={() => refSheetReportPost.current?.open()}
             activeOpacity={0.7}
@@ -73,6 +73,16 @@ export default function PostDetailScreen({ route }) {
             <Ionicons name="megaphone-outline" size={24} color={"#fff"} />
             <Text className="text-white ml-2 font-semibold">Laporkan</Text>
           </TouchableOpacity>
+        ) : (
+          null
+          // <TouchableOpacity
+          //   onPress={() => refSheetReportPost.current?.open()}
+          //   activeOpacity={0.7}
+          //   className="flex-row justify-center items-center bg-red-500 px-2 py-1 rounded"
+          // >
+          //   {/* <Ionicons name="trash-outline" size={24} color={"#fff"} /> */}
+          //   <Text className="text-white ml-2 font-semibold">Hapus Postingan</Text>
+          // </TouchableOpacity>
         )}
       </View>
 
@@ -182,21 +192,30 @@ export default function PostDetailScreen({ route }) {
           {post.user.id === user.id ? (
             <View className="flex-row justify-between items-center">
               <TouchableOpacity
-                onPress={() => navigate.navigate("UpdatePost", { post })}
+                onPress={() => refSheetPostDetailBid.current?.open()}
                 activeOpacity={0.7}
-                className="bg-green-500 w-[48%] py-3.5 rounded-full "
+                className="bg-primary w-[32%] py-2.5 rounded-full "
               >
                 <Text className="text-base text-white text-center font-semibold">
-                  Edit Postingan
+                  Penawaran
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => refSheetPostDetailBid.current?.open()}
+                onPress={() => navigate.navigate("UpdatePost", { post })}
                 activeOpacity={0.7}
-                className="bg-primary w-[48%] py-3.5 rounded-full "
+                className="bg-green-500 w-[32%] py-2.5 rounded-full "
               >
                 <Text className="text-base text-white text-center font-semibold">
-                  Detail Penawaran
+                  Edit
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigate.navigate("UpdatePost", { post })}
+                activeOpacity={0.7}
+                className="bg-red-500 w-[32%] py-2.5 rounded-full "
+              >
+                <Text className="text-base text-white text-center font-semibold">
+                  Hapus
                 </Text>
               </TouchableOpacity>
             </View>
@@ -276,7 +295,7 @@ export default function PostDetailScreen({ route }) {
         </View>
       </View>
 
-      <BottomSheetReportPost refRBSheet={refSheetReportPost} />
+      <BottomSheetReportPost refRBSheet={refSheetReportPost} postId={post.id} />
 
       {post.user.id === user.id ? (
         <>

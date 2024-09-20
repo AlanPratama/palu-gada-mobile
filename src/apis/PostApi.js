@@ -158,4 +158,39 @@ export default class PostApi {
       console.log("PostApi getPosts: ", error);
     }
   }
+
+  static async getReportPost(page, size = 9999) {
+    try {
+      const { data } = await axiosInstance.get("/post-reports", {
+        params: {
+          page,
+          size
+        }
+      })
+
+      console.log(data.data);
+
+      return data.data;
+    } catch(error) {
+      console.log("PostApi reportPost: ", error);
+    }
+
+  }
+
+  static async reportPost(request) {
+    try {
+      const { data } = await axiosInstance.post("/post-reports", request)
+      console.log(data);
+
+      if (data.status === "Created") {
+        alert("Report Success!");
+        return true;
+      }
+      
+      return false
+    } catch(error) {
+      console.log("PostApi reportPost: ", error);
+    }
+
+  }
 }

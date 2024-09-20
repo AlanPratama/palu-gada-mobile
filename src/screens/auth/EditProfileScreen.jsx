@@ -33,7 +33,7 @@ export default function EditProfileScreen() {
 
   const [showDate, setShowDate] = useState(false);
 
-  const [gender, setGender] = useState(user.userGender);
+  const [gender, setGender] = useState(user.userGender.charAt(0).toUpperCase() + user.userGender.slice(1).toLowerCase());
   const [birthDate, setBirthDate] = useState(new Date(user.birthDate));
   const [selectedDistrict, setSelectedDistrict] = useState();
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -82,7 +82,7 @@ export default function EditProfileScreen() {
     formData.append("phone", data.phone);
     formData.append("address", data.address);
     formData.append("name", data.name);
-    formData.append("birthDate", birthDate.toLocaleDateString("id-ID"));
+    formData.append("birthDate", birthDate.toISOString().split("T")[0]);
     formData.append("userGender", gender);
     formData.append("userCategoriesId", selectedCategories);
     formData.append("districtId", selectedDistrict);
@@ -251,7 +251,7 @@ export default function EditProfileScreen() {
             <Ionicons name="calendar-outline" size={24} color="#303030" />
             <TouchableOpacity onPress={() => setShowDate(true)} className="border-b-2 border-[#d1d1d1] ml-2 py-2 w-[90%]">
               {/* <Text className="text-[#909090]">{birthDate !== new Date() ? birthDate.toDateString() : "Tanggal Lahir"}</Text> */}
-              <Text className="text-[#909090]">{ birthDate.toLocaleDateString("id-ID") }</Text>
+              <Text className="text-[#909090]">{ birthDate.toISOString().split("T")[0] }</Text>
             </TouchableOpacity>
           </View>
           {showDate && (
@@ -277,11 +277,11 @@ export default function EditProfileScreen() {
           </Text>
           <View className="flex-row justify-start items-center w-full mt-1.5">
             <Ionicons name="male-female-outline" size={24} color="#303030" />
-            <TouchableOpacity onPress={() => setGender("MALE")} className={`${gender === "MALE" ? "border-[#3f45f9] text-[#3f45f9] bg-[#eff6ff71]" : "border-[#d1d1d1] text-[#303030]"} rounded-[4px] border-2 ml-2 py-1 px-2.5`}>
-              <Text className={`${gender === "MALE" ? "text-[#3f45f9]" : "text-[#858585]"} text-center text-sm font-normal uppercase`}>Pria</Text>
+            <TouchableOpacity onPress={() => setGender("Male")} className={`${gender === "Male" ? "border-[#3f45f9] text-[#3f45f9] bg-[#eff6ff71]" : "border-[#d1d1d1] text-[#303030]"} rounded-[4px] border-2 ml-2 py-1 px-2.5`}>
+              <Text className={`${gender === "Male" ? "text-[#3f45f9]" : "text-[#858585]"} text-center text-sm font-normal uppercase`}>Pria</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setGender("FEMALE")} className={`${gender === "FEMALE" ? "border-[#3f45f9] text-[#3f45f9] bg-[#eff6ff71]" : "border-[#d1d1d1] text-[#303030]"} rounded-[4px] border-2 ml-2 py-1 px-2.5`}>
-              <Text className={`${gender === "FEMALE" ? "text-[#3f45f9]" : "text-[#858585]"} text-center text-sm font-normal uppercase`}>Wanita</Text>
+            <TouchableOpacity onPress={() => setGender("Female")} className={`${gender === "Female" ? "border-[#3f45f9] text-[#3f45f9] bg-[#eff6ff71]" : "border-[#d1d1d1] text-[#303030]"} rounded-[4px] border-2 ml-2 py-1 px-2.5`}>
+              <Text className={`${gender === "Female" ? "text-[#3f45f9]" : "text-[#858585]"} text-center text-sm font-normal uppercase`}>Wanita</Text>
             </TouchableOpacity>
             {/* <TextInput
               className="border-b-2 border-[#d1d1d1] text-[#303030] ml-2 py-2 w-[90%]"

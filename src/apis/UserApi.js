@@ -20,7 +20,7 @@ export default class UserApi {
     console.log("formData: ", formData);
     console.log("userId: ", userId);
     try {
-      const { data } = await axiosInstance.put(`/users/${userId}`, formData, {
+      const { data } = await axiosInstance.put(`/users`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

@@ -23,6 +23,7 @@ import ProtectedRoutes from "./ProtectedRoutes";
 import PublicRoutes from "./PublicRoutes";
 import MyPostScreen from "../screens/auth/Post/MyPostScreen";
 import UpdatePostScreen from "../screens/auth/Post/UpdatePostScreen";
+import MyReportPostScreen from "../screens/auth/Post/MyReportPostScreen";
 
 export default function AppNavigator() {
   const Stack = createNativeStackNavigator();
@@ -109,6 +110,7 @@ export default function AppNavigator() {
                 />
                 <Stack.Screen name="MyPost" component={MyPostScreen} />
                 <Stack.Screen name="UpdatePost" component={UpdatePostScreen} />
+                <Stack.Screen name="MyReportPost" component={MyReportPostScreen} />
               </>
             ) : (
               <Stack.Screen name="Public" component={PublicRoutes} />
