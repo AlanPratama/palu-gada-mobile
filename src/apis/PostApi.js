@@ -70,10 +70,13 @@ export default class PostApi {
           title,
           sortField: "createdAt",
           sortDirection: "desc",
+          status: 'AVAILABLE'
         },
       });
 
-      store.dispatch(setPost(data.data.items));
+      const items = data.data.items;
+      store.dispatch(setPost(items));
+      return { length: items.length }
     } catch (error) {
       store.dispatch(setError(error.message));
       console.log("PostApi getPosts: ", error);
@@ -88,7 +91,8 @@ export default class PostApi {
     size = 5,
     title,
     sortField,
-    sortDirection
+    sortDirection,
+    categoryIds = '' // Pakai koma jika ingin filter banyak kategori - contoh: 1,2,3
   ) {
     try {
       store.dispatch(setError(null));
@@ -101,6 +105,8 @@ export default class PostApi {
           title,
           sortField,
           sortDirection,
+          status: 'AVAILABLE',
+          categoryIds
         },
       });
       const items = data.data.items;
@@ -127,9 +133,10 @@ export default class PostApi {
           sortDirection: "desc",
         },
       });
-      const items = data.data.items;
 
+      const items = data.data.items;
       store.dispatch(setMyPost(items));
+      return { length: items.length }
     } catch (error) {
       store.dispatch(setError(error.message));
       console.log("PostApi getMyPosts: ", error);

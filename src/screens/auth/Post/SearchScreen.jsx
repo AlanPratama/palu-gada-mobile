@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TouchableOpacity, ScrollView, FlatList, Keyboard } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, FlatList, Keyboard, RefreshControl } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
@@ -12,34 +12,43 @@ import { clearPost } from "../../../redux/auth/postSlice";
 export default function SearchScreen() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
+  const [endPage, setEndPage] = useState(false)
+  const [refreshing, setRefreshing] = useState(false); // State for pull-to-refresh
 
-  const { items: postItems, loading } = useSelector((state) => state.post);
+  const { items: postItems, isLoading } = useSelector((state) => state.post);
   const { items: catItems } = useSelector((state) => state.category);
 
   const searchPost = async () => {
     Keyboard.dismiss()
-    store.dispatch(clearPost());
-    setPage(0);
+    resetPostItems()
   }
 
   const handleSearchClear = () => {
     setSearch('')
+    resetPostItems()
+  }
+
+  const resetPostItems = () => {
     store.dispatch(clearPost());
+    setEndPage(false);
     if (page !== 0) {
       setPage(0);
     } else {
-      loadPosts()
+      loadPosts(page, search);
     }
   }
 
   const loadPosts = async (pageNumber = 0, searchQuery = "") => {
-    if (!loading) {
-      await PostApi.getPosts(pageNumber, 10, searchQuery);
+    if (!isLoading) {
+      const result = await PostApi.getPosts(pageNumber, 10, searchQuery);
+      if (result.length < 10) {
+        setEndPage(true);
+      }
     }
   };
 
   const handleLoadMore = () => {
-    if (!loading) {
+    if (!isLoading && !endPage) {
       setPage((prevPage) => prevPage + 1);
     }
   };
@@ -47,6 +56,12 @@ export default function SearchScreen() {
   useEffect(() => {
     loadPosts(page, search);
   }, [page]);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    resetPostItems()
+    setRefreshing(false);
+  };
 
   return (
     <View className='bg-white min-h-screen p-3'>
@@ -87,12 +102,15 @@ export default function SearchScreen() {
           }}
           onEndReached={handleLoadMore}
           onEndReachedThreshold={0.5}
-          ListFooterComponent={loading ? <Text>Loading...</Text> : null}
+          ListFooterComponent={isLoading && page != 0 ? <Text className='text-center'>Loading...</Text> : null}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 280 }}
+          contentContainerStyle={{ paddingBottom: 320 }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
           ListEmptyComponent={(
             <View className='flex-1 h-96 items-center justify-center'>
-              <Text className='text-lg'>{loading ? 'Loading...' : 'Data tidak di temukan'}</Text>
+              <Text className='text-lg'>{isLoading && page == 0 ? 'Loading...' : 'Data tidak di temukan'}</Text>
             </View>
           )}
         />

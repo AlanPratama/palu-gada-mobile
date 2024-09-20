@@ -1,45 +1,53 @@
-import { View, Text, ScrollView, TouchableOpacity, Image, TextInput, Keyboard, FlatList } from 'react-native'
-import { useEffect, useState } from 'react'
-import Animated, { FadeIn } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
-import { useSelector } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
+import { useEffect, useState } from 'react'
+import { FlatList, Keyboard, RefreshControl, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import Animated, { FadeIn } from 'react-native-reanimated'
+import { useSelector } from 'react-redux'
 
-import PostCard from '../../../components/Post/PostCard'
 import PostApi from '../../../apis/PostApi'
-import store from '../../../redux/store'
+import PostCard from '../../../components/Post/PostCard'
 import { clearMyPost } from '../../../redux/auth/postSlice'
+import store from '../../../redux/store'
 
 export default function MyPostScreen() {
-  const navigate = useNavigation()
-  const { myPost, loading } = useSelector((state) => state.post);
+  const { myPost, isLoading } = useSelector((state) => state.post);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
+  const [endPage, setEndPage] = useState(false)
+  const [refreshing, setRefreshing] = useState(false); // State for pull-to-refresh
 
   const searchPost = async () => {
     Keyboard.dismiss()
-    store.dispatch(clearMyPost());
-    setPage(0);
+    resetPostItems()
   }
 
   const handleSearchClear = () => {
     setSearch('')
+    resetPostItems()
+  }
+
+  const resetPostItems = () => {
     store.dispatch(clearMyPost());
+    setEndPage(false);
     if (page !== 0) {
       setPage(0);
     } else {
-      loadPosts()
+      loadPosts(page, search);
     }
   }
 
   const loadPosts = async (pageNumber = 0, searchQuery = "") => {
-    if (!loading) {
-      await PostApi.getMyPosts(pageNumber, 10, searchQuery);
+    if (!isLoading) {
+      const result = await PostApi.getMyPosts(pageNumber, 10, searchQuery);
+      if (result.length < 10) {
+        setEndPage(true);
+      }
     }
   };
 
   const handleLoadMore = () => {
-    if (!loading) {
+    if (!isLoading && !endPage) {
       setPage((prevPage) => prevPage + 1);
     }
   };
@@ -47,6 +55,12 @@ export default function MyPostScreen() {
   useEffect(() => {
     loadPosts(page, search);
   }, [page]);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    resetPostItems()
+    setRefreshing(false);
+  };
 
   return (
     <View className="min-h-screen bg-white">
@@ -94,12 +108,15 @@ export default function MyPostScreen() {
           }}
           onEndReached={handleLoadMore}
           onEndReachedThreshold={0.5}
-          ListFooterComponent={loading ? <Text>Loading...</Text> : null}
+          ListFooterComponent={isLoading && page != 0 ? <Text className='text-center'>Loading...</Text> : null}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 280 }}
+          contentContainerStyle={{ paddingBottom: 320 }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
           ListEmptyComponent={(
             <View className='flex-1 h-96 items-center justify-center'>
-              <Text className='text-lg'>{loading ? 'Loading...' : 'Data tidak di temukan'}</Text>
+              <Text className='text-lg'>{isLoading && page == 0 ? 'Loading...' : 'Data tidak di temukan'}</Text>
             </View>
           )}
         />

@@ -7,7 +7,7 @@ const ChipCategory = ({ cat }) => {
     return (
         <TouchableOpacity
             onPress={() =>
-                navigate.navigate("PostByCategory", { id: cat.id })
+                navigate.navigate("PostByCategory", { id: cat.id, name: cat.name })
             }
             className="bg-blue-100 rounded-full px-3.5 py-1 mr-2 justify-center items-center"
         >
