@@ -92,7 +92,8 @@ export default class PostApi {
     title,
     sortField,
     sortDirection,
-    categoryIds = '' // Pakai koma jika ingin filter banyak kategori - contoh: 1,2,3
+    categoryIds = '', // Pakai koma jika ingin filter banyak kategori - contoh: 1,2,3
+    districtIds = '' // Pakai koma jika ingin filter banyak district - contoh: 1,2,3
   ) {
     try {
       store.dispatch(setError(null));
@@ -106,7 +107,8 @@ export default class PostApi {
           sortField,
           sortDirection,
           status: 'AVAILABLE',
-          categoryIds
+          categoryIds,
+          districtIds
         },
       });
       const items = data.data.items;
@@ -171,7 +173,7 @@ export default class PostApi {
       console.log(data.data);
 
       return data.data;
-    } catch(error) {
+    } catch (error) {
       console.log("PostApi reportPost: ", error);
     }
 
@@ -186,9 +188,9 @@ export default class PostApi {
         alert("Report Success!");
         return true;
       }
-      
+
       return false
-    } catch(error) {
+    } catch (error) {
       console.log("PostApi reportPost: ", error);
     }
 

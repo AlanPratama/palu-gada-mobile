@@ -44,21 +44,9 @@ export default function HomeScreen() {
   const fetchAllData = async () => {
     await CategoryApi.getCategories();
     await DistrictApi.getDistricts();
-    const resPostClosest = await PostApi.getPostsReturn(
-      0,
-      5,
-      "",
-      "title",
-      "asc"
-    );
+    const resPostClosest = await PostApi.getPostsReturn(0, 5, "", "title", "asc", '', user.district?.id);
     setPostClosest(resPostClosest);
-    const resPostLatest = await PostApi.getPostsReturn(
-      0,
-      5,
-      "",
-      "createdAt",
-      "desc"
-    );
+    const resPostLatest = await PostApi.getPostsReturn(0, 5, "", "createdAt", "desc");
     setPostLatest(resPostLatest);
   };
   const setUser = async () => {
