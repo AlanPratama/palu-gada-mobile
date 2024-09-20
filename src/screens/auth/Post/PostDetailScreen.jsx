@@ -7,13 +7,12 @@ import BottomSheetAddBid from "../../../components/Post/BottomSheetAddBid";
 import BottomSheetReportPost from "../../../components/Post/BottomSheetReportPost";
 import { useSelector } from "react-redux";
 import BottomSheetPostDetailBid from "../../../components/Post/BottomSheetPostDetailBid";
-import PostApi from "../../../apis/PostApi";
 
 export default function PostDetailScreen({ route }) {
   const { post } = route.params;
   const { user } = useSelector((state) => state.auth);
   // const { item: post } = useSelector((state) => state.post);
-  console.log("ZUL JERK OFF: ", post);
+  // console.log("ZUL JERK OFF: ", post);
 
   const [alreadyBid, setAlreadyBid] = useState(false);
 
@@ -37,6 +36,15 @@ export default function PostDetailScreen({ route }) {
     const hasBid = post.bids.some((bid) => bid.user.id === user.id);
     setAlreadyBid(hasBid);
   }, [post.bids]);
+
+  const hanldeTambahPenawaran = () => {
+    if (user.address != null && user.name != null && user.nik != null && user.birthDate != null && user.district != null && user.phone != null && user.userGender != null) {
+      refSheetAddBid.current?.open()
+    } else {
+      alert('Lengkapi terlebih dahulu profile anda!')
+      navigate.navigate('EditProfile')
+    }
+  }
 
   return (
     <ScrollView
@@ -194,7 +202,7 @@ export default function PostDetailScreen({ route }) {
             </View>
           ) : (
             <TouchableOpacity
-              onPress={() => refSheetAddBid.current?.open()}
+              onPress={hanldeTambahPenawaran}
               activeOpacity={0.7}
               disabled={
                 alreadyBid ||
