@@ -5,6 +5,7 @@ import HomeScreen from '../screens/auth/HomeScreen';
 import ProfileScreen from '../screens/auth/ProfileScreen';
 import SearchScreen from '../screens/auth/Post/SearchScreen';
 import MyPostScreen from '../screens/auth/Post/MyPostScreen';
+import MyBidScreen from '../screens/auth/Post/MyBidScreen';
 
 export default function ProtectedRoutes() {
   const Tab = createBottomTabNavigator();
@@ -121,12 +122,12 @@ export default function ProtectedRoutes() {
 
       {/* Profile Tab */}
       <Tab.Screen
-        name="Profile"
-        component={HomeScreen}
+        name="MyBid"
+        component={MyBidScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <Ionicons
-              name="person-outline"
+              name="file-tray-full-outline"
               size={24}
               color={focused ? 'blue' : 'black'}
             />

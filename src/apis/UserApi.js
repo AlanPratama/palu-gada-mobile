@@ -32,7 +32,7 @@ export default class UserApi {
     } catch (error) {
       if (error.response) {
         // Error dari API
-        console.log("API Response Error: ", error.response.data);
+        console.log("API Response Error: ", error.response);
       } else if (error.request) {
         // Tidak ada response dari API
         console.log("No response from API: ", error.request);

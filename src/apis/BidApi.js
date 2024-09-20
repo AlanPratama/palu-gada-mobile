@@ -3,6 +3,20 @@ import PostApi from "./PostApi";
 import UserApi from "./UserApi";
 
 export default class BidApi {
+
+  static async myBids(userId) {
+    console.log("REQ CREAATE BID: ", request);
+    try {
+      const res = await axiosInstance.get(`/bids/user/${userId}`);
+      console.log("ASASA: ", res.data);
+
+      
+
+    } catch (error) {
+      console.log("BidApi createBid: ", error.response);
+    }
+  } 
+
   static async createBid(request) {
     console.log("REQ CREAATE BID: ", request);
 

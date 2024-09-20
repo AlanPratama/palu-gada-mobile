@@ -98,7 +98,7 @@ export default function HomeScreen() {
       className="bg-white min-h-screen "
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      } // Pull-to-refresh functionality
+      }
     >
       <View className="bg-[#fff] px-3 pt-4 flex-row justify-between items-center">
         <Text className="text-[26px] font-bold text-primary">Kerjain Aja</Text>

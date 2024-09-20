@@ -50,7 +50,7 @@ export default function MyPostScreen() {
 
   return (
     <View className="min-h-screen bg-white">
-      <Animated.View entering={FadeIn.delay(100)} className="flex-row justify-between items-center p-3">
+      {/* <Animated.View entering={FadeIn.delay(100)} className="flex-row justify-between items-center p-3">
         <View className="flex-row justify-start items-center gap-x-2">
           <TouchableOpacity
             onPress={() => navigate.goBack()}
@@ -63,7 +63,7 @@ export default function MyPostScreen() {
             </Text>
           </TouchableOpacity>
         </View>
-      </Animated.View>
+      </Animated.View> */}
 
       <View className="p-3  pb-28">
         <Text className="text-2xl font-bold text-[#343434]">Postingan Kamu</Text>
