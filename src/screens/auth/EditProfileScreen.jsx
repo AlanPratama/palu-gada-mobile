@@ -12,33 +12,49 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { MultipleSelectList, SelectList } from "react-native-dropdown-select-list";
 import { useSelector } from "react-redux";
 import UserApi from "../../apis/UserApi";
-
+import { MultiSelect } from "react-native-element-dropdown";
+import { SelectList } from "react-native-dropdown-select-list";
 
 export default function EditProfileScreen() {
   const navigate = useNavigation();
 
-  const { items: catItems } = useSelector((state) => state.category)
-  const { user } = useSelector((state) => state.auth)
-  const { district } = useSelector((state) => state.district)
+  const { items: catItems } = useSelector((state) => state.category);
+  const { user } = useSelector((state) => state.auth);
+  const { district } = useSelector((state) => state.district);
 
   // console.log("USER: ", user);
 
-  const categoriesData = catItems.map((item) => ({ key: item.id, value: item.name }));
-  const districtData = district.map((item) => ({ key: item.id, value: item.districtName }));
+  const categoriesData = catItems.map((item) => ({
+    label: item.name,
+    value: item.id,
+  }));
 
-  // console.log("categoriesData: ", categoriesData);
 
+
+  const districtData = district.map((item) => ({
+    key: item.id,
+    value: item.districtName,
+  }));
+
+  console.log("USER: ", user);
+  
+  const defaultSelectedCategories = user.userCategories.map((item) => item.id);
+  console.log("categoriesData: ", defaultSelectedCategories);
+  
   const [showDate, setShowDate] = useState(false);
 
-  const [gender, setGender] = useState(user.userGender.charAt(0).toUpperCase() + user.userGender.slice(1).toLowerCase());
+  const [gender, setGender] = useState(
+    user.userGender.charAt(0).toUpperCase() +
+      user.userGender.slice(1).toLowerCase()
+  );
   const [birthDate, setBirthDate] = useState(new Date(user.birthDate));
-  const [selectedDistrict, setSelectedDistrict] = useState();
-  const [selectedCategories, setSelectedCategories] = useState([]);
-
-  // const defaultSelectedCategories = user.userCategories.map((item) => ({ key: item.id, value: item.category.name }));
+  const [selectedDistrict, setSelectedDistrict] = useState(user.district.id);
+  const [selectedCategories, setSelectedCategories] =
+    useState(user.userCategories.map((item) => item.category.id));
+    console.log(categoriesData);
+    
 
   const {
     control,
@@ -51,7 +67,7 @@ export default function EditProfileScreen() {
       phone: user.phone,
       address: user.address,
       nik: user.nik,
-      bankAccount: user.bankAccount
+      bankAccount: user.bankAccount,
     },
   });
 
@@ -59,7 +75,7 @@ export default function EditProfileScreen() {
     console.log("SELECTED: ", selectedCategories);
 
     const formData = new FormData();
-    
+
     formData.append("name", data.name);
     formData.append("about", data.about);
     formData.append("phone", data.phone);
@@ -71,20 +87,15 @@ export default function EditProfileScreen() {
     formData.append("userCategoriesId", selectedCategories);
     formData.append("districtId", selectedDistrict);
 
-  if (image) {
-    // formData.append("file", image);
+    if (image) {
+      // formData.append("file", image);
       formData.append("file", {
         uri: image.uri,
         type: image.type,
         name: image.name,
       });
-  }
+    }
 
-
-    // console.log("REQUEST: ", formData);
-    // console.log("user.id: ", user.id);
-    
-    setSelectedCategories([])
     const res = await UserApi.updateProfile(formData, user.id);
     // const res = await axiosInstance.put(`/users/${user.id}`, formData, {
     //   headers: {
@@ -92,23 +103,20 @@ export default function EditProfileScreen() {
     //   }
     // });
 
-
     // console.log("RES: ", res);
-    
-    if(res?.status === "OK") {
-      alert("Update profile success!")
-      await UserApi.getAuthenticated()
-      navigate.goBack()
+
+    if (res?.status === "OK") {
+      alert("Update profile success!");
+      await UserApi.getAuthenticated();
+      navigate.goBack();
       // reset();
     } else {
-      alert("ada yang aneh coy!")
+      alert("ada yang aneh coy!");
     }
   };
 
-
   const [image, setImage] = useState(null);
   console.log("asasa: ", image);
-  
 
   const pickImage = async () => {
     const permissionResult =
@@ -130,15 +138,14 @@ export default function EditProfileScreen() {
 
     if (!result.canceled) {
       const imageUri = result.assets[0].uri;
-      const fileType = imageUri.substring(imageUri.lastIndexOf(".") + 1);  
+      const fileType = imageUri.substring(imageUri.lastIndexOf(".") + 1);
 
       // setImage(result);
       setImage({
         uri: imageUri,
         type: `image/${fileType}`, // Mendapatkan tipe file dari ekstensi
-        name: `photo.${fileType}`,  // Nama file untuk dikirim ke server
+        name: `photo.${fileType}`, // Nama file untuk dikirim ke server
       });
-  
     }
   };
 
@@ -146,16 +153,40 @@ export default function EditProfileScreen() {
     <ScrollView>
       <View className="bg-white min-h-screen justify-start items-center px-4">
         <View>
-          <TouchableOpacity activeOpacity={0.7} onPress={pickImage} className="rounded-full border-2 border-gray-100 my-6">
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={pickImage}
+            className="rounded-full border-2 border-gray-100 my-6"
+          >
             <Image
               source={{
-                uri: image ? image.uri : user.photoUrl ? user.photoUrl : "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
+                uri: image
+                  ? image.uri
+                  : user.photoUrl
+                  ? user.photoUrl
+                  : "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
               }}
               alt="Profile Pic"
               className="w-32 h-32 rounded-full"
             />
           </TouchableOpacity>
-          { image ? (<TouchableOpacity activeOpacity={0.7} onPress={() => setImage(null)} className="absolute bottom-5 right-5 bg-primary p-1.5 rounded-full"><Ionicons name="close-circle-outline" size={22} color="white" /></TouchableOpacity>) : (<TouchableOpacity activeOpacity={0.7} onPress={pickImage} className="absolute bottom-5 right-5 bg-primary p-1.5 rounded-full"><Ionicons name="camera" size={22} color="white" /></TouchableOpacity>) }
+          {image ? (
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => setImage(null)}
+              className="absolute bottom-5 right-5 bg-primary p-1.5 rounded-full"
+            >
+              <Ionicons name="close-circle-outline" size={22} color="white" />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={pickImage}
+              className="absolute bottom-5 right-5 bg-primary p-1.5 rounded-full"
+            >
+              <Ionicons name="camera" size={22} color="white" />
+            </TouchableOpacity>
+          )}
         </View>
 
         <View className="mb-4">
@@ -177,7 +208,9 @@ export default function EditProfileScreen() {
               )}
             />
           </View>
-          {errors.name && <Text style={{ color: "red" }}>{errors.name.message}</Text>}
+          {errors.name && (
+            <Text style={{ color: "red" }}>{errors.name.message}</Text>
+          )}
         </View>
 
         <View className="mb-4">
@@ -234,7 +267,11 @@ export default function EditProfileScreen() {
             <Controller
               control={control}
               name="phone"
-              rules={{ required: "Nomor telepon wajib diisi!", validate: (value) => value.length >= 10 || "Nomor telepon minimal 10 digit!" }}
+              rules={{
+                required: "Nomor telepon wajib diisi!",
+                validate: (value) =>
+                  value.length >= 10 || "Nomor telepon minimal 10 digit!",
+              }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
                   onBlur={onBlur}
@@ -247,7 +284,9 @@ export default function EditProfileScreen() {
               )}
             />
           </View>
-          {errors.phone && <Text style={{ color: "red" }}>{errors.phone.message}</Text>}
+          {errors.phone && (
+            <Text style={{ color: "red" }}>{errors.phone.message}</Text>
+          )}
         </View>
 
         <View className="mb-4">
@@ -259,7 +298,12 @@ export default function EditProfileScreen() {
             <Controller
               control={control}
               name="nik"
-              rules={{ required: "NIK wajib diisi!", validate: (value) => value.length >= 16 || "Nomor Induk Kependudukan (NIK) minimal 16 digit!" }}
+              rules={{
+                required: "NIK wajib diisi!",
+                validate: (value) =>
+                  value.length >= 16 ||
+                  "Nomor Induk Kependudukan (NIK) minimal 16 digit!",
+              }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
                   onBlur={onBlur}
@@ -272,19 +316,23 @@ export default function EditProfileScreen() {
               )}
             />
           </View>
-          {errors.nik && <Text style={{ color: "red" }}>{errors.nik.message}</Text>}
+          {errors.nik && (
+            <Text style={{ color: "red" }}>{errors.nik.message}</Text>
+          )}
         </View>
 
         <View className="mb-4">
-          <Text className="text-lg font-semibold text-start">
-            Bank Account
-          </Text>
+          <Text className="text-lg font-semibold text-start">Bank Account</Text>
           <View className="flex-row justify-start items-center w-full">
             <Ionicons name="card-outline" size={24} color="#303030" />
             <Controller
               control={control}
               name="bankAccount"
-              rules={{ required: "Bank Account wajib diisi!", validate: (value) => value.length >= 8 || "Bank Account minimal 8 digit!" }}
+              rules={{
+                required: "Bank Account wajib diisi!",
+                validate: (value) =>
+                  value.length >= 8 || "Bank Account minimal 8 digit!",
+              }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
                   onBlur={onBlur}
@@ -297,7 +345,9 @@ export default function EditProfileScreen() {
               )}
             />
           </View>
-          {errors.bankAccount && <Text style={{ color: "red" }}>{errors.bankAccount.message}</Text>}
+          {errors.bankAccount && (
+            <Text style={{ color: "red" }}>{errors.bankAccount.message}</Text>
+          )}
         </View>
 
         <View className="mb-4">
@@ -306,26 +356,31 @@ export default function EditProfileScreen() {
           </Text>
           <View className="flex-row justify-start items-center w-full">
             <Ionicons name="calendar-outline" size={24} color="#303030" />
-            <TouchableOpacity onPress={() => setShowDate(true)} className="border-b-2 border-[#d1d1d1] ml-2 py-2 w-[90%]">
+            <TouchableOpacity
+              onPress={() => setShowDate(true)}
+              className="border-b-2 border-[#d1d1d1] ml-2 py-2 w-[90%]"
+            >
               {/* <Text className="text-[#909090]">{birthDate !== new Date() ? birthDate.toDateString() : "Tanggal Lahir"}</Text> */}
-              <Text className="text-[#909090]">{ birthDate.toISOString().split("T")[0] }</Text>
+              <Text className="text-[#909090]">
+                {birthDate.toISOString().split("T")[0]}
+              </Text>
             </TouchableOpacity>
           </View>
           {showDate && (
-              <RNDateTimePicker
-                testID="date"
-                value={birthDate}
-                is24Hour={true}
-                mode="date"
-                display="default"
-                maximumDate={new Date()}
-                onChange={(e) => {
-                  setShowDate(false);
-                  setBirthDate(new Date(e.nativeEvent.timestamp));
-                  // console.log("ASASA: ", e.nativeEvent.timestamp);
-                }}
-              />
-            )}
+            <RNDateTimePicker
+              testID="date"
+              value={birthDate}
+              is24Hour={true}
+              mode="date"
+              display="default"
+              maximumDate={new Date()}
+              onChange={(e) => {
+                setShowDate(false);
+                setBirthDate(new Date(e.nativeEvent.timestamp));
+                // console.log("ASASA: ", e.nativeEvent.timestamp);
+              }}
+            />
+          )}
         </View>
 
         <View className="w-full mb-4">
@@ -334,11 +389,37 @@ export default function EditProfileScreen() {
           </Text>
           <View className="flex-row justify-start items-center w-full mt-1.5">
             <Ionicons name="male-female-outline" size={24} color="#303030" />
-            <TouchableOpacity onPress={() => setGender("Male")} className={`${gender === "Male" ? "border-[#3f45f9] text-[#3f45f9] bg-[#eff6ff71]" : "border-[#d1d1d1] text-[#303030]"} rounded-[4px] border-2 ml-2 py-1 px-2.5`}>
-              <Text className={`${gender === "Male" ? "text-[#3f45f9]" : "text-[#858585]"} text-center text-sm font-normal uppercase`}>Pria</Text>
+            <TouchableOpacity
+              onPress={() => setGender("Male")}
+              className={`${
+                gender === "Male"
+                  ? "border-[#3f45f9] text-[#3f45f9] bg-[#eff6ff71]"
+                  : "border-[#d1d1d1] text-[#303030]"
+              } rounded-[4px] border-2 ml-2 py-1 px-2.5`}
+            >
+              <Text
+                className={`${
+                  gender === "Male" ? "text-[#3f45f9]" : "text-[#858585]"
+                } text-center text-sm font-normal uppercase`}
+              >
+                Pria
+              </Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setGender("Female")} className={`${gender === "Female" ? "border-[#3f45f9] text-[#3f45f9] bg-[#eff6ff71]" : "border-[#d1d1d1] text-[#303030]"} rounded-[4px] border-2 ml-2 py-1 px-2.5`}>
-              <Text className={`${gender === "Female" ? "text-[#3f45f9]" : "text-[#858585]"} text-center text-sm font-normal uppercase`}>Wanita</Text>
+            <TouchableOpacity
+              onPress={() => setGender("Female")}
+              className={`${
+                gender === "Female"
+                  ? "border-[#3f45f9] text-[#3f45f9] bg-[#eff6ff71]"
+                  : "border-[#d1d1d1] text-[#303030]"
+              } rounded-[4px] border-2 ml-2 py-1 px-2.5`}
+            >
+              <Text
+                className={`${
+                  gender === "Female" ? "text-[#3f45f9]" : "text-[#858585]"
+                } text-center text-sm font-normal uppercase`}
+              >
+                Wanita
+              </Text>
             </TouchableOpacity>
             {/* <TextInput
               className="border-b-2 border-[#d1d1d1] text-[#303030] ml-2 py-2 w-[90%]"
@@ -368,13 +449,13 @@ export default function EditProfileScreen() {
               )}
             />
           </View>
-          {errors.address && <Text style={{ color: "red" }}>{errors.address.message}</Text>}
+          {errors.address && (
+            <Text style={{ color: "red" }}>{errors.address.message}</Text>
+          )}
         </View>
 
         <View className="w-full mb-4">
-          <Text className="text-lg font-semibold text-start">
-            Pilih Kota
-          </Text>
+          <Text className="text-lg font-semibold text-start">Pilih Kota</Text>
           <View className="mt-2 h-auto flex-row justify-start items-center w-full">
             <SelectList
               defaultOption={{ key: user.district?.id, value: user.district?.districtName }}
@@ -394,17 +475,20 @@ export default function EditProfileScreen() {
           <Text className="text-lg font-semibold text-start">
             Pilih Kategori Pilihanmu
           </Text>
-          <View className="mt-2 h-auto flex-row justify-start items-center w-full">
-            <MultipleSelectList
-              maxHeight={500}
-              setSelected={(key) => setSelectedCategories(key)}
+          <View className="mt-2 h-auto flex-row flex-wrap justify-start items-center w-full">
+            <MultiSelect
+              className="w-full"
+              style={{ marginTop: 20 }}
               data={categoriesData}
-              defaultValues={{ key: categoriesData[0].key, value: categoriesData[0].value }} 
-              save="key"
-              // onSelect={() => alert(selected)}
-              label="Kategori"
-              placeholder="Pilih kategori..."
-              searchPlaceholder="Cari kategori..."
+              labelField="label"
+              valueField="value"
+              placeholder="Pilih Kategori"
+              search
+              value={selectedCategories}
+              onChange={(item) => {
+                setSelectedCategories(item);
+              }}
+              selectedStyle={{ backgroundColor: "#e0e0e0" }}
             />
           </View>
         </View>

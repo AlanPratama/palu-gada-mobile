@@ -54,7 +54,16 @@ export default class PostApi {
       return items;
     } catch (error) {
       store.dispatch(setError(error.message));
-      console.log("PostApi updatePost: ", error);
+      if (error.response) {
+        // Error dari API
+        console.log("API Response Error: ", error.response);
+      } else if (error.request) {
+        // Tidak ada response dari API
+        console.log("No response from API: ", error.request);
+      } else {
+        // Error yang terjadi ketika membuat request
+        console.log("Error in setting up request: ", error.message);
+      }
     }
   }
 

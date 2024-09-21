@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { SelectList } from 'react-native-dropdown-select-list';
+import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import PayoutApi from '../../apis/PayoutApi';
 import { useSelector } from 'react-redux';
 import AuthApi from '../../apis/AuthApi';
+import PayoutApi from '../../apis/PayoutApi';
+import { SelectList } from 'react-native-dropdown-select-list';
 
 export default function BottomSheetWithDrawal({ refRBSheet }) {
   return (
