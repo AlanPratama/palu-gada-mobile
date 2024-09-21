@@ -16,14 +16,14 @@ export default function PostDetailScreen({ route }) {
   // console.log("ZUL JERK OFF: ", post);
 
   const [alreadyBid, setAlreadyBid] = useState(false);
-  const [userDetail, setUserDetail] = useState({})
+  const [userDetail, setUserDetail] = useState({});
 
   const navigate = useNavigation();
 
   const refSheetAddBid = useRef();
   const refSheetReportPost = useRef();
   const refSheetPostDetailBid = useRef();
-  const refSheetUserDetail = useRef()
+  const refSheetUserDetail = useRef();
 
   // const fetch = async () => {
   //   await PostApi.getPostById(postParam.id);
@@ -43,11 +43,13 @@ export default function PostDetailScreen({ route }) {
   const hanldeTambahPenawaran = () => {
     /*
       UNTUK SEMENTARA TAK TARUH DISINI:
-      user.address != null && user.name != null && user.nik != null && user.birthDate != null && user.district != null && user.phone != null && user.userGender != null
+      
     */
     if (
-      user.address != null &&
       user.name != null &&
+      user.about != null &&
+      user.address != null &&
+      user.nik != null &&
       user.birthDate != null &&
       user.district != null &&
       user.phone != null &&
@@ -61,9 +63,9 @@ export default function PostDetailScreen({ route }) {
   };
 
   const handleUserDetail = (userDetail) => {
-    setUserDetail(userDetail)
-    refSheetUserDetail.current?.open()
-  }
+    setUserDetail(userDetail);
+    refSheetUserDetail.current?.open();
+  };
 
   return (
     <ScrollView
@@ -83,24 +85,25 @@ export default function PostDetailScreen({ route }) {
             </Text>
           </TouchableOpacity>
         </View>
-        {post.user.id !== user.id ? (
-          <TouchableOpacity
-            onPress={() => refSheetReportPost.current?.open()}
-            activeOpacity={0.7}
-            className="flex-row justify-center items-center bg-red-500 px-2 py-1 rounded"
-          >
-            <Ionicons name="megaphone-outline" size={24} color={"#fff"} />
-            <Text className="text-white ml-2 font-semibold">Laporkan</Text>
-          </TouchableOpacity>
-        ) : null
-        // <TouchableOpacity
-        //   onPress={() => refSheetReportPost.current?.open()}
-        //   activeOpacity={0.7}
-        //   className="flex-row justify-center items-center bg-red-500 px-2 py-1 rounded"
-        // >
-        //   {/* <Ionicons name="trash-outline" size={24} color={"#fff"} /> */}
-        //   <Text className="text-white ml-2 font-semibold">Hapus Postingan</Text>
-        // </TouchableOpacity>
+        {
+          post.user.id !== user.id ? (
+            <TouchableOpacity
+              onPress={() => refSheetReportPost.current?.open()}
+              activeOpacity={0.7}
+              className="flex-row justify-center items-center bg-red-500 px-2 py-1 rounded"
+            >
+              <Ionicons name="megaphone-outline" size={24} color={"#fff"} />
+              <Text className="text-white ml-2 font-semibold">Laporkan</Text>
+            </TouchableOpacity>
+          ) : null
+          // <TouchableOpacity
+          //   onPress={() => refSheetReportPost.current?.open()}
+          //   activeOpacity={0.7}
+          //   className="flex-row justify-center items-center bg-red-500 px-2 py-1 rounded"
+          // >
+          //   {/* <Ionicons name="trash-outline" size={24} color={"#fff"} /> */}
+          //   <Text className="text-white ml-2 font-semibold">Hapus Postingan</Text>
+          // </TouchableOpacity>
         }
       </View>
 
@@ -266,7 +269,11 @@ export default function PostDetailScreen({ route }) {
               post.bids.map((bid, i) => {
                 console.log(bid.user);
                 return (
-                  <TouchableOpacity key={i + "image"} activeOpacity={0.7} onPress={() => handleUserDetail(bid.user)} >
+                  <TouchableOpacity
+                    key={i + "image"}
+                    activeOpacity={0.7}
+                    onPress={() => handleUserDetail(bid.user)}
+                  >
                     <Image
                       source={{
                         uri: bid.user.photoUrl
@@ -283,13 +290,12 @@ export default function PostDetailScreen({ route }) {
                         },
                         shadowOpacity: 0.18,
                         shadowRadius: 1.0,
-  
+
                         elevation: 1,
                       }}
                     />
                   </TouchableOpacity>
-                )
-                
+                );
               })
             ) : (
               <Text className="text-[#343434]">Tidak ada penawar</Text>
@@ -321,7 +327,10 @@ export default function PostDetailScreen({ route }) {
       </View>
 
       <BottomSheetReportPost refRBSheet={refSheetReportPost} postId={post.id} />
-      <BottomSheetUserDetail refRBSheet={refSheetUserDetail} user={userDetail} />
+      <BottomSheetUserDetail
+        refRBSheet={refSheetUserDetail}
+        user={userDetail}
+      />
       {post.user.id === user.id ? (
         <>
           <BottomSheetPostDetailBid

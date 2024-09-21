@@ -64,6 +64,7 @@ export default function EditProfileScreen() {
   } = useForm({
     defaultValues: {
       name: user.name,
+      about: user.about,
       phone: user.phone,
       address: user.address,
       nik: user.nik,
