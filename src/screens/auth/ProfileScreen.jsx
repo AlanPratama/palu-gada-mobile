@@ -58,7 +58,7 @@ console.log(user);
           }}
           className='border-t border-gray-50 my-2 w-full flex-row justify-between items-center bg-white p-2 rounded-full'
           activeOpacity={0.85}
-          onPress={() => navigate.navigate("EditProfile")}
+          onPress={() => navigate.push("EditProfile")}
         >
           <View className='flex-row justify-start items-center gap-x-2.5'>
             <View className='bg-[#3f45f9] p-2 rounded-full'>

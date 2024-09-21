@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Image,
@@ -31,19 +31,19 @@ export default function EditProfileScreen() {
     value: item.id,
   }));
 
-
-
   const districtData = district.map((item) => ({
     key: item.id,
     value: item.districtName,
   }));
 
   console.log("USER: ", user);
-  
+
   const defaultSelectedCategories = user.userCategories.map((item) => item.id);
   console.log("categoriesData: ", defaultSelectedCategories);
-  
+
   const [showDate, setShowDate] = useState(false);
+  const [isChanged, setIsChanged] = useState(false);
+  const [count, setCount] = useState(2);
 
   const [gender, setGender] = useState(
     user.userGender.charAt(0).toUpperCase() +
@@ -51,15 +51,20 @@ export default function EditProfileScreen() {
   );
   const [birthDate, setBirthDate] = useState(new Date(user.birthDate));
   const [selectedDistrict, setSelectedDistrict] = useState(user.district.id);
-  const [selectedCategories, setSelectedCategories] =
-    useState(user.userCategories.map((item) => item.category.id));
-    console.log(categoriesData);
-    
+  const [selectedCategories, setSelectedCategories] = useState(
+    user.userCategories.map((item) => item.category.id)
+  );
+  console.log(categoriesData);
+
+  useEffect(() => {
+    setCount(count - 1);
+    if (count - 1 <= 0) setIsChanged(true);
+  }, [selectedDistrict, gender]);
 
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
     reset,
   } = useForm({
     defaultValues: {
@@ -147,6 +152,7 @@ export default function EditProfileScreen() {
         type: `image/${fileType}`, // Mendapatkan tipe file dari ekstensi
         name: `photo.${fileType}`, // Nama file untuk dikirim ke server
       });
+      setIsChanged(true);
     }
   };
 
@@ -217,7 +223,11 @@ export default function EditProfileScreen() {
         <View className="mb-4">
           <Text className="text-lg font-semibold text-start">Tentang Kamu</Text>
           <View className="mt-2 flex-row justify-start items-start w-full">
-            <Ionicons name="information-circle-outline" size={24} color="#303030" />
+            <Ionicons
+              name="information-circle-outline"
+              size={24}
+              color="#303030"
+            />
             <Controller
               control={control}
               name="about"
@@ -234,7 +244,9 @@ export default function EditProfileScreen() {
               )}
             />
           </View>
-          {errors.about && <Text style={{ color: "red" }}>{errors.about.message}</Text>}
+          {errors.about && (
+            <Text style={{ color: "red" }}>{errors.about.message}</Text>
+          )}
         </View>
 
         {/* <View className="mb-4">
@@ -376,6 +388,7 @@ export default function EditProfileScreen() {
               display="default"
               maximumDate={new Date()}
               onChange={(e) => {
+                setIsChanged(true)
                 setShowDate(false);
                 setBirthDate(new Date(e.nativeEvent.timestamp));
                 // console.log("ASASA: ", e.nativeEvent.timestamp);
@@ -459,7 +472,10 @@ export default function EditProfileScreen() {
           <Text className="text-lg font-semibold text-start">Pilih Kota</Text>
           <View className="mt-2 h-auto flex-row justify-start items-center w-full">
             <SelectList
-              defaultOption={{ key: user.district?.id, value: user.district?.districtName }}
+              defaultOption={{
+                key: user.district?.id,
+                value: user.district?.districtName,
+              }}
               maxHeight={500}
               setSelected={(key) => setSelectedDistrict(key)}
               data={districtData}
@@ -487,6 +503,7 @@ export default function EditProfileScreen() {
               search
               value={selectedCategories}
               onChange={(item) => {
+                setIsChanged(true);
                 setSelectedCategories(item);
               }}
               selectedStyle={{ backgroundColor: "#e0e0e0" }}
@@ -501,13 +518,17 @@ export default function EditProfileScreen() {
             className="w-[48%] bg-[#fff] py-3.5 rounded-full"
           >
             <Text className="text-[#3f45f9] text-lg font-semibold text-center">
+              {/* Batal {count} */}
               Batal
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={handleSubmit(onSubmit)}
             activeOpacity={0.8}
-            className="w-[48%] bg-[#3f45f9] py-3.5 rounded-full"
+            disabled={isDirty ? !isDirty : !isChanged}
+            className={`${
+              isDirty || isChanged ? "bg-[#3f45f9]" : "bg-[#d1d1d1]"
+            } w-[48%] py-3.5 rounded-full`}
           >
             <Text className="text-white text-lg font-semibold text-center">
               Simpan

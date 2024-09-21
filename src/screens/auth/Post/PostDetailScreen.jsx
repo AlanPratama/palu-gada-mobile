@@ -222,7 +222,7 @@ export default function PostDetailScreen({ route }) {
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => navigate.navigate("UpdatePost", { post })}
+                onPress={() => navigate.push("UpdatePost", { post })}
                 activeOpacity={0.7}
                 className="bg-green-500 w-[32%] py-2.5 rounded-full "
               >
