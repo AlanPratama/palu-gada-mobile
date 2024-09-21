@@ -38,7 +38,11 @@ export default function PostDetailScreen({ route }) {
   }, [post.bids]);
 
   const hanldeTambahPenawaran = () => {
-    if (user.address != null && user.name != null && user.nik != null && user.birthDate != null && user.district != null && user.phone != null && user.userGender != null) {
+    /*
+      UNTUK SEMENTARA TAK TARUH DISINI:
+      user.address != null && user.name != null && user.nik != null && user.birthDate != null && user.district != null && user.phone != null && user.userGender != null
+    */
+    if (user.address != null && user.name != null && user.birthDate != null && user.district != null && user.phone != null && user.userGender != null) {
       refSheetAddBid.current?.open()
     } else {
       alert('Lengkapi terlebih dahulu profile anda!')

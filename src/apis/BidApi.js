@@ -1,16 +1,25 @@
+import { setMyBids } from "../redux/auth/bidSlice";
+import store from "../redux/store";
 import { axiosInstance } from "./axiosInstance";
 import PostApi from "./PostApi";
 import UserApi from "./UserApi";
 
 export default class BidApi {
 
-  static async myBids(userId) {
-    console.log("REQ CREAATE BID: ", request);
+  static async myBids(page, size = 10) {
     try {
-      const res = await axiosInstance.get(`/bids/user/${userId}`);
+      const res = await axiosInstance.get(`/bids`, {
+        params: {
+          page, size
+        }
+      });
       console.log("ASASA: ", res.data);
 
-      
+      if(res.data.status === "OK") {
+        const myBids = res.data.data.items
+        const totalMyBids = res.data.data.items.length
+        store.dispatch(setMyBids({myBids, totalMyBids}))
+      }
 
     } catch (error) {
       console.log("BidApi createBid: ", error.response);

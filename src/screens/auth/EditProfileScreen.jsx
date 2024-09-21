@@ -1,17 +1,17 @@
-import {
-  View,
-  Text,
-  Image,
-  TextInput,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
-import React, { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import { Controller, useForm } from "react-hook-form";
-import * as ImagePicker from "expo-image-picker";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
+import { useNavigation } from "@react-navigation/native";
+import * as ImagePicker from "expo-image-picker";
+import React, { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import {
+  Image,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { MultipleSelectList, SelectList } from "react-native-dropdown-select-list";
 import { useSelector } from "react-redux";
 import UserApi from "../../apis/UserApi";
@@ -38,7 +38,7 @@ export default function EditProfileScreen() {
   const [selectedDistrict, setSelectedDistrict] = useState();
   const [selectedCategories, setSelectedCategories] = useState([]);
 
-  const defaultSelectedCategories = user.userCategories.map((item) => ({ key: item.id, value: item.category.name }));
+  // const defaultSelectedCategories = user.userCategories.map((item) => ({ key: item.id, value: item.category.name }));
 
   const {
     control,
@@ -50,38 +50,21 @@ export default function EditProfileScreen() {
       name: user.name,
       phone: user.phone,
       address: user.address,
+      nik: user.nik,
+      bankAccount: user.bankAccount
     },
   });
 
   const onSubmit = async (data) => {
-    // console.log("SUBMIT: ", data);
     console.log("SELECTED: ", selectedCategories);
-    // console.log("DATE: ", birthDate.toLocaleDateString("id-ID"));
-    // console.log("IMAGE: ", image);
-    // console.log("SELECTED DISTRICT: ", selectedDistrict);
-    // console.log("SELECTED GENDER: ", gender);
-    
-    
-    // const request = {
-    //   // districtId: selectedDistrict,
-    //   phone: data.phone,
-    //   address: data.address,
-    //   name: data.name,
-    //   birthDate: birthDate.toLocaleDateString("id-ID"),
-    //   userGender: gender,
-    //   // userCategoriesId: selectedCategories, 
-    // }
-
-    // if(image) {
-    //   request.file = image
-    //   // "file": image,
-    // }
 
     const formData = new FormData();
-
-    formData.append("phone", data.phone);
-    formData.append("address", data.address);
+    
     formData.append("name", data.name);
+    formData.append("phone", data.phone);
+    formData.append("nik", data.nik);
+    formData.append("bankAccount", data.bankAccount);
+    formData.append("address", data.address);
     formData.append("birthDate", birthDate.toISOString().split("T")[0]);
     formData.append("userGender", gender);
     formData.append("userCategoriesId", selectedCategories);
@@ -227,7 +210,7 @@ export default function EditProfileScreen() {
             <Controller
               control={control}
               name="phone"
-              rules={{ required: "Nomor telepon wajib diisi!", validate: (value) => value.length === 12 || "Nomor telepon harus 12 digit!" }}
+              rules={{ required: "Nomor telepon wajib diisi!", validate: (value) => value.length >= 10 || "Nomor telepon minimal 10 digit!" }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
                   onBlur={onBlur}
@@ -241,6 +224,56 @@ export default function EditProfileScreen() {
             />
           </View>
           {errors.phone && <Text style={{ color: "red" }}>{errors.phone.message}</Text>}
+        </View>
+
+        <View className="mb-4">
+          <Text className="text-lg font-semibold text-start">
+            Nomor Induk Kependudukan (NIK)
+          </Text>
+          <View className="flex-row justify-start items-center w-full">
+            <Ionicons name="id-card-outline" size={24} color="#303030" />
+            <Controller
+              control={control}
+              name="nik"
+              rules={{ required: "NIK wajib diisi!", validate: (value) => value.length >= 16 || "Nomor Induk Kependudukan (NIK) minimal 16 digit!" }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  className="border-b-2 border-[#d1d1d1] text-[#303030] ml-2 py-2 w-[90%]"
+                  placeholder="317503xxxxxxxxxx..."
+                  keyboardType="numeric"
+                />
+              )}
+            />
+          </View>
+          {errors.nik && <Text style={{ color: "red" }}>{errors.nik.message}</Text>}
+        </View>
+
+        <View className="mb-4">
+          <Text className="text-lg font-semibold text-start">
+            Bank Account
+          </Text>
+          <View className="flex-row justify-start items-center w-full">
+            <Ionicons name="card-outline" size={24} color="#303030" />
+            <Controller
+              control={control}
+              name="bankAccount"
+              rules={{ required: "Bank Account wajib diisi!", validate: (value) => value.length >= 8 || "Bank Account minimal 8 digit!" }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  className="border-b-2 border-[#d1d1d1] text-[#303030] ml-2 py-2 w-[90%]"
+                  placeholder="0790xxxxxxx..."
+                  keyboardType="numeric"
+                />
+              )}
+            />
+          </View>
+          {errors.bankAccount && <Text style={{ color: "red" }}>{errors.bankAccount.message}</Text>}
         </View>
 
         <View className="mb-4">
