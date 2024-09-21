@@ -7,6 +7,7 @@ import BottomSheetAddBid from "../../../components/Post/BottomSheetAddBid";
 import BottomSheetReportPost from "../../../components/Post/BottomSheetReportPost";
 import { useSelector } from "react-redux";
 import BottomSheetPostDetailBid from "../../../components/Post/BottomSheetPostDetailBid";
+import BottomSheetUserDetail from "../../../components/User/BottomSheetUserDetail";
 
 export default function PostDetailScreen({ route }) {
   const { post } = route.params;
@@ -15,12 +16,14 @@ export default function PostDetailScreen({ route }) {
   // console.log("ZUL JERK OFF: ", post);
 
   const [alreadyBid, setAlreadyBid] = useState(false);
+  const [userDetail, setUserDetail] = useState({});
 
   const navigate = useNavigation();
 
   const refSheetAddBid = useRef();
   const refSheetReportPost = useRef();
   const refSheetPostDetailBid = useRef();
+  const refSheetUserDetail = useRef();
 
   // const fetch = async () => {
   //   await PostApi.getPostById(postParam.id);
@@ -40,15 +43,29 @@ export default function PostDetailScreen({ route }) {
   const hanldeTambahPenawaran = () => {
     /*
       UNTUK SEMENTARA TAK TARUH DISINI:
-      user.address != null && user.name != null && user.nik != null && user.birthDate != null && user.district != null && user.phone != null && user.userGender != null
+      
     */
-    if (user.address != null && user.name != null && user.birthDate != null && user.district != null && user.phone != null && user.userGender != null) {
-      refSheetAddBid.current?.open()
+    if (
+      user.name != null &&
+      user.about != null &&
+      user.address != null &&
+      user.nik != null &&
+      user.birthDate != null &&
+      user.district != null &&
+      user.phone != null &&
+      user.userGender != null
+    ) {
+      refSheetAddBid.current?.open();
     } else {
-      alert('Lengkapi terlebih dahulu profile anda!')
-      navigate.navigate('EditProfile')
+      alert("Lengkapi terlebih dahulu profile anda!");
+      navigate.navigate("EditProfile");
     }
-  }
+  };
+
+  const handleUserDetail = (userDetail) => {
+    setUserDetail(userDetail);
+    refSheetUserDetail.current?.open();
+  };
 
   return (
     <ScrollView
@@ -68,17 +85,17 @@ export default function PostDetailScreen({ route }) {
             </Text>
           </TouchableOpacity>
         </View>
-        {post.user.id !== user.id ? (
-          <TouchableOpacity
-            onPress={() => refSheetReportPost.current?.open()}
-            activeOpacity={0.7}
-            className="flex-row justify-center items-center bg-red-500 px-2 py-1 rounded"
-          >
-            <Ionicons name="megaphone-outline" size={24} color={"#fff"} />
-            <Text className="text-white ml-2 font-semibold">Laporkan</Text>
-          </TouchableOpacity>
-        ) : (
-          null
+        {
+          post.user.id !== user.id ? (
+            <TouchableOpacity
+              onPress={() => refSheetReportPost.current?.open()}
+              activeOpacity={0.7}
+              className="flex-row justify-center items-center bg-red-500 px-2 py-1 rounded"
+            >
+              <Ionicons name="megaphone-outline" size={24} color={"#fff"} />
+              <Text className="text-white ml-2 font-semibold">Laporkan</Text>
+            </TouchableOpacity>
+          ) : null
           // <TouchableOpacity
           //   onPress={() => refSheetReportPost.current?.open()}
           //   activeOpacity={0.7}
@@ -87,7 +104,7 @@ export default function PostDetailScreen({ route }) {
           //   {/* <Ionicons name="trash-outline" size={24} color={"#fff"} /> */}
           //   <Text className="text-white ml-2 font-semibold">Hapus Postingan</Text>
           // </TouchableOpacity>
-        )}
+        }
       </View>
 
       <View className="p-3">
@@ -175,8 +192,8 @@ export default function PostDetailScreen({ route }) {
               {post.status === "AVAILABLE"
                 ? "Tersedia"
                 : post.status === "NOT_AVAILABLE"
-                  ? "Tidak Tersedia"
-                  : "Expired"}
+                ? "Tidak Tersedia"
+                : "Expired"}
             </Text>
           </TouchableOpacity>
           <Divider color="#9ca3af" orientation="vertical" />
@@ -205,7 +222,7 @@ export default function PostDetailScreen({ route }) {
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => navigate.navigate("UpdatePost", { post })}
+                onPress={() => navigate.push("UpdatePost", { post })}
                 activeOpacity={0.7}
                 className="bg-green-500 w-[32%] py-2.5 rounded-full "
               >
@@ -232,7 +249,9 @@ export default function PostDetailScreen({ route }) {
                 post.status === "NOT_AVAILABLE" ||
                 post.status === "EXPIRED"
               }
-              className={`${alreadyBid ? "bg-gray-400" : "bg-primary"} w-full py-3.5 rounded-full`}
+              className={`${
+                alreadyBid ? "bg-gray-400" : "bg-primary"
+              } w-full py-3.5 rounded-full`}
             >
               <Text className="text-base text-white text-center font-semibold">
                 Tambah Penawaran
@@ -247,29 +266,37 @@ export default function PostDetailScreen({ route }) {
           </Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {post.bids.length > 0 ? (
-              post.bids.map((bid, i) => (
-                <Image
-                  key={i + "image"}
-                  source={{
-                    uri: bid.user.photoUrl
-                      ? bid.user.photoUrl
-                      : "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
-                  }}
-                  alt=""
-                  className="w-[70px] h-[70px] mr-2.5 rounded-full"
-                  style={{
-                    shadowColor: "#000",
-                    shadowOffset: {
-                      width: 0,
-                      height: 1,
-                    },
-                    shadowOpacity: 0.18,
-                    shadowRadius: 1.0,
+              post.bids.map((bid, i) => {
+                console.log(bid.user);
+                return (
+                  <TouchableOpacity
+                    key={i + "image"}
+                    activeOpacity={0.7}
+                    onPress={() => handleUserDetail(bid.user)}
+                  >
+                    <Image
+                      source={{
+                        uri: bid.user.photoUrl
+                          ? bid.user.photoUrl
+                          : "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
+                      }}
+                      alt={bid.user.photoUrl}
+                      className="w-[70px] h-[70px] mr-2.5 rounded-full"
+                      style={{
+                        shadowColor: "#000",
+                        shadowOffset: {
+                          width: 0,
+                          height: 1,
+                        },
+                        shadowOpacity: 0.18,
+                        shadowRadius: 1.0,
 
-                    elevation: 1,
-                  }}
-                />
-              ))
+                        elevation: 1,
+                      }}
+                    />
+                  </TouchableOpacity>
+                );
+              })
             ) : (
               <Text className="text-[#343434]">Tidak ada penawar</Text>
             )}
@@ -300,7 +327,10 @@ export default function PostDetailScreen({ route }) {
       </View>
 
       <BottomSheetReportPost refRBSheet={refSheetReportPost} postId={post.id} />
-
+      <BottomSheetUserDetail
+        refRBSheet={refSheetUserDetail}
+        user={userDetail}
+      />
       {post.user.id === user.id ? (
         <>
           <BottomSheetPostDetailBid
