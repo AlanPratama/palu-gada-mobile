@@ -23,6 +23,7 @@ import ProtectedRoutes from "./ProtectedRoutes";
 import PublicRoutes from "./PublicRoutes";
 import MyPostScreen from "../screens/auth/Post/MyPostScreen";
 import UpdatePostScreen from "../screens/auth/Post/UpdatePostScreen";
+import MyReportPostScreen from "../screens/auth/Post/MyReportPostScreen";
 
 export default function AppNavigator() {
   const Stack = createNativeStackNavigator();
@@ -37,7 +38,7 @@ export default function AppNavigator() {
 
     if (token) {
       store.dispatch(login());
-      await AuthApi.getAuthenticated()
+      await AuthApi.getAuthenticated();
     } else {
       store.dispatch(logout());
     }
@@ -68,28 +69,51 @@ export default function AppNavigator() {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView className='flex-1'>
+      <SafeAreaView className="flex-1">
         <NavigationContainer>
-          <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName='Welcome'>
-            <Stack.Screen name='Welcome' component={WelcomeScreen} initialParams={{ isAuthenticated }} />
-            <Stack.Screen name='OnBoarding' component={OnBoarding} />
+          <Stack.Navigator
+            screenOptions={{ headerShown: false }}
+            initialRouteName="Welcome"
+          >
+            <Stack.Screen
+              name="Welcome"
+              component={WelcomeScreen}
+              initialParams={{ isAuthenticated }}
+            />
+            <Stack.Screen name="OnBoarding" component={OnBoarding} />
             {isAuthenticated ? (
               <>
-                <Stack.Screen name='Protect' component={ProtectedRoutes} />
-                <Stack.Screen name='EditProfile' component={EditProfileScreen} />
-                <Stack.Screen name='ChangePassword' component={ChangePasswordScreen} />
-                <Stack.Screen name='PostDetail' component={PostDetailScreen} />
-                <Stack.Screen name='Wallet' component={WalletScreen} />
-                <Stack.Screen name='Notification' component={NotificationScreen} />
-                <Stack.Screen name='AddPost' component={AddPostScreen} />
-                <Stack.Screen name='PostByCategory' component={PostByCategory} />
-                <Stack.Screen name='TopUp' component={TopUpScreen} />
-                <Stack.Screen name='TopUpDetail' component={TopUpDetailScreen} />
-                <Stack.Screen name='MyPost' component={MyPostScreen} />
-                <Stack.Screen name='UpdatePost' component={UpdatePostScreen} />
+                <Stack.Screen name="Protect" component={ProtectedRoutes} />
+                <Stack.Screen
+                  name="EditProfile"
+                  component={EditProfileScreen}
+                />
+                <Stack.Screen
+                  name="ChangePassword"
+                  component={ChangePasswordScreen}
+                />
+                <Stack.Screen name="PostDetail" component={PostDetailScreen} />
+                <Stack.Screen name="Wallet" component={WalletScreen} />
+                <Stack.Screen
+                  name="Notification"
+                  component={NotificationScreen}
+                />
+                <Stack.Screen name="AddPost" component={AddPostScreen} />
+                <Stack.Screen
+                  name="PostByCategory"
+                  component={PostByCategory}
+                />
+                <Stack.Screen name="TopUp" component={TopUpScreen} />
+                <Stack.Screen
+                  name="TopUpDetail"
+                  component={TopUpDetailScreen}
+                />
+                <Stack.Screen name="MyPost" component={MyPostScreen} />
+                <Stack.Screen name="UpdatePost" component={UpdatePostScreen} />
+                <Stack.Screen name="MyReportPost" component={MyReportPostScreen} />
               </>
             ) : (
-              <Stack.Screen name='Public' component={PublicRoutes} />
+              <Stack.Screen name="Public" component={PublicRoutes} />
             )}
             {/* {
                 alreadyViewedOnBoarding ? (

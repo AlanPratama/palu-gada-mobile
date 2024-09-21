@@ -29,7 +29,7 @@ const PostCard = ({ post }) => {
       <View className="w-[68%]">
         <View className="flex-row justify-between items-center">
           <Text className="text-sm font-bold text-primary">
-            {post ? post.postCategories[0].category : "Apa Aja"}
+            {post ? post.postCategories[0]?.category : "Apa Aja"}
           </Text>
           <View className="flex-row justify-center items-center gap-x-1">
             <Text className="text-sm font-normal text-[#343434]">

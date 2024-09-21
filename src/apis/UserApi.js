@@ -20,7 +20,7 @@ export default class UserApi {
     console.log("formData: ", formData);
     console.log("userId: ", userId);
     try {
-      const { data } = await axiosInstance.put(`/users/${userId}`, formData, {
+      const { data } = await axiosInstance.put(`/users`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -32,7 +32,7 @@ export default class UserApi {
     } catch (error) {
       if (error.response) {
         // Error dari API
-        console.log("API Response Error: ", error.response.data);
+        console.log("API Response Error: ", error.response);
       } else if (error.request) {
         // Tidak ada response dari API
         console.log("No response from API: ", error.request);

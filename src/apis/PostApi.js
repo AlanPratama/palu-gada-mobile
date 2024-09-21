@@ -1,4 +1,12 @@
-import { addPost, setError, setMyPost, setPost } from "../redux/auth/postSlice";
+import {
+  addPost,
+  setError,
+  setIsLoading,
+  setMyPost,
+  setPost,
+  setPostById,
+  updatePost,
+} from "../redux/auth/postSlice";
 import store from "../redux/store";
 import { axiosInstance } from "./axiosInstance";
 
@@ -17,7 +25,7 @@ export default class PostApi {
       console.log("ASASA: ", items);
 
       store.dispatch(addPost(items));
-      return true
+      return true;
       //   this.getPosts();
     } catch (error) {
       store.dispatch(setError(error.message));
@@ -25,47 +33,175 @@ export default class PostApi {
     }
   }
 
-  static async getPosts(page, size = 99999, query) {
+  static async updatePost(id, formData) {
+    console.log("billie elis id", id);
+    console.log("kali uchis", formData);
+
     try {
       store.dispatch(setError(null));
+
+      const { data } = await axiosInstance.put("/posts/" + id, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      const items = data.data;
+      console.log("ASASA: ", items);
+
+      // store.dispatch(updatePost(items));
+      store.dispatch(setPostById(items));
+      this.getPosts();
+      return items;
+    } catch (error) {
+      store.dispatch(setError(error.message));
+      if (error.response) {
+        // Error dari API
+        console.log("API Response Error: ", error.response);
+      } else if (error.request) {
+        // Tidak ada response dari API
+        console.log("No response from API: ", error.request);
+      } else {
+        // Error yang terjadi ketika membuat request
+        console.log("Error in setting up request: ", error.message);
+      }
+    }
+  }
+
+  static async getPosts(page, size = 10, title) {
+    try {
+      store.dispatch(setError(null));
+      store.dispatch(setIsLoading(true));
 
       const { data } = await axiosInstance.get("/posts", {
         params: {
           page,
           size,
-          title: query,
+          title,
+          sortField: "createdAt",
+          sortDirection: "desc",
+          status: 'AVAILABLE'
         },
       });
-      const items = data.data.items;
-      const total = data.data.items.length;
 
-      store.dispatch(setPost({ items, total }));
+      const items = data.data.items;
+      store.dispatch(setPost(items));
+      return { length: items.length }
     } catch (error) {
       store.dispatch(setError(error.message));
       console.log("PostApi getPosts: ", error);
+      console.log("PostApi getPosts message: ", error.message);
+    } finally {
+      store.dispatch(setIsLoading(false));
     }
   }
 
-
-  static async getMyPosts(page, size = 99999, query) {
+  static async getPostsReturn(
+    page = 0,
+    size = 5,
+    title,
+    sortField,
+    sortDirection,
+    categoryIds = '', // Pakai koma jika ingin filter banyak kategori - contoh: 1,2,3
+    districtIds = '' // Pakai koma jika ingin filter banyak district - contoh: 1,2,3
+  ) {
     try {
       store.dispatch(setError(null));
+      store.dispatch(setIsLoading(true));
+
+      const { data } = await axiosInstance.get("/posts", {
+        params: {
+          page,
+          size,
+          title,
+          sortField,
+          sortDirection,
+          status: 'AVAILABLE',
+          categoryIds,
+          districtIds
+        },
+      });
+      const items = data.data.items;
+      return items;
+    } catch (error) {
+      store.dispatch(setError(error.message));
+      console.log("PostApi getPostsReturn: ", error);
+    } finally {
+      store.dispatch(setIsLoading(false));
+    }
+  }
+
+  static async getMyPosts(page, size = 10, title) {
+    try {
+      store.dispatch(setError(null));
+      store.dispatch(setIsLoading(true));
 
       const { data } = await axiosInstance.get("/posts/me", {
         params: {
           page,
           size,
-          name: query,
+          title,
+          sortField: "createdAt",
+          sortDirection: "desc",
         },
       });
-      const items = data.data.items;
-      const total = data.data.items.length;
 
-      store.dispatch(setMyPost({ items, total }));
+      const items = data.data.items;
+      store.dispatch(setMyPost(items));
+      return { length: items.length }
+    } catch (error) {
+      store.dispatch(setError(error.message));
+      console.log("PostApi getMyPosts: ", error);
+    } finally {
+      store.dispatch(setIsLoading(false));
+    }
+  }
+
+  static async getPostById(postId) {
+    try {
+      store.dispatch(setError(null));
+
+      const { data } = await axiosInstance.get(`/posts/${postId}`);
+      const item = data.data;
+
+      store.dispatch(setPostById(item));
     } catch (error) {
       store.dispatch(setError(error.message));
       console.log("PostApi getPosts: ", error);
     }
   }
 
+  static async getReportPost(page, size = 9999) {
+    try {
+      const { data } = await axiosInstance.get("/post-reports", {
+        params: {
+          page,
+          size
+        }
+      })
+
+      console.log(data.data);
+
+      return data.data;
+    } catch (error) {
+      console.log("PostApi reportPost: ", error);
+    }
+
+  }
+
+  static async reportPost(request) {
+    try {
+      const { data } = await axiosInstance.post("/post-reports", request)
+      console.log(data);
+
+      if (data.status === "Created") {
+        alert("Report Success!");
+        return true;
+      }
+
+      return false
+    } catch (error) {
+      console.log("PostApi reportPost: ", error);
+    }
+
+  }
 }

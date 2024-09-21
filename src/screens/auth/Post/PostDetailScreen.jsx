@@ -11,6 +11,8 @@ import BottomSheetPostDetailBid from "../../../components/Post/BottomSheetPostDe
 export default function PostDetailScreen({ route }) {
   const { post } = route.params;
   const { user } = useSelector((state) => state.auth);
+  // const { item: post } = useSelector((state) => state.post);
+  // console.log("ZUL JERK OFF: ", post);
 
   const [alreadyBid, setAlreadyBid] = useState(false);
 
@@ -20,10 +22,33 @@ export default function PostDetailScreen({ route }) {
   const refSheetReportPost = useRef();
   const refSheetPostDetailBid = useRef();
 
+  // const fetch = async () => {
+  //   await PostApi.getPostById(postParam.id);
+  // };
+
+  // useEffect(() => {
+  //   (async () => {
+  //     await PostApi.getPostById(postParam.id);
+  //   })();
+  // }, []);
+
   useEffect(() => {
     const hasBid = post.bids.some((bid) => bid.user.id === user.id);
     setAlreadyBid(hasBid);
   }, [post.bids]);
+
+  const hanldeTambahPenawaran = () => {
+    /*
+      UNTUK SEMENTARA TAK TARUH DISINI:
+      user.address != null && user.name != null && user.nik != null && user.birthDate != null && user.district != null && user.phone != null && user.userGender != null
+    */
+    if (user.address != null && user.name != null && user.birthDate != null && user.district != null && user.phone != null && user.userGender != null) {
+      refSheetAddBid.current?.open()
+    } else {
+      alert('Lengkapi terlebih dahulu profile anda!')
+      navigate.navigate('EditProfile')
+    }
+  }
 
   return (
     <ScrollView
@@ -43,14 +68,26 @@ export default function PostDetailScreen({ route }) {
             </Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          onPress={() => refSheetReportPost.current?.open()}
-          activeOpacity={0.7}
-          className="flex-row justify-center items-center bg-red-500 px-2 py-1 rounded"
-        >
-          <Ionicons name="megaphone-outline" size={24} color={"#fff"} />
-          <Text className="text-white ml-2 font-semibold">Laporkan</Text>
-        </TouchableOpacity>
+        {post.user.id !== user.id ? (
+          <TouchableOpacity
+            onPress={() => refSheetReportPost.current?.open()}
+            activeOpacity={0.7}
+            className="flex-row justify-center items-center bg-red-500 px-2 py-1 rounded"
+          >
+            <Ionicons name="megaphone-outline" size={24} color={"#fff"} />
+            <Text className="text-white ml-2 font-semibold">Laporkan</Text>
+          </TouchableOpacity>
+        ) : (
+          null
+          // <TouchableOpacity
+          //   onPress={() => refSheetReportPost.current?.open()}
+          //   activeOpacity={0.7}
+          //   className="flex-row justify-center items-center bg-red-500 px-2 py-1 rounded"
+          // >
+          //   {/* <Ionicons name="trash-outline" size={24} color={"#fff"} /> */}
+          //   <Text className="text-white ml-2 font-semibold">Hapus Postingan</Text>
+          // </TouchableOpacity>
+        )}
       </View>
 
       <View className="p-3">
@@ -109,12 +146,18 @@ export default function PostDetailScreen({ route }) {
           </Text>
         </View>
 
-        <View className="mt-1.5 flex-row justify-start items-center">
+        {/* <View className="mt-1.5 flex-row justify-start items-center">
           <Text className="text-[17px] font-medium text-[#343434]">
             Tenggat Pilih Pekerja:{" "}
           </Text>
           <Text className="text-[17px] font-normal text-[#343434]">
             {new Date(post.deadline).toLocaleDateString("id-ID")}
+          </Text>
+        </View> */}
+        <View className="mt-1.5 flex-row justify-start items-center">
+          <Text className="text-[17px] font-medium text-[#343434]">Kota: </Text>
+          <Text className="text-[17px] font-normal text-[#343434]">
+            {post.district.districtName} ({post.district.province})
           </Text>
         </View>
 
@@ -132,15 +175,15 @@ export default function PostDetailScreen({ route }) {
               {post.status === "AVAILABLE"
                 ? "Tersedia"
                 : post.status === "NOT_AVAILABLE"
-                ? "Tidak Tersedia"
-                : "Expired"}
+                  ? "Tidak Tersedia"
+                  : "Expired"}
             </Text>
           </TouchableOpacity>
           <Divider color="#9ca3af" orientation="vertical" />
 
           <View className="flex-row justify-center items-center gap-x-2">
             <Ionicons name="person-outline" size={24} color="#343434" />
-            <Text>{post.bids.length} Bids</Text>
+            <Text>{post.bids?.length} Bids</Text>
           </View>
           <Divider color="#9ca3af" orientation="vertical" />
           <View className="flex-row justify-center items-center gap-x-2">
@@ -153,36 +196,43 @@ export default function PostDetailScreen({ route }) {
           {post.user.id === user.id ? (
             <View className="flex-row justify-between items-center">
               <TouchableOpacity
-                onPress={() => navigate.navigate("UpdatePost", { post })}
+                onPress={() => refSheetPostDetailBid.current?.open()}
                 activeOpacity={0.7}
-                className="bg-green-500 w-[48%] py-3.5 rounded-full "
+                className="bg-primary w-[32%] py-2.5 rounded-full "
               >
                 <Text className="text-base text-white text-center font-semibold">
-                  Edit Postingan
+                  Penawaran
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => refSheetPostDetailBid.current?.open()}
+                onPress={() => navigate.navigate("UpdatePost", { post })}
                 activeOpacity={0.7}
-                className="bg-primary w-[48%] py-3.5 rounded-full "
+                className="bg-green-500 w-[32%] py-2.5 rounded-full "
               >
                 <Text className="text-base text-white text-center font-semibold">
-                  Detail Penawaran
+                  Edit
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigate.navigate("UpdatePost", { post })}
+                activeOpacity={0.7}
+                className="bg-red-500 w-[32%] py-2.5 rounded-full "
+              >
+                <Text className="text-base text-white text-center font-semibold">
+                  Hapus
                 </Text>
               </TouchableOpacity>
             </View>
           ) : (
             <TouchableOpacity
-              onPress={() => refSheetAddBid.current?.open()}
+              onPress={hanldeTambahPenawaran}
               activeOpacity={0.7}
               disabled={
                 alreadyBid ||
                 post.status === "NOT_AVAILABLE" ||
                 post.status === "EXPIRED"
               }
-              className={`${
-                alreadyBid ? "bg-gray-400" : "bg-primary"
-              } w-full py-3.5 rounded-full`}
+              className={`${alreadyBid ? "bg-gray-400" : "bg-primary"} w-full py-3.5 rounded-full`}
             >
               <Text className="text-base text-white text-center font-semibold">
                 Tambah Penawaran
@@ -249,7 +299,7 @@ export default function PostDetailScreen({ route }) {
         </View>
       </View>
 
-      <BottomSheetReportPost refRBSheet={refSheetReportPost} />
+      <BottomSheetReportPost refRBSheet={refSheetReportPost} postId={post.id} />
 
       {post.user.id === user.id ? (
         <>

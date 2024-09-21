@@ -1,17 +1,61 @@
-import { View, Text, ScrollView, TouchableOpacity, Image } from "react-native";
-import React from "react";
 import { Ionicons } from "@expo/vector-icons";
-import Divider from "../../../components/Divider";
 import { useNavigation } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
+import { FlatList, RefreshControl, Text, TouchableOpacity, View } from "react-native";
+import { useSelector } from "react-redux";
+import PostApi from "../../../apis/PostApi";
+import PostCard from "../../../components/Post/PostCard";
 
 export default function PostByCategory({ route }) {
-  console.log(route?.params);
-
-  const l = [{}, {}, {}, {}, {}, {}, {}, {}]
   const navigate = useNavigation()
+  const categoryName = route?.params?.name
+  const { isLoading } = useSelector((state) => state.post);
+  const [postItems, setPostItems] = useState([])
+  const [page, setPage] = useState(0);
+  const [endPage, setEndPage] = useState(false)
+  const [refreshing, setRefreshing] = useState(false); // State for pull-to-refresh
+
+  const loadPosts = async (pageNumber = 0) => {
+    if (!isLoading) {
+      const resPost = await PostApi.getPostsReturn(
+        pageNumber,
+        10,
+        "",
+        "createdAt",
+        "desc",
+        route?.params?.id
+      );
+      setPostItems(prevPost => [...prevPost, ...resPost]);
+      if (resPost.length < 10) {
+        setEndPage(true);
+      }
+    }
+  };
+
+  const handleLoadMore = () => {
+    if (!isLoading && !endPage) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  };
+
+  useEffect(() => {
+    loadPosts(page);
+  }, [page]);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    setPostItems([])
+    setEndPage(false);
+    if (page !== 0) {
+      setPage(0);
+    } else {
+      loadPosts()
+    }
+    setRefreshing(false);
+  };
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false} className="min-h-screen bg-white p-3">
+    <View showsVerticalScrollIndicator={false} className="min-h-screen bg-white p-3">
       <View className="flex-row justify-between items-center mb-4">
         <View className="flex-row justify-start items-center gap-x-2">
           <TouchableOpacity
@@ -29,47 +73,32 @@ export default function PostByCategory({ route }) {
 
       <View className="mt-2">
         <View className="flex-row justify-start items-center mb-1">
-          <Text className="text-xl pb-0.5 border-b-2 border-gray-400 font-semibold text-[#343434]">Serba Bisa</Text>
+          <Text className="text-xl pb-0.5 border-b-2 border-gray-400 font-semibold text-[#343434]">{categoryName}</Text>
         </View>
 
-        {l.map((_, i) => (
-          <TouchableOpacity
-            key={i}
-            onPress={() =>
-              navigate.navigate("PostDetail", {
-                id: i,
-                title: "Serba Bisa",
-              })
-            }
-            activeOpacity={0.5}
-            className='my-3.5 flex-row justify-start items-start gap-x-2.5'
-          >
-            <Image
-              source={{
-                uri: "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
-              }}
-              alt=''
-              className='w-[88px] h-[88px] border border-gray-200 rounded-xl'
-            />
-            <View className='w-[68%]'>
-              <View className='flex-row justify-between items-center'>
-                <Text className='text-sm font-bold text-primary'>Serba Bisa</Text>
-                <View className='flex-row justify-center items-center gap-x-1'>
-                  <Text className='text-sm font-normal text-[#343434]'>2 jam lalu</Text>
-                  <Ionicons name='time-outline' size={18} />
-                </View>
-              </View>
-              <Text numberOfLines={1} className='text-[17px] font-bold text-[#343434]'>
-                Kuburin kucing aku
-              </Text>
-              <Text numberOfLines={2} className='text-sm font-normal text-[#343434]'>
-                halo banh, jadi ada kucing aku yang namanya Boni, dia kucing kesayanganku, tolong bantu kuburin dong :(
-              </Text>
+        <FlatList
+          data={postItems}
+          keyExtractor={(post, i) => post.id + "-post-" + i}
+          renderItem={({ item, index }) => {
+            // console.log(index)
+            return <PostCard post={item} />
+          }}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={isLoading && page != 0 ? <Text className='text-center'>Loading...</Text> : null}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 10 }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          ListEmptyComponent={(
+            <View className='flex-1 h-96 items-center justify-center'>
+              <Text className='text-lg'>{isLoading && page == 0 ? 'Loading...' : 'Data tidak di temukan'}</Text>
             </View>
-          </TouchableOpacity>
-        ))}
+          )}
+        />
       </View>
 
-    </ScrollView>
+    </View>
   );
 }
