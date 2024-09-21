@@ -1,8 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
-import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Image,
@@ -12,14 +11,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import {
-  MultipleSelectList,
-  SelectList,
-} from "react-native-dropdown-select-list";
 
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useSelector } from "react-redux";
 import PostApi from "../../../apis/PostApi";
+import { MultiSelect } from "react-native-element-dropdown";
+import { SelectList } from "react-native-dropdown-select-list";
 
 export default function UpdatePostScreen({ route }) {
   const { post } = route.params;
@@ -48,23 +45,24 @@ export default function UpdatePostScreen({ route }) {
     },
   });
 
-  const [date, setDate] = useState(new Date(post.deadline));
-  const [time, setTime] = useState(new Date(post.deadline));
-  const [show, setShow] = useState(false);
-  const [showTime, setShowTime] = useState(false);
-
-  const [selected, setSelected] = useState([]);
-  const [selectedDistrict, setSelectedDistrict] = useState();
+  const selectedCategories = post.postCategories?.map((item) => item.id)
+  console.log("POST CAT: ", selectedCategories);
+  
+  const [selected, setSelected] = useState(selectedCategories);
+  const [selectedDistrict, setSelectedDistrict] = useState(post.district.id);
 
   const districtData = district.map((item) => ({
     key: item.id,
     value: item.districtName,
   }));
-  const data = catItems.map((item) => ({ key: item.id, value: item.name }));
-
-  // console.log("SELECTED: ", selected);
+  const data = catItems.map((item) => ({ label: item.name, value: item.id }));
+  console.log("POST CATTT: ", post.postCategories);
+  console.log("CATTTT: ", catItems);
+  console.log("DATA: ", data);
 
   const onSubmit = async (data) => {
+    console.log("LKALSKA: ", selected);
+    
     const formData = new FormData();
     if (image) {
       formData.append("file", {
@@ -130,7 +128,6 @@ export default function UpdatePostScreen({ route }) {
       });
     }
   };
-
   return (
     <KeyboardAwareScrollView>
       <ScrollView
@@ -387,8 +384,22 @@ export default function UpdatePostScreen({ route }) {
             <Text className="text-lg font-semibold text-gray-700 mb-2">
               Pilih Kategori
             </Text>
+            <MultiSelect
+              className="w-full"
+              style={{ marginTop: 20 }}
+              data={data}
+              labelField="label"
+              valueField="value"
+              placeholder="Select Categories"
+              search
+              value={selected}
+              onChange={(item) => {
+                setSelected(item);
+              }}
+              selectedStyle={{ backgroundColor: "#e0e0e0" }}
+            />
 
-            <MultipleSelectList
+            {/* <MultipleSelectList
               boxStyles={{ backgroundColor: "#f3f4f6", borderWidth: 0 }}
               maxHeight={800}
               inputStyles={{ color: "#4a5568" }}
@@ -405,7 +416,7 @@ export default function UpdatePostScreen({ route }) {
               data={data}
               save="key"
               placeholder="Pilih kategori"
-            />
+            /> */}
           </View>
 
           <TouchableOpacity

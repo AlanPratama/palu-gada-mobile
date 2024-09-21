@@ -1,27 +1,22 @@
 import { Ionicons } from "@expo/vector-icons";
-import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
+import * as ImagePicker from "expo-image-picker";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
-  Button,
   Image,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
-import {
-  MultipleSelectList,
-  SelectList,
-} from "react-native-dropdown-select-list";
-import { launchImageLibrary } from "react-native-image-picker";
-import * as ImagePicker from "expo-image-picker";
 
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useSelector } from "react-redux";
 import PostApi from "../../../apis/PostApi";
+import { MultiSelect } from "react-native-element-dropdown";
+import { SelectList } from "react-native-dropdown-select-list";
 
 export default function AddPostScreen() {
   const navigate = useNavigation();
@@ -38,13 +33,13 @@ export default function AddPostScreen() {
   } = useForm();
 
   const [selected, setSelected] = useState([]);
-  const [selectedDistrict, setSelectedDistrict] = useState();
+  const [selectedDistrict, setSelectedDistrict] = useState(2);
 
   const districtData = district.map((item) => ({
     key: item.id,
     value: item.districtName,
   }));
-  const data = catItems.map((item) => ({ key: item.id, value: item.name }));
+  const data = catItems.map((item) => ({ label: item.name, value: item.id }));
 
   const onSubmit = async (data) => {
     const formData = new FormData();
@@ -60,6 +55,9 @@ export default function AddPostScreen() {
     Object.entries(data).forEach(([key, value]) => {
       formData.append(key, value);
     });
+
+    console.log("ALSKALKSA: ", selected);
+    
 
     formData.append("districtId", selectedDistrict);
     formData.append("categoriesId", selected);
@@ -353,8 +351,21 @@ export default function AddPostScreen() {
             <Text className="text-lg font-semibold text-gray-700 mb-2">
               Pilih Kategori
             </Text>
-
-            <MultipleSelectList
+            <MultiSelect
+              className="w-full"
+              style={{ marginTop: 20 }}
+              data={data}
+              labelField="label"
+              valueField="value"
+              placeholder="Select Categories"
+              search
+              value={selected}
+              onChange={(item) => {
+                setSelected(item);
+              }}
+              selectedStyle={{ backgroundColor: "#e0e0e0" }}
+            />
+            {/* <MultipleSelectList
               boxStyles={{ backgroundColor: "#f3f4f6", borderWidth: 0 }}
               maxHeight={800}
               inputStyles={{ color: "#4a5568" }}
@@ -367,7 +378,7 @@ export default function AddPostScreen() {
               data={data}
               save="key"
               placeholder="Pilih kategori"
-            />
+            /> */}
           </View>
 
           <TouchableOpacity
