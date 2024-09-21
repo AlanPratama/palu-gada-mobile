@@ -2,7 +2,7 @@ import axios from "axios";
 import { ToastAndroid } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { logout, setError, setIsLoading } from "../redux/auth/authSlice";
+import { logout, setError, setIsLoading } from "../redux/slice/authSlice";
 import store from "../redux/store";
 
 export const axiosInstance = axios.create({

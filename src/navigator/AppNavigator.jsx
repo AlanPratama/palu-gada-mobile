@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 
 import AuthApi from "../apis/AuthApi";
 import OnBoarding from "../components/OnBoarding";
-import { login, logout } from "../redux/auth/authSlice";
+import { login, logout } from "../redux/slice/authSlice";
 import store from "../redux/store";
 import ChangePasswordScreen from "../screens/auth/ChangePasswordScreen";
 import EditProfileScreen from "../screens/auth/EditProfileScreen";

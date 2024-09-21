@@ -4,7 +4,7 @@ import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import RBSheet from "react-native-raw-bottom-sheet";
 import Divider from "../Divider";
 
-export default function BottomSheetUserDetail({ refRBSheet, user }) {
+export default function BottomSheetUserDetail({ refRBSheet, user, animation = "slide" }) {
   return (
     <View>
       <RBSheet
@@ -20,7 +20,7 @@ export default function BottomSheetUserDetail({ refRBSheet, user }) {
           },
         }}
         customModalProps={{
-          animationType: "slide",
+          animationType: animation,
         }}
         height={500}
         openDuration={250}

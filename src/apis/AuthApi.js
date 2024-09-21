@@ -6,7 +6,7 @@ import {
   setError,
   setIsLoading,
   setUser,
-} from "../redux/auth/authSlice";
+} from "../redux/slice/authSlice";
 import { jwtDecode } from "jwt-decode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ToastAndroid } from "react-native";

@@ -1,4 +1,4 @@
-import { setDistrict } from "../redux/auth/districtSlice";
+import { setDistrict } from "../redux/slice/districtSlice";
 import store from "../redux/store";
 import { axiosInstance } from "./axiosInstance";
 

@@ -1,4 +1,4 @@
-import { setMyBids } from "../redux/auth/bidSlice";
+import { setMyBids } from "../redux/slice/bidSlice";
 import store from "../redux/store";
 import { axiosInstance } from "./axiosInstance";
 import PostApi from "./PostApi";

@@ -8,15 +8,18 @@ import BottomSheetReportPost from "../../../components/Post/BottomSheetReportPos
 import { useSelector } from "react-redux";
 import BottomSheetPostDetailBid from "../../../components/Post/BottomSheetPostDetailBid";
 import BottomSheetUserDetail from "../../../components/User/BottomSheetUserDetail";
+import BottomSheetPostDeleteAlert from "../../../components/Post/BottomSheetPostDeleteAlert";
 
 export default function PostDetailScreen({ route }) {
-  const { post } = route.params;
+  const { post, resetPostItems } = route.params;
   const { user } = useSelector((state) => state.auth);
-  // const { item: post } = useSelector((state) => state.post);
-  // console.log("ZUL JERK OFF: ", post);
+
+  console.log("LALALLAA: ", post.bids);
+  
 
   const [alreadyBid, setAlreadyBid] = useState(false);
   const [userDetail, setUserDetail] = useState({});
+  const [canDelPost, setCanDelPost] = useState(true)
 
   const navigate = useNavigation();
 
@@ -24,27 +27,14 @@ export default function PostDetailScreen({ route }) {
   const refSheetReportPost = useRef();
   const refSheetPostDetailBid = useRef();
   const refSheetUserDetail = useRef();
-
-  // const fetch = async () => {
-  //   await PostApi.getPostById(postParam.id);
-  // };
-
-  // useEffect(() => {
-  //   (async () => {
-  //     await PostApi.getPostById(postParam.id);
-  //   })();
-  // }, []);
+  const refSheetAlertDeletePost = useRef();
 
   useEffect(() => {
-    const hasBid = post.bids.some((bid) => bid.user.id === user.id);
+    const hasBid = post?.bids?.some((bid) => bid.user.id === user.id);
     setAlreadyBid(hasBid);
   }, [post.bids]);
 
   const hanldeTambahPenawaran = () => {
-    /*
-      UNTUK SEMENTARA TAK TARUH DISINI:
-      
-    */
     if (
       user.name != null &&
       user.about != null &&
@@ -67,6 +57,21 @@ export default function PostDetailScreen({ route }) {
     refSheetUserDetail.current?.open();
   };
 
+  const handleDeleteButton = () => {
+    if(canDelPost) refSheetAlertDeletePost.current?.open()
+    else alert("TIDAK BISA HAPUS POSTINGAN!")
+  }
+
+  const handleCheckCanDelPost = () => {
+    post.bids?.map((bid) => {
+      if(bid.bidStatus === "REVIEWED" || bid.bidStatus === "ACCEPTED" || bid.bidStatus === "FINISH") setCanDelPost(false) 
+    })
+  }
+
+  useEffect(() => {
+    handleCheckCanDelPost()
+  }, [])
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -81,7 +86,7 @@ export default function PostDetailScreen({ route }) {
           >
             <Ionicons name="chevron-back" size={24} color="black" />
             <Text className="text-xl text-[#343434] font-semibold ml-1">
-              Kembali
+              Kembali {`${canDelPost}`}
             </Text>
           </TouchableOpacity>
         </View>
@@ -231,7 +236,7 @@ export default function PostDetailScreen({ route }) {
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => navigate.navigate("UpdatePost", { post })}
+                onPress={handleDeleteButton}
                 activeOpacity={0.7}
                 className="bg-red-500 w-[32%] py-2.5 rounded-full "
               >
@@ -265,7 +270,7 @@ export default function PostDetailScreen({ route }) {
             Penawar Saat Ini
           </Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {post.bids.length > 0 ? (
+            {post?.bids?.length > 0 ? (
               post.bids.map((bid, i) => {
                 console.log(bid.user);
                 return (
@@ -331,6 +336,13 @@ export default function PostDetailScreen({ route }) {
         refRBSheet={refSheetUserDetail}
         user={userDetail}
       />
+
+      {
+        canDelPost && (
+          <BottomSheetPostDeleteAlert refRBSheet={refSheetAlertDeletePost} post={post} resetPostItems={resetPostItems} />
+        )
+      }
+
       {post.user.id === user.id ? (
         <>
           <BottomSheetPostDetailBid

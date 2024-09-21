@@ -7,7 +7,7 @@ import PostApi from "../../../apis/PostApi";
 import PostCard from "../../../components/Post/PostCard";
 import ChipCategory from "../../../components/Post/ChipCategory";
 import store from "../../../redux/store";
-import { clearPost } from "../../../redux/auth/postSlice";
+import { clearPost } from "../../../redux/slice/postSlice";
 
 export default function SearchScreen() {
   const [search, setSearch] = useState("");
