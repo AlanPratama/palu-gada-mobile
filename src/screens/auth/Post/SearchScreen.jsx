@@ -13,7 +13,7 @@ export default function SearchScreen() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
   const [endPage, setEndPage] = useState(false)
-  const [refreshing, setRefreshing] = useState(false); // State for pull-to-refresh
+  const [refreshing, setRefreshing] = useState(false);
 
   const { items: postItems, isLoading } = useSelector((state) => state.post);
   const { items: catItems } = useSelector((state) => state.category);
