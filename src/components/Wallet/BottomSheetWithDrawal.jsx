@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { SelectList } from 'react-native-dropdown-select-list';
 import RBSheet from 'react-native-raw-bottom-sheet';
+import PayoutApi from '../../apis/PayoutApi';
+import { useSelector } from 'react-redux';
+import AuthApi from '../../apis/AuthApi';
 
 export default function BottomSheetWithDrawal({ refRBSheet }) {
   return (
     <View>
-        <RBSheet
+      <RBSheet
         ref={refRBSheet}
         useNativeDriver={false}
         draggable={true}
@@ -27,7 +32,6 @@ export default function BottomSheetWithDrawal({ refRBSheet }) {
         customModalProps={{
           animationType: "slide",
         }}
-        height={500}
         openDuration={250}
       >
         <WithDrawalComp refRBSheet={refRBSheet} />
@@ -36,100 +40,161 @@ export default function BottomSheetWithDrawal({ refRBSheet }) {
   )
 }
 
-
+const listTransferMedia = [
+  {
+    key: 'BANK_TRANSFER',
+    value: 'Transfer Bank'
+  },
+  {
+    key: 'GOPAY',
+    value: 'Gopay'
+  },
+  {
+    key: 'DANA',
+    value: 'Dana'
+  }
+]
 
 const WithDrawalComp = ({ refRBSheet }) => {
-    const [amount, setAmount] = useState(0)
-    const [message, setMessage] = useState("")
-    
-    const submit = async () => {
-        refRBSheet.current.close()
+  const [payoutType, setPayoutType] = useState('')
+  const { user } = useSelector((state) => state.auth);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm();
+
+  const onSubmit = async (data) => {
+    const res = await PayoutApi.createPayout({
+      ...data,
+      payoutType
+    })
+    if (res) {
+      alert('Penarikan saldo berhasil di buat!\nTranfer akan segera kami proses')
+      reset()
+      await AuthApi.getAuthenticated();
+      refRBSheet.current.close()
     }
+  }
 
-    return (
-      <ScrollView
-        style={{
-          borderTopLeftRadius: 10,
-          borderTopRightRadius: 10,
-          height: "100%",
-          backgroundColor: "white",
-        }}
-      >
-        <View style={{ marginTop: 26 }}>
+  return (
+    <ScrollView
+      style={{
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+        height: "100%",
+        backgroundColor: "white",
+      }}
+    >
+      <View style={{ paddingVertical: 20 }}>
 
-          <Text>BELUM SELESAI!!</Text>
-          
-          <View style={{ paddingHorizontal: 18, marginBottom: 25 }}>
-            <Text style={{ fontWeight: "600", fontSize: 16, marginBottom: 8 }}>
-              Harga Penawaran
-            </Text>
-            <TextInput
-              value={amount}
-              onChangeText={setAmount}
-              keyboardType='numeric'
-              placeholder="100.000"
-              style={{
-                padding: 10,
-                paddingHorizontal: 16,
-                borderRadius: 10,
-                borderWidth: 1,
-                borderColor: "gray",
-              }}
-            />
-          </View>
+        <View style={{ paddingHorizontal: 18, marginBottom: 25 }}>
+          <Text style={{ fontWeight: "600", fontSize: 16, marginBottom: 8 }}>
+            Jumlah Penarikan
+          </Text>
+          <Controller
+            control={control}
+            name="amount"
+            rules={{
+              required: "Jumlah Penarikan wajib diisi!",
+              validate: (value) => value >= 10000 && value <= user.balance || `Harga penawaran minimal 10.000 dan maksimal ${user.balance?.toLocaleString("id-ID") ?? 0}`
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                style={{
+                  padding: 10,
+                  paddingHorizontal: 16,
+                  borderRadius: 10,
+                  borderWidth: 1,
+                  borderColor: "gray",
+                }}
+                placeholder="100.000"
+                keyboardType="numeric"
+              />
+            )}
+          />
+          {errors.amount && <Text style={{ color: "red" }}>{errors.amount.message}</Text>}
+        </View>
 
-          <View style={{ paddingHorizontal: 18, marginBottom: 25 }}>
-            <Text style={{ fontWeight: "600", fontSize: 16, marginBottom: 8 }}>
-              Pesan Kamu
-            </Text>
-            <TextInput
-              value={message}
-              onChangeText={setMessage}
-              placeholder="Masukkan Pesan...."
-              multiline
-              numberOfLines={2}
-              style={{
-                padding: 6,
-                paddingHorizontal: 16,
-                borderRadius: 10,
-                borderWidth: 1,
-                borderColor: "gray",
-              }}
-            />
-          </View>
-            
-          <View
+        <View style={{ paddingHorizontal: 18, marginBottom: 25 }}>
+          <Text style={{ fontWeight: "600", fontSize: 16, marginBottom: 8 }}>
+            Media / Transfer Tujuan
+          </Text>
+          <SelectList
+            maxHeight={500}
+            setSelected={(key) => setPayoutType(key)}
+            data={listTransferMedia}
+            save="key"
+            label="Transfer Type"
+            placeholder="Transfer dengan / ke..."
+            searchPlaceholder="Cari..."
+          />
+        </View>
+
+        <View style={{ paddingHorizontal: 18, marginBottom: 25 }}>
+          <Text style={{ fontWeight: "600", fontSize: 16, marginBottom: 8 }}>
+            Nomor Tujuan (No Rekening / No Regristrasi)
+          </Text>
+          <Controller
+            control={control}
+            name="destinationNumber"
+            rules={{ required: "Jumlah Penarikan wajib diisi!" }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+                style={{
+                  padding: 10,
+                  paddingHorizontal: 16,
+                  borderRadius: 10,
+                  borderWidth: 1,
+                  borderColor: "gray",
+                }}
+                placeholder="08297123...."
+                keyboardType="numeric"
+              />
+            )}
+          />
+          {errors.destinationNumber && <Text style={{ color: "red" }}>{errors.destinationNumber.message}</Text>}
+        </View>
+
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-evenly",
+            gap: 8,
+            paddingHorizontal: 18,
+          }}
+        >
+          <TouchableOpacity
+            onPress={handleSubmit(onSubmit)}
             style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-evenly",
-              gap: 8,
-              paddingHorizontal: 18,
-              paddingBottom: 25,
+              backgroundColor: "#3b82f6",
+              flex: 1,
+              paddingVertical: 14,
+              borderRadius: 999,
             }}
           >
-            <TouchableOpacity
-              onPress={submit}
+            <Text
               style={{
-                backgroundColor: "#3b82f6",
-                flex: 1,
-                paddingVertical: 14,
-                borderRadius: 999,
+                color: "#fff",
+                fontWeight: 600,
+                fontSize: 16,
+                textAlign: "center",
               }}
             >
-              <Text
-                style={{
-                  color: "#fff",
-                  fontWeight: 600,
-                  fontSize: 16,
-                  textAlign: "center",
-                }}
-              >
-                Kirim Penawaran
-              </Text>
-            </TouchableOpacity>
-          </View>
+              Tarik Saldo
+            </Text>
+          </TouchableOpacity>
         </View>
-      </ScrollView>
-    );
-  };
+      </View>
+    </ScrollView>
+  );
+};
