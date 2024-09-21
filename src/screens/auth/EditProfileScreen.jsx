@@ -61,6 +61,7 @@ export default function EditProfileScreen() {
     const formData = new FormData();
     
     formData.append("name", data.name);
+    formData.append("about", data.about);
     formData.append("phone", data.phone);
     formData.append("nik", data.nik);
     formData.append("bankAccount", data.bankAccount);
@@ -177,6 +178,29 @@ export default function EditProfileScreen() {
             />
           </View>
           {errors.name && <Text style={{ color: "red" }}>{errors.name.message}</Text>}
+        </View>
+
+        <View className="mb-4">
+          <Text className="text-lg font-semibold text-start">Tentang Kamu</Text>
+          <View className="mt-2 flex-row justify-start items-start w-full">
+            <Ionicons name="information-circle-outline" size={24} color="#303030" />
+            <Controller
+              control={control}
+              name="about"
+              rules={{ required: "Tentang wajib diisi!" }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextInput
+                  multiline
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  className="border-b-2 border-[#d1d1d1] text-[#303030] ml-2 w-[90%]"
+                  placeholder="Masukkan deskripsi diri kamu..."
+                />
+              )}
+            />
+          </View>
+          {errors.about && <Text style={{ color: "red" }}>{errors.about.message}</Text>}
         </View>
 
         {/* <View className="mb-4">
