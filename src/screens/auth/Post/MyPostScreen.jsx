@@ -1,31 +1,39 @@
-import { Ionicons } from '@expo/vector-icons'
-import { useNavigation } from '@react-navigation/native'
-import { useEffect, useState } from 'react'
-import { FlatList, Keyboard, RefreshControl, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import Animated, { FadeIn } from 'react-native-reanimated'
-import { useSelector } from 'react-redux'
+import { Ionicons } from "@expo/vector-icons";
+import { useEffect, useState } from "react";
+import {
+  FlatList,
+  Keyboard,
+  RefreshControl,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { useSelector } from "react-redux";
 
-import PostApi from '../../../apis/PostApi'
-import PostCard from '../../../components/Post/PostCard'
-import { clearMyPost } from '../../../redux/auth/postSlice'
-import store from '../../../redux/store'
+import PostApi from "../../../apis/PostApi";
+import PostCard from "../../../components/Post/PostCard";
+import { clearMyPost } from "../../../redux/slice/postSlice";
+import store from "../../../redux/store";
 
 export default function MyPostScreen() {
   const { myPost, isLoading } = useSelector((state) => state.post);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
-  const [endPage, setEndPage] = useState(false)
-  const [refreshing, setRefreshing] = useState(false); // State for pull-to-refresh
+  const [endPage, setEndPage] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  console.log("MY POST: ", myPost);
 
   const searchPost = async () => {
-    Keyboard.dismiss()
-    resetPostItems()
-  }
+    Keyboard.dismiss();
+    resetPostItems();
+  };
 
   const handleSearchClear = () => {
-    setSearch('')
-    resetPostItems()
-  }
+    setSearch("");
+    resetPostItems();
+  };
 
   const resetPostItems = () => {
     store.dispatch(clearMyPost());
@@ -35,12 +43,12 @@ export default function MyPostScreen() {
     } else {
       loadPosts(page, search);
     }
-  }
+  };
 
   const loadPosts = async (pageNumber = 0, searchQuery = "") => {
     if (!isLoading) {
-      const result = await PostApi.getMyPosts(pageNumber, 10, searchQuery);
-      if (result.length < 10) {
+      const result = await PostApi.getMyPosts(pageNumber, 1, searchQuery);
+      if (result.length < 1) {
         setEndPage(true);
       }
     }
@@ -58,7 +66,7 @@ export default function MyPostScreen() {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    resetPostItems()
+    resetPostItems();
     setRefreshing(false);
   };
 
@@ -80,23 +88,28 @@ export default function MyPostScreen() {
       </Animated.View> */}
 
       <View className="p-3  pb-28">
-        <Text className="text-2xl font-bold text-[#343434]">Postingan Kamu</Text>
+        <Text className="text-2xl font-bold text-[#343434]">
+          Postingan Kamu
+        </Text>
 
-        <View className='relative mt-2 mb-1'>
+        <View className="relative mt-2 mb-1">
           <TextInput
             value={search}
             onChangeText={setSearch}
-            className='bg-[#f6f6f6] rounded-full text-[#303030] py-2 px-9'
-            placeholder='Cari...'
-            returnKeyType='search'
+            className="bg-[#f6f6f6] rounded-full text-[#303030] py-2 px-9"
+            placeholder="Cari..."
+            returnKeyType="search"
             onSubmitEditing={searchPost}
           />
-          <View className='absolute left-2.5 top-3'>
-            <Ionicons name='search-outline' size={20} color='#303030' />
+          <View className="absolute left-2.5 top-3">
+            <Ionicons name="search-outline" size={20} color="#303030" />
           </View>
           {search.length > 0 && (
-            <TouchableOpacity onPress={handleSearchClear} className='absolute right-4 top-3'>
-              <Ionicons name='close-outline' size={20} color='#303030' />
+            <TouchableOpacity
+              onPress={handleSearchClear}
+              className="absolute right-4 top-3"
+            >
+              <Ionicons name="close-outline" size={20} color="#303030" />
             </TouchableOpacity>
           )}
         </View>
@@ -104,23 +117,37 @@ export default function MyPostScreen() {
           data={myPost}
           keyExtractor={(post, i) => post.id + "-post-" + i}
           renderItem={({ item, index }) => {
-            return <PostCard post={item} />
+            return <PostCard post={item} resetPostItems={resetPostItems} />;
           }}
-          onEndReached={handleLoadMore}
+          // onEndReached={handleLoadMore}
           onEndReachedThreshold={0.5}
-          ListFooterComponent={isLoading && page != 0 ? <Text className='text-center'>Loading...</Text> : null}
+          ListFooterComponent={
+            isLoading && page != 0 ? (
+              <Text className="text-center">Loading...</Text>
+            ) : null
+          }
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 320 }}
+          // contentContainerStyle={{ paddingBottom: 320 }}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
-          ListEmptyComponent={(
-            <View className='flex-1 h-96 items-center justify-center'>
-              <Text className='text-lg'>{isLoading && page == 0 ? 'Loading...' : 'Data tidak di temukan'}</Text>
+          ListEmptyComponent={
+            <View className="items-center justify-center">
+              <Text className="text-lg">
+                {isLoading && page == 0
+                  ? "Loading..."
+                  : "Data tidak di temukan"}
+              </Text>
             </View>
-          )}
+          }
         />
+        {!endPage && (
+          <TouchableOpacity onPress={() => setPage((prev) => prev + 1)} className="flex-row justify-center items-center gap-x-1">
+            <Ionicons name="chevron-down-circle-outline" size={20} />
+            <Text className="text-center text-base font-medium">Load More</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
-  )
+  );
 }

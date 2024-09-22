@@ -28,11 +28,13 @@ export default function UpdatePostScreen({ route }) {
 
   console.log("ojan", post);
 
+  const [isChanged, setIsChanged] = useState(false)
+
   const {
     control,
     watch,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
     reset,
   } = useForm({
     defaultValues: {
@@ -50,6 +52,7 @@ export default function UpdatePostScreen({ route }) {
   
   const [selected, setSelected] = useState(selectedCategories);
   const [selectedDistrict, setSelectedDistrict] = useState(post.district.id);
+  const [count, setCount] = useState(2)
 
   const districtData = district.map((item) => ({
     key: item.id,
@@ -59,6 +62,11 @@ export default function UpdatePostScreen({ route }) {
   console.log("POST CATTT: ", post.postCategories);
   console.log("CATTTT: ", catItems);
   console.log("DATA: ", data);
+
+  useEffect(() => {
+    setCount(count-1)
+    if(count-1 <= 0) setIsChanged(true)
+  }, [selectedDistrict])
 
   const onSubmit = async (data) => {
     console.log("LKALSKA: ", selected);
@@ -126,6 +134,7 @@ export default function UpdatePostScreen({ route }) {
         type: `image/${fileType}`, // Mendapatkan tipe file dari ekstensi
         name: `photo.${fileType}`, // Nama file untuk dikirim ke server
       });
+      setIsChanged(true)
     }
   };
   return (
@@ -368,7 +377,9 @@ export default function UpdatePostScreen({ route }) {
                 dropdownStyles={{ backgroundColor: "#f7fafc" }}
                 dropdownItemStyles={{ backgroundColor: "transparent" }}
                 dropdownTextStyles={{ color: "#4a5568" }}
-                setSelected={(key) => setSelectedDistrict(key)}
+                setSelected={(key) => {
+                  setSelectedDistrict(key)
+                }}
                 defaultOption={{
                   key: post.district.id,
                   value: post.district.districtName,
@@ -394,35 +405,18 @@ export default function UpdatePostScreen({ route }) {
               search
               value={selected}
               onChange={(item) => {
+                setIsChanged(true)
                 setSelected(item);
               }}
               selectedStyle={{ backgroundColor: "#e0e0e0" }}
             />
-
-            {/* <MultipleSelectList
-              boxStyles={{ backgroundColor: "#f3f4f6", borderWidth: 0 }}
-              maxHeight={800}
-              inputStyles={{ color: "#4a5568" }}
-              dropdownStyles={{ backgroundColor: "#f7fafc" }}
-              dropdownItemStyles={{
-                backgroundColor: "transparent",
-              }}
-              dropdownTextStyles={{ color: "#4a5568" }}
-              setSelected={(key) => setSelected(key)}
-              defaultOption={post.postCategories.flatMap((category) => ({
-                key: category.id,
-                value: category.category,
-              }))}
-              data={data}
-              save="key"
-              placeholder="Pilih kategori"
-            /> */}
           </View>
 
           <TouchableOpacity
             onPress={handleSubmit(onSubmit)}
             activeOpacity={0.8}
-            className="bg-[#3f45f9] mt-4 py-4 rounded-lg"
+            disabled={isDirty ? !isDirty : !isChanged}
+            className={`${isDirty || isChanged ?  "bg-[#3f45f9]" : "bg-[#d1d1d1]"} mt-4 py-4 rounded-lg`}
           >
             <Text className="text-white text-lg font-semibold text-center">
               Simpan

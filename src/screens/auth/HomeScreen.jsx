@@ -20,7 +20,7 @@ import CategoryApi from "../../apis/CategoryApi";
 import PostApi from "../../apis/PostApi";
 import DistrictApi from "../../apis/DistrictApi";
 import store from "../../redux/store";
-import { login, logout } from "../../redux/auth/authSlice";
+import { login, logout } from "../../redux/slice/authSlice";
 import AuthApi from "../../apis/AuthApi";
 import PostCard from "../../components/Post/PostCard";
 import ChipCategory from "../../components/Post/ChipCategory";

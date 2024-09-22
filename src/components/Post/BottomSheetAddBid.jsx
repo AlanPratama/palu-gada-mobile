@@ -92,7 +92,7 @@ const AddBidComp = ({ refRBSheet, post }) => {
                 <TextInput
                   value={value}
                   onChangeText={onChange}
-                  placeholder="Masukkan Harga Penawaran..."
+                  placeholder={`Rp ${post.budgetMin?.toLocaleString("id-ID")} - ${post.budgetMax?.toLocaleString("id-ID")}`}
                   keyboardType="numeric"
                   style={{
                     padding: 10,

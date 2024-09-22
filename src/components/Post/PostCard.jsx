@@ -4,14 +4,14 @@ import { useNavigation } from "@react-navigation/native";
 
 import { calculateTimeAgo } from "../../utils/time.util"
 
-const PostCard = ({ post }) => {
+const PostCard = ({ post, resetPostItems }) => {
   const navigate = useNavigation();
 
   return (
     <TouchableOpacity
       onPress={() =>
         navigate.navigate("PostDetail", {
-          post
+          post, resetPostItems
         })
       }
       activeOpacity={0.5}

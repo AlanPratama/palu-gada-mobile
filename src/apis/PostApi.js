@@ -4,9 +4,8 @@ import {
   setIsLoading,
   setMyPost,
   setPost,
-  setPostById,
-  updatePost,
-} from "../redux/auth/postSlice";
+  setPostById
+} from "../redux/slice/postSlice";
 import store from "../redux/store";
 import { axiosInstance } from "./axiosInstance";
 
@@ -202,6 +201,30 @@ export default class PostApi {
     } catch (error) {
       console.log("PostApi reportPost: ", error);
     }
+  }
 
+  static async deletePost(postId) {
+    try {
+      const res = await axiosInstance.delete(`/posts/${postId}`)
+      
+      console.log("DELETE POST: ", res);
+      // if(res.data.status === "OK") {
+      //   store.dispatch(deletePost(postId))
+      //   store.dispatch(clearMyPost())
+      // }
+
+      return res
+    } catch (error) {
+      if (error.response) {
+        // Error dari API
+        console.log("API Response Error: ", error.response);
+      } else if (error.request) {
+        // Tidak ada response dari API
+        console.log("No response from API: ", error.request);
+      } else {
+        // Error yang terjadi ketika membuat request
+        console.log("Error in setting up request: ", error.message);
+      }
+    }
   }
 }

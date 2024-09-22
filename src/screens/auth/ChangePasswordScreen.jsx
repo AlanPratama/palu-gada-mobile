@@ -38,7 +38,7 @@ export default function ChangePasswordScreen() {
         </View>
         <View className='flex-1'>
           {/* Password Lama */}
-          <View className='mb-4 mt-6'>
+          {/* <View className='mb-4 mt-6'>
             <Text className='text-lg font-semibold text-start'>Password Lama</Text>
             <View className='flex-row justify-start items-center w-full mb-1'>
               <Ionicons name='lock-closed-outline' size={24} color='#303030' />
@@ -59,10 +59,10 @@ export default function ChangePasswordScreen() {
               />
             </View>
             {errors.oldPassword && <Text style={{ color: "red" }}>{errors.oldPassword.message}</Text>}
-          </View>
+          </View> */}
 
           {/* Password Baru */}
-          <View className='mb-4'>
+          <View className='mb-4 mt-6'>
             <Text className='text-lg font-semibold text-start'>Password Baru</Text>
             <View className='mb-4'>
               <View className='flex-row justify-start items-center w-full mb-1'>

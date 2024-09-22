@@ -45,6 +45,12 @@ export const postSlice = createSlice({
       state.total += 1;
       state.totalMyPost += 1;
     },
+    deletePost: (state, action) => {
+      state.items = state.items.filter((item) => item.id !== action.payload)
+      state.myPost = state.myPost.filter((item) => item.id !== action.payload)
+      state.total -= 1;
+      state.totalMyPost -= 1;
+    }
     // updatePost: (state, action) => {
     //   state.items = state.items.map((item) => {
     //     if (item.id === action.payload.id) {
@@ -62,5 +68,5 @@ export const postSlice = createSlice({
   },
 });
 
-export const { setPost, setPostById, setMyPost, setError, addPost, setIsLoading, clearPost, clearMyPost } = postSlice.actions;
+export const { setPost, setPostById, setMyPost, setError, addPost, setIsLoading, clearPost, clearMyPost, deletePost } = postSlice.actions;
 export default postSlice.reducer;

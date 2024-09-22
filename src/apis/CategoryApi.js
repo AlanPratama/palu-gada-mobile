@@ -1,4 +1,4 @@
-import { setCategories, setError, setIsLoading } from "../redux/auth/categorySlice";
+import { setCategories, setError, setIsLoading } from "../redux/slice/categorySlice";
 import store from "../redux/store";
 import { axiosInstance } from "./axiosInstance";
 
