@@ -45,7 +45,7 @@ export default class UserApi {
 
   static async changePassword(request) {
     try {
-      const { data } = await axiosInstance.put("/users/change-password", request);
+      const { data } = await axiosInstance.put("/users/reset-password", request);
       ToastAndroid.show("Password berhasil di ubah", 5000);
       return data;
     } catch (error) {

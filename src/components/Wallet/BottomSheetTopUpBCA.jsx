@@ -48,6 +48,7 @@ export default function BottomSheetTopUpBCA({ refRBSheet }) {
 
 const TopUpBCAComp = ({ refRBSheet }) => {
   const navigate = useNavigation()
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const {
     control,
@@ -57,6 +58,7 @@ const TopUpBCAComp = ({ refRBSheet }) => {
   } = useForm();
 
   const onSubmit = async (data) => {
+    setIsSubmitted(true)
     console.log("data: ", data);
     
     const request = {
@@ -72,6 +74,7 @@ const TopUpBCAComp = ({ refRBSheet }) => {
       navigate.replace("TopUpDetail", { payment: res.data })
     } else {
       alert("Terjadi Error coyy")
+      setIsSubmitted(false)
     }
 
     // refRBSheet.current.close();
@@ -131,9 +134,10 @@ const TopUpBCAComp = ({ refRBSheet }) => {
           }}
         >
           <TouchableOpacity
+            disabled={isSubmitted}
             onPress={handleSubmit(onSubmit)}
             style={{
-              backgroundColor: "#3b82f6",
+              backgroundColor: isSubmitted ? "#d1d1d1" : "#3b82f6",
               flex: 1,
               paddingVertical: 14,
               borderRadius: 999,
@@ -147,7 +151,7 @@ const TopUpBCAComp = ({ refRBSheet }) => {
                 textAlign: "center",
               }}
             >
-              Kirim Penawaran
+              Submit
             </Text>
           </TouchableOpacity>
         </View>

@@ -137,7 +137,7 @@ export default function MyReviewScreen() {
               </View>
             ))
           ) : (
-            <Text className="text-center text-xl font-semibold text-[#343434]">
+            <Text className="text-center text-base font-normal text-[#606060]">
               Tidak Ada Review
             </Text>
           )}

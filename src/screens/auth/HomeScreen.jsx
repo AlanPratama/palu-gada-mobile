@@ -32,7 +32,7 @@ export default function HomeScreen() {
 
   const [postClosest, setPostClosest] = useState([]);
   const [postLatest, setPostLatest] = useState([]);
-  const [refreshing, setRefreshing] = useState(false); 
+  const [refreshing, setRefreshing] = useState(false);
 
   const refSheetAddPost = useRef();
 
@@ -49,20 +49,37 @@ export default function HomeScreen() {
   const fetchAllData = async () => {
     await CategoryApi.getCategories();
     await DistrictApi.getDistricts();
-    const resPostClosest = await PostApi.getPostsReturn(0, 5, "", "title", "asc", '', user.district?.id);
+    const resPostClosest = await PostApi.getPostsReturn(
+      0,
+      5,
+      "",
+      "title",
+      "asc",
+      "",
+      user.district?.id
+    );
     setPostClosest(resPostClosest);
-    const resPostLatest = await PostApi.getPostsReturn(0, 5, "", "createdAt", "desc");
+    const resPostLatest = await PostApi.getPostsReturn(
+      0,
+      5,
+      "",
+      "createdAt",
+      "desc"
+    );
     setPostLatest(resPostLatest);
   };
 
   const fetchNotification = async () => {
     const { totalNotRead: total } = await NotificationApi.getNotification();
-    console.log('totalNotRead dari home', total);
+    console.log("totalNotRead dari home", total);
 
     if (total > 0) {
-      await pushLocalNotification(`${total}${total >= 10 && '+'} Notifikasi belum terbaca`, 'Ada kabar baru buat kamu, yuk liat. ada apa ya?')
+      await pushLocalNotification(
+        `${total}${total >= 10 && "+"} Notifikasi belum terbaca`,
+        "Ada kabar baru buat kamu, yuk liat. ada apa ya?"
+      );
     }
-  }
+  };
 
   const setUser = async () => {
     const token = await AsyncStorage.getItem("accessToken");
@@ -94,6 +111,24 @@ export default function HomeScreen() {
     setRefreshing(false);
   };
 
+  const handleNavigateAddPost = () => {
+    if (
+      user.name != null &&
+      user.about != null &&
+      user.address != null &&
+      user.nik != null &&
+      user.birthDate != null &&
+      user.district != null &&
+      user.phone != null &&
+      user.userGender != null
+    ) {
+      navigate.navigate("AddPost");
+    } else {
+      alert("Lengkapi terlebih dahulu profile anda!");
+      navigate.navigate("EditProfile");
+    }
+  };
+
   return (
     <ScrollView
       contentContainerStyle={{ paddingBottom: 110 }}
@@ -114,14 +149,12 @@ export default function HomeScreen() {
           <TouchableOpacity
             onPress={() => navigate.navigate("Notification")}
             activeOpacity={0.5}
-            className='relative'
+            className="relative"
           >
             <Ionicons name="notifications-outline" size={26} color="#343434" />
-            {
-              totalNotRead > 0 && (
-                <View className='absolute h-2 w-2 bg-red-500 top-0 right-0 rounded-full' />
-              )
-            }
+            {totalNotRead > 0 && (
+              <View className="absolute h-2 w-2 bg-red-500 top-0 right-0 rounded-full" />
+            )}
           </TouchableOpacity>
           {/* <TouchableOpacity
             onPress={() => Linking.openURL("https://wa.wizard.id/b8dd7a")}
@@ -224,7 +257,7 @@ export default function HomeScreen() {
         {/* #24bd5c */}
         <TouchableOpacity
           // onPress={() => refSheetAddPost.current?.open()}
-          onPress={() => navigate.navigate("AddPost")}
+          onPress={handleNavigateAddPost}
           activeOpacity={0.7}
           className="bg-indigo-500 py-2.5 rounded-lg w-[48%] flex-row justify-center items-center"
         >
@@ -281,14 +314,20 @@ export default function HomeScreen() {
       <View className="px-3 mt-4">
         <View className="flex-row justify-between items-center">
           <Text className="text-center text-[#343434] font-bold text-[20px]">
-            Terdekat ({user.district.districtName})
+            Terdekat ({user.district ? user.district.districtName : "-"})
           </Text>
           {/* <Ionicons name="chevron-forward-outline" size={18} /> */}
         </View>
 
-        {postClosest.length > 0 ? postClosest.map((post, i) => {
-          return <PostCard post={post} key={post.id + "-post-" + i} />;
-        }) : <Text className="text-center text-[#606060] font-medium my-6 text-[16px] capitalize">Tidak ada postingan terdekat</Text>}
+        {postClosest.length > 0 ? (
+          postClosest.map((post, i) => {
+            return <PostCard post={post} key={post.id + "-post-" + i} />;
+          })
+        ) : (
+          <Text className="text-center text-[#606060] font-medium my-6 text-[16px] capitalize">
+            Tidak ada postingan terdekat
+          </Text>
+        )}
       </View>
 
       <View className="px-3 mt-2">
@@ -303,9 +342,15 @@ export default function HomeScreen() {
           {/* <Ionicons name="chevron-forward-outline" size={18} /> */}
         </View>
 
-        {postLatest.length > 0 ? postLatest.map((post, i) => (
-          <PostCard post={post} key={post.id + "-post-" + i} />
-        )) : <Text className="text-center text-[#606060] font-medium my-6 text-[16px] capitalize">Tidak ada postingan terbaru</Text>}
+        {postLatest.length > 0 ? (
+          postLatest.map((post, i) => (
+            <PostCard post={post} key={post.id + "-post-" + i} />
+          ))
+        ) : (
+          <Text className="text-center text-[#606060] font-medium my-6 text-[16px] capitalize">
+            Tidak ada postingan terbaru
+          </Text>
+        )}
       </View>
 
       <BottomSheetAddPost refRBSheet={refSheetAddPost} />
