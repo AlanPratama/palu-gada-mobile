@@ -32,7 +32,7 @@ export default function HomeScreen() {
 
   const [postClosest, setPostClosest] = useState([]);
   const [postLatest, setPostLatest] = useState([]);
-  const [refreshing, setRefreshing] = useState(false); // State for pull-to-refresh
+  const [refreshing, setRefreshing] = useState(false); 
 
   const refSheetAddPost = useRef();
 
@@ -281,14 +281,14 @@ export default function HomeScreen() {
       <View className="px-3 mt-4">
         <View className="flex-row justify-between items-center">
           <Text className="text-center text-[#343434] font-bold text-[20px]">
-            Kerjain Aja: Terdekat
+            Terdekat ({user.district.districtName})
           </Text>
           {/* <Ionicons name="chevron-forward-outline" size={18} /> */}
         </View>
 
-        {postClosest.map((post, i) => {
+        {postClosest.length > 0 ? postClosest.map((post, i) => {
           return <PostCard post={post} key={post.id + "-post-" + i} />;
-        })}
+        }) : <Text className="text-center text-[#606060] font-medium my-6 text-[16px] capitalize">Tidak ada postingan terdekat</Text>}
       </View>
 
       <View className="px-3 mt-2">
@@ -303,9 +303,9 @@ export default function HomeScreen() {
           {/* <Ionicons name="chevron-forward-outline" size={18} /> */}
         </View>
 
-        {postLatest.map((post, i) => (
+        {postLatest.length > 0 ? postLatest.map((post, i) => (
           <PostCard post={post} key={post.id + "-post-" + i} />
-        ))}
+        )) : <Text className="text-center text-[#606060] font-medium my-6 text-[16px] capitalize">Tidak ada postingan terbaru</Text>}
       </View>
 
       <BottomSheetAddPost refRBSheet={refSheetAddPost} />
