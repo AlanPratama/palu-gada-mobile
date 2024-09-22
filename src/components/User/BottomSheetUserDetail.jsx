@@ -88,11 +88,7 @@ const UserDetailComp = ({ refRBSheet, user }) => {
           <View className="bg-white w-full justify-start items-center">
             <View className="-mt-16 p-4 bg-white rounded-[200px]">
               <Image
-                source={{
-                  uri: user.photoUrl
-                    ? user.photoUrl
-                    : "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
-                }}
+                source={!user.photoUrl ? require("../../../assets/userImgPlaceholder.png") : { uri: user.photoUrl }}
                 className="w-32 h-32 rounded-full"
               />
             </View>
@@ -144,7 +140,7 @@ const UserDetailComp = ({ refRBSheet, user }) => {
               <View className="my-2 flex-row justify-start items-center gap-x-2">
                 <Ionicons name="map-outline" size={18} />
                 <Text className="text-base font-normal text-[#343434] w-[95%]">
-                  {user.district.districtName} ({user.district.province})
+                  {user.district ? user.district.districtName : "-"} ({user.district ? user.district.province : "-"})
                 </Text>
               </View>
 

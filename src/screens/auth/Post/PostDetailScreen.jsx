@@ -9,17 +9,17 @@ import { useSelector } from "react-redux";
 import BottomSheetPostDetailBid from "../../../components/Post/BottomSheetPostDetailBid";
 import BottomSheetUserDetail from "../../../components/User/BottomSheetUserDetail";
 import BottomSheetPostDeleteAlert from "../../../components/Post/BottomSheetPostDeleteAlert";
+import BottomSheetPostStatusChange from "../../../components/Post/BottomSheetPostStatusChange";
 
 export default function PostDetailScreen({ route }) {
   const { post, resetPostItems } = route.params;
   const { user } = useSelector((state) => state.auth);
 
   console.log("LALALLAA: ", post.bids);
-  
 
   const [alreadyBid, setAlreadyBid] = useState(false);
   const [userDetail, setUserDetail] = useState({});
-  const [canDelPost, setCanDelPost] = useState(true)
+  const [canDelPost, setCanDelPost] = useState(true);
 
   const navigate = useNavigation();
 
@@ -28,6 +28,7 @@ export default function PostDetailScreen({ route }) {
   const refSheetPostDetailBid = useRef();
   const refSheetUserDetail = useRef();
   const refSheetAlertDeletePost = useRef();
+  const refSheetPostStatusChange = useRef()
 
   useEffect(() => {
     const hasBid = post?.bids?.some((bid) => bid.user.id === user.id);
@@ -58,19 +59,24 @@ export default function PostDetailScreen({ route }) {
   };
 
   const handleDeleteButton = () => {
-    if(canDelPost) refSheetAlertDeletePost.current?.open()
-    else alert("TIDAK BISA HAPUS POSTINGAN!")
-  }
+    if (canDelPost) refSheetAlertDeletePost.current?.open();
+    else alert("TIDAK BISA HAPUS POSTINGAN!");
+  };
 
   const handleCheckCanDelPost = () => {
     post.bids?.map((bid) => {
-      if(bid.bidStatus === "REVIEWED" || bid.bidStatus === "ACCEPTED" || bid.bidStatus === "FINISH") setCanDelPost(false) 
-    })
-  }
+      if (
+        bid.bidStatus === "REVIEWED" ||
+        bid.bidStatus === "ACCEPTED" ||
+        bid.bidStatus === "FINISH"
+      )
+        setCanDelPost(false);
+    });
+  };
 
   useEffect(() => {
-    handleCheckCanDelPost()
-  }, [])
+    handleCheckCanDelPost();
+  }, []);
 
   return (
     <ScrollView
@@ -86,30 +92,31 @@ export default function PostDetailScreen({ route }) {
           >
             <Ionicons name="chevron-back" size={24} color="black" />
             <Text className="text-xl text-[#343434] font-semibold ml-1">
-              Kembali {`${canDelPost}`}
+              Kembali
             </Text>
           </TouchableOpacity>
         </View>
-        {
-          post.user.id !== user.id ? (
-            <TouchableOpacity
-              onPress={() => refSheetReportPost.current?.open()}
-              activeOpacity={0.7}
-              className="flex-row justify-center items-center bg-red-500 px-2 py-1 rounded"
-            >
-              <Ionicons name="megaphone-outline" size={24} color={"#fff"} />
-              <Text className="text-white ml-2 font-semibold">Laporkan</Text>
-            </TouchableOpacity>
-          ) : null
-          // <TouchableOpacity
-          //   onPress={() => refSheetReportPost.current?.open()}
-          //   activeOpacity={0.7}
-          //   className="flex-row justify-center items-center bg-red-500 px-2 py-1 rounded"
-          // >
-          //   {/* <Ionicons name="trash-outline" size={24} color={"#fff"} /> */}
-          //   <Text className="text-white ml-2 font-semibold">Hapus Postingan</Text>
-          // </TouchableOpacity>
-        }
+        {post.user.id !== user.id ? (
+          <TouchableOpacity
+            onPress={() => refSheetReportPost.current?.open()}
+            activeOpacity={0.7}
+            className="flex-row justify-center items-center bg-red-500 px-2 py-1 rounded"
+          >
+            <Ionicons name="megaphone-outline" size={24} color={"#fff"} />
+            <Text className="text-white ml-2 font-semibold">Laporkan</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={() => refSheetPostStatusChange.current?.open()}
+            activeOpacity={0.7}
+            className="flex-row justify-center items-center bg-indigo-500 px-2 py-1.5 rounded"
+          >
+            <Ionicons name="brush-outline" size={18} color={"#fff"} />
+            <Text className="text-white ml-2 font-semibold">
+              Ganti Status
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       <View className="p-3">
@@ -255,7 +262,7 @@ export default function PostDetailScreen({ route }) {
                 post.status === "EXPIRED"
               }
               className={`${
-                alreadyBid ? "bg-gray-400" : "bg-primary"
+                alreadyBid || post.status === "NOT_AVAILABLE" || post.status === "EXPIRED" ? "bg-gray-400" : "bg-primary"
               } w-full py-3.5 rounded-full`}
             >
               <Text className="text-base text-white text-center font-semibold">
@@ -337,11 +344,13 @@ export default function PostDetailScreen({ route }) {
         user={userDetail}
       />
 
-      {
-        canDelPost && (
-          <BottomSheetPostDeleteAlert refRBSheet={refSheetAlertDeletePost} post={post} resetPostItems={resetPostItems} />
-        )
-      }
+      {canDelPost && (
+        <BottomSheetPostDeleteAlert
+          refRBSheet={refSheetAlertDeletePost}
+          post={post}
+          resetPostItems={resetPostItems}
+        />
+      )}
 
       {post.user.id === user.id ? (
         <>
@@ -349,6 +358,7 @@ export default function PostDetailScreen({ route }) {
             refRBSheet={refSheetPostDetailBid}
             post={post}
           />
+          <BottomSheetPostStatusChange refRBSheet={refSheetPostStatusChange} post={post} />
         </>
       ) : (
         <BottomSheetAddBid refRBSheet={refSheetAddBid} post={post} />

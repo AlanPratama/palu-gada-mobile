@@ -57,7 +57,7 @@ export default class BidApi {
       if (res?.data?.status === "OK") {
         await PostApi.getPosts();
         await UserApi.getAuthenticated();
-        return true;
+        return res.data.data;
       }
 
       return false;

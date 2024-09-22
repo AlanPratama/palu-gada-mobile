@@ -50,8 +50,8 @@ const BidAlertComp = ({ refRBSheet, objBid }) => {
 
       if(res) {
           alert("Berhasil Merubah Bid Status!")
+          navigate.navigate("PostDetail", { post: res.post })
           refRBSheet.current?.close()
-          navigate.goBack()
       } else {
         alert("Gagal Merubah Bid Status!")
       }
