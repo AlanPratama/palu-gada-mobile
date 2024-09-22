@@ -64,7 +64,7 @@ export default function SearchScreen() {
   };
 
   return (
-    <View className='bg-white min-h-screen p-3'>
+    <View className='bg-white min-h-screen p-3 flex-1'>
       <View className='relative'>
         <TextInput
           value={search}
@@ -92,19 +92,19 @@ export default function SearchScreen() {
         </ScrollView>
       </View>
 
-      <View>
+      <View className='flex-grow pb-12'>
         <FlatList
           data={postItems}
           keyExtractor={(post, i) => post.id + "-post-" + i}
           renderItem={({ item, index }) => {
             // console.log(index)
-            return <PostCard post={item} />
+            return <PostCard post={item} resetPostItems={resetPostItems} />
           }}
           onEndReached={handleLoadMore}
           onEndReachedThreshold={0.5}
           ListFooterComponent={isLoading && page != 0 ? <Text className='text-center'>Loading...</Text> : null}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 320 }}
+          contentContainerStyle={{ paddingBottom: endPage ? 120 : 200 }}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
