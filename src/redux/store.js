@@ -1,9 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-import authReducer from "./auth/authSlice";
-import categoryReducer from "./auth/categorySlice";
-import postReducer from "./auth/postSlice";
-import districtReducer from "./auth/districtSlice";
-import bidReducer from "./auth/bidSlice";
+import authReducer from "./slice/authSlice";
+import categoryReducer from "./slice/categorySlice";
+import postReducer from "./slice/postSlice";
+import districtReducer from "./slice/districtSlice";
+import bidReducer from "./slice/bidSlice";
+import notificationReducer from "./slice/notificationSlice";
 
 export default configureStore({
 	reducer: {
@@ -11,6 +12,7 @@ export default configureStore({
 		category: categoryReducer,
 		post: postReducer,
 		district: districtReducer,
-		bid: bidReducer
+		bid: bidReducer,
+		notification: notificationReducer,
 	},
 });

@@ -1,5 +1,5 @@
 import { ToastAndroid } from "react-native";
-import { setUser } from "../redux/auth/authSlice";
+import { setUser } from "../redux/slice/authSlice";
 import store from "../redux/store";
 import { axiosInstance } from "./axiosInstance";
 

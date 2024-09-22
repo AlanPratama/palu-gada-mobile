@@ -1,10 +1,16 @@
 import { Ionicons } from "@expo/vector-icons/build/Icons";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import RBSheet from "react-native-raw-bottom-sheet";
 import Divider from "../Divider";
+import BidApi from "../../apis/BidApi";
+import { StarRatingDisplay } from "react-native-star-rating-widget";
 
-export default function BottomSheetUserDetail({ refRBSheet, user }) {
+export default function BottomSheetUserDetail({
+  refRBSheet,
+  user,
+  animation = "slide",
+}) {
   return (
     <View>
       <RBSheet
@@ -20,7 +26,7 @@ export default function BottomSheetUserDetail({ refRBSheet, user }) {
           },
         }}
         customModalProps={{
-          animationType: "slide",
+          animationType: animation,
         }}
         height={500}
         openDuration={250}
@@ -32,7 +38,32 @@ export default function BottomSheetUserDetail({ refRBSheet, user }) {
 }
 
 const UserDetailComp = ({ refRBSheet, user }) => {
-  console.log(user);
+  // console.log(user);
+
+  const [userReview, setUserReview] = useState([]);
+  const [userCountRating, setUserCountRating] = useState(0);
+  const [userRating, setUserRating] = useState(0);
+
+  const fetch = async () => {
+    const data = await BidApi.getReviewByUserId(user.id);
+    const sumAllRating = data.data.items.reduce(
+      (total, currentItem) => total + currentItem.rating,
+      0
+    );
+    const numberOfRatings = data.data?.items?.length || 0;
+    const averageRating =
+      numberOfRatings > 0 ? sumAllRating / numberOfRatings : 0;
+
+    setUserRating(averageRating);
+    setUserCountRating(numberOfRatings);
+
+    console.log("Total Rating: ", sumAllRating);
+    console.log("Average Rating: ", averageRating);
+  };
+
+  useEffect(() => {
+    fetch();
+  }, []);
 
   return (
     <>
@@ -85,19 +116,18 @@ const UserDetailComp = ({ refRBSheet, user }) => {
 
               <View className="flex-row justify-start items-center gap-x-2">
                 <View className="flex-row justify-start items-center">
-                  <Ionicons name="star" size={16} color={"orange"} />
-                  <Ionicons name="star" size={16} color={"orange"} />
-                  <Ionicons name="star" size={16} color={"orange"} />
-                  <Ionicons name="star" size={16} color={"orange"} />
-                  <Ionicons name="star" size={16} color={"orange"} />
+                  {/* <Ionicons name="star" size={16} color={"orange"} /> */}
+                  <StarRatingDisplay rating={userRating} maxStars={5} starSize={20} starStyle={{ marginHorizontal: -2 }} />
                 </View>
-                <Text className="text-sm font-semibold text-[#808080] capitalize">10 Reviews</Text>
+                <Text className="text-sm font-semibold text-[#808080] capitalize">
+                  ({userCountRating} Reviews)
+                </Text>
               </View>
             </View>
             <Divider width={8} color="#d9d9d9d9" />
 
             <View className="px-6 py-2 mt-2">
-            <View className="my-2 flex-row justify-start items-center gap-x-2">
+              <View className="my-2 flex-row justify-start items-center gap-x-2">
                 <Ionicons name="mail-outline" size={18} />
                 <Text className="text-base font-normal text-[#343434] w-[95%]">
                   {user.email}
@@ -124,7 +154,6 @@ const UserDetailComp = ({ refRBSheet, user }) => {
                   {user.address}
                 </Text>
               </View>
-
             </View>
           </View>
         </View>

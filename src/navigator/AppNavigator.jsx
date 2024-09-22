@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 
 import AuthApi from "../apis/AuthApi";
 import OnBoarding from "../components/OnBoarding";
-import { login, logout } from "../redux/auth/authSlice";
+import { login, logout } from "../redux/slice/authSlice";
 import store from "../redux/store";
 import ChangePasswordScreen from "../screens/auth/ChangePasswordScreen";
 import EditProfileScreen from "../screens/auth/EditProfileScreen";
@@ -24,6 +24,7 @@ import PublicRoutes from "./PublicRoutes";
 import MyPostScreen from "../screens/auth/Post/MyPostScreen";
 import UpdatePostScreen from "../screens/auth/Post/UpdatePostScreen";
 import MyReportPostScreen from "../screens/auth/Post/MyReportPostScreen";
+import MyReviewScreen from "../screens/auth/MyReviewScreen";
 
 export default function AppNavigator() {
   const Stack = createNativeStackNavigator();
@@ -94,6 +95,7 @@ export default function AppNavigator() {
                 />
                 <Stack.Screen name="PostDetail" component={PostDetailScreen} />
                 <Stack.Screen name="Wallet" component={WalletScreen} />
+                <Stack.Screen name="MyReview" component={MyReviewScreen} />
                 <Stack.Screen
                   name="Notification"
                   component={NotificationScreen}
@@ -108,7 +110,7 @@ export default function AppNavigator() {
                   name="TopUpDetail"
                   component={TopUpDetailScreen}
                 />
-                <Stack.Screen name="MyPost" component={MyPostScreen} />
+                {/* <Stack.Screen name="MyPost" component={MyPostScreen} /> */}
                 <Stack.Screen name="UpdatePost" component={UpdatePostScreen} />
                 <Stack.Screen name="MyReportPost" component={MyReportPostScreen} />
               </>
