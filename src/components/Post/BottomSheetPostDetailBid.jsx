@@ -4,6 +4,7 @@ import RBSheet from "react-native-raw-bottom-sheet";
 import Divider from "../Divider";
 import BottomSheetBidAlert from "./BottomSheetBidAlert";
 import { useSelector } from "react-redux";
+import BottomSheetAddReview from "./BottomSheetAddReview";
 
 export default function BottomSheetPostDetailBid({ refRBSheet, post }) {
   return (
@@ -42,6 +43,7 @@ export default function BottomSheetPostDetailBid({ refRBSheet, post }) {
 const PostDetailBidComp = ({ refRBSheet, post }) => {
   const [objBid, setObjBid] = useState({});
   const dialogueRefSheet = useRef();
+  const reviewRefSheet = useRef()
   const { user } = useSelector((state) => state.auth);
 
   const openRefSheetDialogue = (bid, status) => {
@@ -174,6 +176,15 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
                             DITOLAK
                           </Text>
                         </TouchableOpacity>
+                      ) : bid.bidStatus === "FINISH" ? (
+                        <TouchableOpacity
+                          onPress={() => reviewRefSheet.current?.open()}
+                          className="bg-orange-200 py-1 px-2 rounded-full w-[100%]"
+                        >
+                          <Text className="text-center text-orange-500">
+                            Berikan Review
+                          </Text>
+                        </TouchableOpacity>
                       ) : (
                         <TouchableOpacity
                           onPress={() => alert("Bid Telah Selesai!")}
@@ -205,7 +216,10 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
         >
           <Text className="text-white text-center font-semibold">Tutup</Text>
         </TouchableOpacity>
+
+
         <BottomSheetBidAlert refRBSheet={dialogueRefSheet} objBid={objBid} />
+        <BottomSheetAddReview refRBSheet={reviewRefSheet} />
       </View>
     </>
   );
