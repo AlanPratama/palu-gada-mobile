@@ -121,7 +121,7 @@ export default function NotificationScreen() {
         }
         ListEmptyComponent={(
           <View className='flex-1 h-96 items-center justify-center'>
-            <Text className='text-lg'>{isLoading && page == 0 ? 'Loading...' : 'Data tidak di temukan'}</Text>
+            <Text className='text-lg'>{isLoading && page == 0 ? 'Loading...' : 'Tidak ada notifikasi'}</Text>
           </View>
         )}
         style={{ flex: 1 }}

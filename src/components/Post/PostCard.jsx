@@ -9,11 +9,12 @@ const PostCard = ({ post, resetPostItems }) => {
 
   return (
     <TouchableOpacity
-      onPress={() =>
+      onPress={() => {
+        resetPostItems && resetPostItems()
         navigate.navigate("PostDetail", {
-          post, resetPostItems
+          post
         })
-      }
+      }}
       activeOpacity={0.5}
       className="my-3.5 flex-row justify-start items-start gap-x-2.5"
     >

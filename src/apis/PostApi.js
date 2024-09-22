@@ -20,8 +20,8 @@ export default class PostApi {
           page,
           size,
           title,
-          sortField: "createdAt",
-          sortDirection: "desc",
+          // sortField: "createdAt",
+          // sortDirection: "desc",
           status: 'AVAILABLE'
         },
       });
@@ -83,8 +83,8 @@ export default class PostApi {
           page,
           size,
           title,
-          sortField: "createdAt",
-          sortDirection: "desc",
+          // sortField: "createdAt",
+          // sortDirection: "desc",
         },
       });
 
@@ -206,7 +206,7 @@ export default class PostApi {
   static async deletePost(postId) {
     try {
       const res = await axiosInstance.delete(`/posts/${postId}`)
-      
+
       console.log("DELETE POST: ", res);
       // if(res.data.status === "OK") {
       //   store.dispatch(deletePost(postId))
@@ -232,9 +232,9 @@ export default class PostApi {
     console.log("updatePostStatus: ", postId, status);
     try {
       const res = await axiosInstance.put(`/posts/${postId}/status?status=${status}`)
-      
+
       console.log("POST: ", res.data.status);
-      if(res.data.status === "OK") {
+      if (res.data.status === "OK") {
         store.dispatch(setPostById(res.data.data));
         this.getPosts();
       }
