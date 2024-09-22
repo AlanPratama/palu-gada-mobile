@@ -341,11 +341,11 @@ export default function EditProfileScreen() {
             <Controller
               control={control}
               name="bankAccount"
-              rules={{
-                required: "Bank Account wajib diisi!",
-                validate: (value) =>
-                  value.length >= 8 || "Bank Account minimal 8 digit!",
-              }}
+              // rules={{
+              //   required: "Bank Account wajib diisi!",
+              //   validate: (value) =>
+              //     value.length >= 8 || "Bank Account minimal 8 digit!",
+              // }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
                   onBlur={onBlur}
