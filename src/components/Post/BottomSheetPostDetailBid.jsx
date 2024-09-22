@@ -45,6 +45,7 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
   const dialogueRefSheet = useRef();
   const reviewRefSheet = useRef()
   const { user } = useSelector((state) => state.auth);
+  const [userId, setUserId] = useState()
 
   const openRefSheetDialogue = (bid, status) => {
     setObjBid({
@@ -54,6 +55,11 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
     console.log(objBid);
     dialogueRefSheet.current?.open();
   };
+
+  const openRefSheetAddReview = (userId) => {
+    setUserId(userId)
+    reviewRefSheet.current?.open()
+  }
 
   return (
     <>
@@ -178,7 +184,7 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
                         </TouchableOpacity>
                       ) : bid.bidStatus === "FINISH" ? (
                         <TouchableOpacity
-                          onPress={() => reviewRefSheet.current?.open()}
+                          onPress={() => openRefSheetAddReview(bid.user.id)}
                           className="bg-orange-200 py-1 px-2 rounded-full w-[100%]"
                         >
                           <Text className="text-center text-orange-500">
@@ -219,7 +225,7 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
 
 
         <BottomSheetBidAlert refRBSheet={dialogueRefSheet} objBid={objBid} />
-        <BottomSheetAddReview refRBSheet={reviewRefSheet} />
+        <BottomSheetAddReview refRBSheet={reviewRefSheet} postId={post.id} userId={userId} />
       </View>
     </>
   );

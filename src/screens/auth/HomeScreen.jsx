@@ -123,12 +123,12 @@ export default function HomeScreen() {
               )
             }
           </TouchableOpacity>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => Linking.openURL("https://wa.wizard.id/b8dd7a")}
             activeOpacity={0.5}
           >
             <Ionicons name="logo-whatsapp" size={26} color="#343434" />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
 
@@ -226,11 +226,36 @@ export default function HomeScreen() {
           // onPress={() => refSheetAddPost.current?.open()}
           onPress={() => navigate.navigate("AddPost")}
           activeOpacity={0.7}
-          className="bg-green-500 py-2.5 rounded-lg w-[48%] flex-row justify-center items-center"
+          className="bg-indigo-500 py-2.5 rounded-lg w-[48%] flex-row justify-center items-center"
         >
           <Ionicons name="add-outline" size={20} color="white" />
           <Text className="text-white font-semibold text-center">
             Buat Postingan
+          </Text>
+        </TouchableOpacity>
+      </View>
+      <View className="px-3 mb-4 flex-row justify-center items-center gap-x-2">
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => Linking.openURL("https://wa.wizard.id/b8dd7a")}
+          className="bg-green-500 py-2.5 rounded-lg w-[48%] flex-row justify-center items-center gap-x-1"
+        >
+          <Ionicons name="logo-whatsapp" size={20} color="white" />
+          <Text className="text-white font-semibold text-center">
+            Hubungi Admin
+          </Text>
+        </TouchableOpacity>
+
+        {/* #24bd5c */}
+        <TouchableOpacity
+          // onPress={() => refSheetAddPost.current?.open()}
+          onPress={() => navigate.push("MyReview")}
+          activeOpacity={0.7}
+          className="bg-yellow-500 py-2.5 rounded-lg w-[48%] flex-row justify-center items-center gap-x-1"
+        >
+          <Ionicons name="star-outline" size={20} color="white" />
+          <Text className="text-white font-semibold text-center">
+            Review Saya
           </Text>
         </TouchableOpacity>
       </View>

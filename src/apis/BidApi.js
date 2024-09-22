@@ -65,4 +65,71 @@ export default class BidApi {
       console.log("BidApi updateBidStatus: ", error.response);
     }
   }
+
+  static async createReview(request) {
+    console.log("REQUEST: ", request);
+    
+    try {
+      const { data } = await axiosInstance.post(`/reviews`, request);
+
+      console.log("data: ", data);
+
+      return data;
+    } catch (error) {
+      if (error.response) {
+        // Error dari API
+        console.log("API Response Error: ", error.response);
+      } else if (error.request) {
+        // Tidak ada response dari API
+        console.log("No response from API: ", error.request);
+      } else {
+        // Error yang terjadi ketika membuat request
+        console.log("Error in setting up request: ", error.message);
+      }
+    }
+  }
+
+  static async getMyReview() {
+    try {
+      const { data } = await axiosInstance.get(`/reviews/me`);
+
+      console.log("data: ", data);
+
+      return data;
+    } catch (error) {
+      if (error.response) {
+        // Error dari API
+        console.log("API Response Error: ", error.response);
+      } else if (error.request) {
+        // Tidak ada response dari API
+        console.log("No response from API: ", error.request);
+      } else {
+        // Error yang terjadi ketika membuat request
+        console.log("Error in setting up request: ", error.message);
+      }
+    }
+  }
+
+  static async getReviewByUserId(userId) {
+    console.log("USER ID: ", userId);
+    
+    try {
+      const { data } = await axiosInstance.get(`/reviews/user/${userId}`);
+
+      console.log("data: ", data);
+
+      return data;
+    } catch (error) {
+      if (error.response) {
+        // Error dari API
+        console.log("API Response Error: ", error.response);
+      } else if (error.request) {
+        // Tidak ada response dari API
+        console.log("No response from API: ", error.request);
+      } else {
+        // Error yang terjadi ketika membuat request
+        console.log("Error in setting up request: ", error.message);
+      }
+    }
+  }
 }
