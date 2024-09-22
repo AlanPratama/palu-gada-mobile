@@ -4,6 +4,7 @@ import categoryReducer from "./slice/categorySlice";
 import postReducer from "./slice/postSlice";
 import districtReducer from "./slice/districtSlice";
 import bidReducer from "./slice/bidSlice";
+import notificationReducer from "./slice/notificationSlice";
 
 export default configureStore({
 	reducer: {
@@ -11,6 +12,7 @@ export default configureStore({
 		category: categoryReducer,
 		post: postReducer,
 		district: districtReducer,
-		bid: bidReducer
+		bid: bidReducer,
+		notification: notificationReducer,
 	},
 });

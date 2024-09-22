@@ -24,16 +24,21 @@ import { login, logout } from "../../redux/slice/authSlice";
 import AuthApi from "../../apis/AuthApi";
 import PostCard from "../../components/Post/PostCard";
 import ChipCategory from "../../components/Post/ChipCategory";
+import NotificationApi from "../../apis/NotificationApi";
+import { pushLocalNotification } from "../../utils/notification.util";
 
 export default function HomeScreen() {
   const navigate = useNavigation();
+
   const [postClosest, setPostClosest] = useState([]);
   const [postLatest, setPostLatest] = useState([]);
+  const [refreshing, setRefreshing] = useState(false); // State for pull-to-refresh
 
   const refSheetAddPost = useRef();
+
   const { user } = useSelector((state) => state.auth);
   const { items: catItems } = useSelector((state) => state.category);
-  const { district } = useSelector((state) => state.district);
+  const { totalNotRead } = useSelector((state) => state.notification);
 
   // console.log("USER: ", user);
   // console.log("catItems: ", catItems);
@@ -49,6 +54,16 @@ export default function HomeScreen() {
     const resPostLatest = await PostApi.getPostsReturn(0, 5, "", "createdAt", "desc");
     setPostLatest(resPostLatest);
   };
+
+  const fetchNotification = async () => {
+    const { totalNotRead: total } = await NotificationApi.getNotification();
+    console.log('totalNotRead dari home', total);
+
+    if (total > 0) {
+      await pushLocalNotification(`${total}${total >= 10 && '+'} Notifikasi belum terbaca`, 'Ada kabar baru buat kamu, yuk liat. ada apa ya?')
+    }
+  }
+
   const setUser = async () => {
     const token = await AsyncStorage.getItem("accessToken");
     console.log("tokenn: ", token);
@@ -61,10 +76,9 @@ export default function HomeScreen() {
     }
   };
 
-  const [refreshing, setRefreshing] = useState(false); // State for pull-to-refresh
   useEffect(() => {
     setUser();
-    fetchAllData();
+    fetchNotification();
   }, []);
   // useFocusEffect to refresh data when screen gains focus
   useFocusEffect(
@@ -100,8 +114,14 @@ export default function HomeScreen() {
           <TouchableOpacity
             onPress={() => navigate.navigate("Notification")}
             activeOpacity={0.5}
+            className='relative'
           >
             <Ionicons name="notifications-outline" size={26} color="#343434" />
+            {
+              totalNotRead > 0 && (
+                <View className='absolute h-2 w-2 bg-red-500 top-0 right-0 rounded-full' />
+              )
+            }
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => Linking.openURL("https://wa.wizard.id/b8dd7a")}
