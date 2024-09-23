@@ -1,25 +1,25 @@
 import { useEffect, useState } from "react";
-import PayoutApi from "../../apis/PayoutApi";
 import { Animated, FlatList, RefreshControl, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { FadeIn } from "react-native-reanimated";
+import WalletApi from "../../apis/WalletApi";
 
-const TabPayoutHistory = () => {
-  const [payoutItems, setPayoutItems] = useState([])
+const TabPaymentHistory = () => {
+  const [paymentItems, setPaymentItems] = useState([])
   const [page, setPage] = useState(0);
   const [endPage, setEndPage] = useState(false)
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false)
 
-  const loadPosts = async (pageNumber = 0) => {
+  const loadItems = async (pageNumber = 0) => {
     if (!loading) {
       setLoading(true)
-      const resPost = await PayoutApi.getAllMyPayout(
+      const resItems = await WalletApi.fetchPayments(
         pageNumber,
         10,
       );
-      setPayoutItems(prevPost => [...prevPost, ...resPost]);
-      if (resPost.length < 10) {
+      setPaymentItems(prevItems => [...prevItems, ...resItems]);
+      if (resItems.length < 10) {
         setEndPage(true);
       }
       setLoading(false)
@@ -33,17 +33,17 @@ const TabPayoutHistory = () => {
   };
 
   useEffect(() => {
-    loadPosts(page);
+    loadItems(page);
   }, [page]);
 
   const onRefresh = async () => {
     setRefreshing(true);
-    setPayoutItems([])
+    setPaymentItems([])
     setEndPage(false);
     if (page !== 0) {
       setPage(0);
     } else {
-      loadPosts()
+      loadItems()
     }
     setRefreshing(false);
   };
@@ -51,33 +51,27 @@ const TabPayoutHistory = () => {
   return (
     <View className="p-4 bg-white flex-1 gap-y-4">
       <FlatList
-        data={payoutItems}
-        keyExtractor={(payout) => payout.id}
+        data={paymentItems}
+        keyExtractor={(payment) => payment.id}
         renderItem={({ item, index }) => (
           <Animated.View
             entering={FadeIn.delay(280 * index)}
             className="flex-row justify-between items-center my-2"
           >
             <View className='flex-row items-center gap-x-2'>
-              <View className="bg-orange-500 p-2 rounded-full">
-                <Ionicons name="chevron-back-outline" size={24} color={"#fff"} />
+              <View className="bg-blue-500 p-2 rounded-full">
+                <Ionicons name="chevron-forward-outline" size={24} color={"#fff"} />
               </View>
               <View>
-                <Text className="text-orange-600 font-semibold text-[17px]">
-                  -Rp {item.amount.toLocaleString('id-ID')}
+                <Text className="text-green-600 font-semibold text-[17px]">
+                  +Rp {item.amount.toLocaleString('id-ID')}
                 </Text>
                 <Text className="text-[#343434] font-medium text-[14px]">
                   {new Date(item?.createdAt).toLocaleDateString('en-GB', {
                     day: 'numeric', month: 'short', year: 'numeric'
-                  })
-                  }
+                  })}
                 </Text>
               </View>
-            </View>
-            <View>
-              <Text>
-                {item.payoutStatus}
-              </Text>
             </View>
           </Animated.View>
         )}
@@ -98,4 +92,4 @@ const TabPayoutHistory = () => {
   )
 }
 
-export default TabPayoutHistory
+export default TabPaymentHistory
