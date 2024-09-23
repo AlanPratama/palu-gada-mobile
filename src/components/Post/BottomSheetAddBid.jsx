@@ -121,6 +121,7 @@ const AddBidComp = ({ refRBSheet, post }) => {
               }}
               render={({ field: { onChange, value } }) => (
                 <TextInput
+                  multiline
                   value={value}
                   onChangeText={onChange}
                   placeholder="Masukkan Pesan..."
