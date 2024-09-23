@@ -8,6 +8,7 @@ import {
   ScrollView,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -28,7 +29,7 @@ export default function UpdatePostScreen({ route }) {
 
   console.log("ojan", post);
 
-  const [isChanged, setIsChanged] = useState(false)
+  const [isChanged, setIsChanged] = useState(false);
 
   const {
     control,
@@ -47,12 +48,12 @@ export default function UpdatePostScreen({ route }) {
     },
   });
 
-  const selectedCategories = post.postCategories?.map((item) => item.id)
+  const selectedCategories = post.postCategories?.map((item) => item.id);
   console.log("POST CAT: ", selectedCategories);
-  
+
   const [selected, setSelected] = useState(selectedCategories);
   const [selectedDistrict, setSelectedDistrict] = useState(post.district.id);
-  const [count, setCount] = useState(2)
+  const [count, setCount] = useState(2);
 
   const districtData = district.map((item) => ({
     key: item.id,
@@ -64,13 +65,13 @@ export default function UpdatePostScreen({ route }) {
   console.log("DATA: ", data);
 
   useEffect(() => {
-    setCount(count-1)
-    if(count-1 <= 0) setIsChanged(true)
-  }, [selectedDistrict])
+    setCount(count - 1);
+    if (count - 1 <= 0) setIsChanged(true);
+  }, [selectedDistrict]);
 
   const onSubmit = async (data) => {
     console.log("LKALSKA: ", selected);
-    
+
     const formData = new FormData();
     if (image) {
       formData.append("file", {
@@ -93,10 +94,10 @@ export default function UpdatePostScreen({ route }) {
     if (res) {
       console.log(res);
 
-      alert("Berhasil Update Postingan");
+      ToastAndroid.show("Berhasil Update Postingan", 1500);
       navigate.navigate("PostDetail", { post: res });
     } else {
-      alert("Gagal Update Postingan");
+      ToastAndroid.show("Gagal Update Postingan", 1500);
     }
 
     // reset();
@@ -110,7 +111,7 @@ export default function UpdatePostScreen({ route }) {
       await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (permissionResult.granted === false) {
-      alert("Izin untuk mengakses galeri diperlukan!");
+      ToastAndroid.show("Izin untuk mengakses galeri diperlukan!", 1500);
       return;
     }
 
@@ -134,7 +135,7 @@ export default function UpdatePostScreen({ route }) {
         type: `image/${fileType}`, // Mendapatkan tipe file dari ekstensi
         name: `photo.${fileType}`, // Nama file untuk dikirim ke server
       });
-      setIsChanged(true)
+      setIsChanged(true);
     }
   };
   return (
@@ -378,7 +379,7 @@ export default function UpdatePostScreen({ route }) {
                 dropdownItemStyles={{ backgroundColor: "transparent" }}
                 dropdownTextStyles={{ color: "#4a5568" }}
                 setSelected={(key) => {
-                  setSelectedDistrict(key)
+                  setSelectedDistrict(key);
                 }}
                 defaultOption={{
                   key: post.district.id,
@@ -405,7 +406,7 @@ export default function UpdatePostScreen({ route }) {
               search
               value={selected}
               onChange={(item) => {
-                setIsChanged(true)
+                setIsChanged(true);
                 setSelected(item);
               }}
               selectedStyle={{ backgroundColor: "#e0e0e0" }}
@@ -416,7 +417,9 @@ export default function UpdatePostScreen({ route }) {
             onPress={handleSubmit(onSubmit)}
             activeOpacity={0.8}
             disabled={isDirty ? !isDirty : !isChanged}
-            className={`${isDirty || isChanged ?  "bg-[#3f45f9]" : "bg-[#d1d1d1]"} mt-4 py-4 rounded-lg`}
+            className={`${
+              isDirty || isChanged ? "bg-[#3f45f9]" : "bg-[#d1d1d1]"
+            } mt-4 py-4 rounded-lg`}
           >
             <Text className="text-white text-lg font-semibold text-center">
               Simpan

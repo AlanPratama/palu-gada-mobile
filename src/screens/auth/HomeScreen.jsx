@@ -6,6 +6,7 @@ import {
   ScrollView,
   RefreshControl,
   Linking,
+  ToastAndroid,
 } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -127,7 +128,7 @@ export default function HomeScreen() {
     ) {
       navigate.navigate("AddPost");
     } else {
-      alert("Lengkapi terlebih dahulu profile anda!");
+      ToastAndroid.show("Lengkapi terlebih dahulu profile anda!", 1500);
       navigate.navigate("EditProfile");
     }
   };
@@ -332,7 +333,11 @@ export default function HomeScreen() {
         )}
       </View> */}
 
-      <PostsListOnFiltered districtId={user.district?.id} title={'Terdekat'} districtName={user.district ? user.district.districtName : "-"} />
+      <PostsListOnFiltered
+        districtId={user.district?.id}
+        title={"Terdekat"}
+        districtName={user.district ? user.district.districtName : "-"}
+      />
 
       <View className="px-3 mt-2">
         <Divider color="#d9d9d9" width={2} />
@@ -355,7 +360,11 @@ export default function HomeScreen() {
           </Text>
         )}
       </View> */}
-      <PostsListOnFiltered sortField={'createdAt'} sortDirection={'desc'} title={'Terbaru'} />
+      <PostsListOnFiltered
+        sortField={"createdAt"}
+        sortDirection={"desc"}
+        title={"Terbaru"}
+      />
 
       <BottomSheetAddPost refRBSheet={refSheetAddPost} />
     </ScrollView>

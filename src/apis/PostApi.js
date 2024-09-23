@@ -1,10 +1,11 @@
+import { ToastAndroid } from "react-native";
 import {
   addPost,
   setError,
   setIsLoading,
   setMyPost,
   setPost,
-  setPostById
+  setPostById,
 } from "../redux/slice/postSlice";
 import store from "../redux/store";
 import { axiosInstance } from "./axiosInstance";
@@ -22,13 +23,13 @@ export default class PostApi {
           title,
           // sortField: "createdAt",
           // sortDirection: "desc",
-          status: 'AVAILABLE'
+          status: "AVAILABLE",
         },
       });
 
       const items = data.data.items;
       store.dispatch(setPost(items));
-      return { length: items.length }
+      return { length: items.length };
     } catch (error) {
       store.dispatch(setError(error.message));
       console.log("PostApi getPosts: ", error);
@@ -44,8 +45,8 @@ export default class PostApi {
     title,
     sortField,
     sortDirection,
-    categoryIds = '', // Pakai koma jika ingin filter banyak kategori - contoh: 1,2,3
-    districtIds = '' // Pakai koma jika ingin filter banyak district - contoh: 1,2,3
+    categoryIds = "", // Pakai koma jika ingin filter banyak kategori - contoh: 1,2,3
+    districtIds = "" // Pakai koma jika ingin filter banyak district - contoh: 1,2,3
   ) {
     try {
       store.dispatch(setError(null));
@@ -58,9 +59,9 @@ export default class PostApi {
           title,
           sortField,
           sortDirection,
-          status: 'AVAILABLE',
+          status: "AVAILABLE",
           categoryIds,
-          districtIds
+          districtIds,
         },
       });
       const items = data.data.items;
@@ -90,7 +91,7 @@ export default class PostApi {
 
       const items = data.data.items;
       store.dispatch(setMyPost(items));
-      return { length: items.length }
+      return { length: items.length };
     } catch (error) {
       store.dispatch(setError(error.message));
       console.log("PostApi getMyPosts: ", error);
@@ -118,9 +119,9 @@ export default class PostApi {
       const { data } = await axiosInstance.get("/post-reports", {
         params: {
           page,
-          size
-        }
-      })
+          size,
+        },
+      });
 
       console.log(data.data);
 
@@ -128,20 +129,19 @@ export default class PostApi {
     } catch (error) {
       console.log("PostApi reportPost: ", error);
     }
-
   }
 
   static async reportPost(request) {
     try {
-      const { data } = await axiosInstance.post("/post-reports", request)
+      const { data } = await axiosInstance.post("/post-reports", request);
       console.log(data);
 
       if (data.status === "Created") {
-        alert("Report Success!");
+        ToastAndroid.show("Report Success!", 1500);
         return true;
       }
 
-      return false
+      return false;
     } catch (error) {
       console.log("PostApi reportPost: ", error);
     }
@@ -205,7 +205,7 @@ export default class PostApi {
 
   static async deletePost(postId) {
     try {
-      const res = await axiosInstance.delete(`/posts/${postId}`)
+      const res = await axiosInstance.delete(`/posts/${postId}`);
 
       console.log("DELETE POST: ", res);
       // if(res.data.status === "OK") {
@@ -213,7 +213,7 @@ export default class PostApi {
       //   store.dispatch(clearMyPost())
       // }
 
-      return res
+      return res;
     } catch (error) {
       if (error.response) {
         // Error dari API
@@ -231,7 +231,9 @@ export default class PostApi {
   static async updatePostStatus(postId, status) {
     console.log("updatePostStatus: ", postId, status);
     try {
-      const res = await axiosInstance.put(`/posts/${postId}/status?status=${status}`)
+      const res = await axiosInstance.put(
+        `/posts/${postId}/status?status=${status}`
+      );
 
       console.log("POST: ", res.data.status);
       if (res.data.status === "OK") {
@@ -239,7 +241,7 @@ export default class PostApi {
         this.getPosts();
       }
 
-      return res
+      return res;
     } catch (error) {
       if (error.response) {
         // Error dari API

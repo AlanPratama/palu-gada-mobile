@@ -6,8 +6,9 @@ import {
   RefreshControl,
   ScrollView,
   Text,
+  ToastAndroid,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { useSelector } from "react-redux";
@@ -47,11 +48,7 @@ const TabTopUpHistory = () => {
         className="mt-4 flex-row justify-start items-center gap-x-2"
       >
         <View className="bg-blue-500 p-2 rounded-full">
-          <Ionicons
-            name="chevron-forward-outline"
-            size={24}
-            color={"#fff"}
-          />
+          <Ionicons name="chevron-forward-outline" size={24} color={"#fff"} />
         </View>
         <View>
           <Text className="text-green-600 font-semibold text-[17px]">
@@ -84,11 +81,7 @@ const TabTopUpHistory = () => {
         className="mt-4 flex-row justify-start items-center gap-x-2"
       >
         <View className="bg-blue-500 p-2 rounded-full">
-          <Ionicons
-            name="chevron-forward-outline"
-            size={24}
-            color={"#fff"}
-          />
+          <Ionicons name="chevron-forward-outline" size={24} color={"#fff"} />
         </View>
         <View>
           <Text className="text-green-600 font-semibold text-[17px]">
@@ -121,11 +114,7 @@ const TabTopUpHistory = () => {
         className="mt-4 flex-row justify-start items-center gap-x-2"
       >
         <View className="bg-blue-500 p-2 rounded-full">
-          <Ionicons
-            name="chevron-forward-outline"
-            size={24}
-            color={"#fff"}
-          />
+          <Ionicons name="chevron-forward-outline" size={24} color={"#fff"} />
         </View>
         <View>
           <Text className="text-green-600 font-semibold text-[17px]">
@@ -158,11 +147,7 @@ const TabTopUpHistory = () => {
         className="mt-4 flex-row justify-start items-center gap-x-2"
       >
         <View className="bg-blue-500 p-2 rounded-full">
-          <Ionicons
-            name="chevron-forward-outline"
-            size={24}
-            color={"#fff"}
-          />
+          <Ionicons name="chevron-forward-outline" size={24} color={"#fff"} />
         </View>
         <View>
           <Text className="text-green-600 font-semibold text-[17px]">
@@ -174,8 +159,8 @@ const TabTopUpHistory = () => {
         </View>
       </Animated.View>
     </View>
-  )
-}
+  );
+};
 
 export default function WalletScreen() {
   const navigate = useNavigation();
@@ -205,21 +190,24 @@ export default function WalletScreen() {
 
   const handleTarikSaldoPress = () => {
     if (user.balance < 10000) {
-      alert('Saldo kurang dari minimum penarikan\nMinimum penarikan Rp 10.000')
+      ToastAndroid.show(
+        "Saldo kurang dari minimum penarikan\nMinimum penarikan Rp 10.000",
+        1500
+      );
     } else {
-      refSheetWithDrawal.current?.open()
+      refSheetWithDrawal.current?.open();
     }
-  }
+  };
 
   return (
-    <View className='min-h-screen bg-white'>
+    <View className="min-h-screen bg-white">
       <ScrollView
         showsVerticalScrollIndicator={false}
         className="p-3 flex-grow-0"
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
-      // contentContainerStyle={{ flexGrow: 1 }} 
+        // contentContainerStyle={{ flexGrow: 1 }}
       >
         <Animated.View
           entering={FadeIn.delay(100)}
@@ -268,7 +256,9 @@ export default function WalletScreen() {
           <TouchableOpacity
             onPress={handleTarikSaldoPress}
             activeOpacity={0.7}
-            className={`${user.balance < 10000 ? 'bg-gray-300' : 'bg-orange-500'} flex-row justify-center items-center py-1.5 px-5 rounded-full`}
+            className={`${
+              user.balance < 10000 ? "bg-gray-300" : "bg-orange-500"
+            } flex-row justify-center items-center py-1.5 px-5 rounded-full`}
           >
             <Ionicons name="arrow-down-outline" size={20} color="white" />
             <Text className="text-center text-base text-white font-bold">
@@ -278,14 +268,18 @@ export default function WalletScreen() {
         </Animated.View>
       </ScrollView>
       <View className="flex-1 flex-grow">
-
         <Tab.Navigator
           screenOptions={{
-            tabBarStyle: { backgroundColor: 'white' }, // Style the tab bar itself
-            tabBarIndicatorStyle: { backgroundColor: 'blue' }, // Tab indicator color
-          }}>
+            tabBarStyle: { backgroundColor: "white" }, // Style the tab bar itself
+            tabBarIndicatorStyle: { backgroundColor: "blue" }, // Tab indicator color
+          }}
+        >
           <Tab.Screen name="Riwayat Top Up" component={TabTopUpHistory} />
-          <Tab.Screen name="Riwayat Tarik Saldo" component={TabPayoutHistory} options={{ lazy: true }} />
+          <Tab.Screen
+            name="Riwayat Tarik Saldo"
+            component={TabPayoutHistory}
+            options={{ lazy: true }}
+          />
         </Tab.Navigator>
       </View>
 

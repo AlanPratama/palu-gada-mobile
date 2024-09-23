@@ -1,7 +1,14 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useRef, useState } from "react";
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  ScrollView,
+  Text,
+  ToastAndroid,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Divider from "../../../components/Divider";
 import BottomSheetAddBid from "../../../components/Post/BottomSheetAddBid";
 import BottomSheetReportPost from "../../../components/Post/BottomSheetReportPost";
@@ -28,7 +35,7 @@ export default function PostDetailScreen({ route }) {
   const refSheetPostDetailBid = useRef();
   const refSheetUserDetail = useRef();
   const refSheetAlertDeletePost = useRef();
-  const refSheetPostStatusChange = useRef()
+  const refSheetPostStatusChange = useRef();
 
   useEffect(() => {
     const hasBid = post?.bids?.some((bid) => bid.user.id === user.id);
@@ -48,7 +55,7 @@ export default function PostDetailScreen({ route }) {
     ) {
       refSheetAddBid.current?.open();
     } else {
-      alert("Lengkapi terlebih dahulu profile anda!");
+      ToastAndroid.show("Lengkapi terlebih dahulu profile anda!", 1500);
       navigate.navigate("EditProfile");
     }
   };
@@ -60,7 +67,7 @@ export default function PostDetailScreen({ route }) {
 
   const handleDeleteButton = () => {
     if (canDelPost) refSheetAlertDeletePost.current?.open();
-    else alert("TIDAK BISA HAPUS POSTINGAN!");
+    else ToastAndroid.show("TIDAK BISA HAPUS POSTINGAN!", 1500);
   };
 
   const handleCheckCanDelPost = () => {
@@ -112,9 +119,7 @@ export default function PostDetailScreen({ route }) {
             className="flex-row justify-center items-center bg-indigo-500 px-2 py-1.5 rounded"
           >
             <Ionicons name="brush-outline" size={18} color={"#fff"} />
-            <Text className="text-white ml-2 font-semibold">
-              Ganti Status
-            </Text>
+            <Text className="text-white ml-2 font-semibold">Ganti Status</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -262,7 +267,11 @@ export default function PostDetailScreen({ route }) {
                 post.status === "EXPIRED"
               }
               className={`${
-                alreadyBid || post.status === "NOT_AVAILABLE" || post.status === "EXPIRED" ? "bg-gray-400" : "bg-primary"
+                alreadyBid ||
+                post.status === "NOT_AVAILABLE" ||
+                post.status === "EXPIRED"
+                  ? "bg-gray-400"
+                  : "bg-primary"
               } w-full py-3.5 rounded-full`}
             >
               <Text className="text-base text-white text-center font-semibold">
@@ -361,7 +370,10 @@ export default function PostDetailScreen({ route }) {
             refRBSheet={refSheetPostDetailBid}
             post={post}
           />
-          <BottomSheetPostStatusChange refRBSheet={refSheetPostStatusChange} post={post} />
+          <BottomSheetPostStatusChange
+            refRBSheet={refSheetPostStatusChange}
+            post={post}
+          />
         </>
       ) : (
         <BottomSheetAddBid refRBSheet={refSheetAddBid} post={post} />

@@ -4,6 +4,7 @@ import {
   ScrollView,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -50,26 +51,26 @@ const ReportPostComp = ({ refRBSheet, postId }) => {
     control,
     handleSubmit,
     formState: { errors },
-    reset
+    reset,
   } = useForm();
 
   const onSubmit = async (data) => {
-    setIsSubmitted(true)
+    setIsSubmitted(true);
     console.log("MEASA:", data);
     console.log("JALSAJAAA:", postId);
     const request = {
       postId: postId,
       message: data.message,
-    }
+    };
     const res = await PostApi.reportPost(request);
-    if(res) {
-      reset()
-      alert("Berhasil Report Postingan!")
+    if (res) {
+      reset();
+      ToastAndroid.show("Berhasil Report Postingan!", 1500);
       refRBSheet.current.close();
-      setIsSubmitted(false)
+      setIsSubmitted(false);
     } else {
-      alert("Gagal Report Postingan!")
-      setIsSubmitted(false)
+      ToastAndroid.show("Gagal Report Postingan!", 1500);
+      setIsSubmitted(false);
     }
   };
 
@@ -90,7 +91,10 @@ const ReportPostComp = ({ refRBSheet, postId }) => {
           <Controller
             control={control}
             name="message"
-            rules={{ required: "Pesan wajib diisi!", validate: (value) => value.length >= 10 || "Minimal 10 karakter!" }}
+            rules={{
+              required: "Pesan wajib diisi!",
+              validate: (value) => value.length >= 10 || "Minimal 10 karakter!",
+            }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
                 onChangeText={onChange}
@@ -109,7 +113,9 @@ const ReportPostComp = ({ refRBSheet, postId }) => {
               />
             )}
           />
-          {errors.message && <Text style={{ color: "red" }}>{errors.message.message}</Text>}
+          {errors.message && (
+            <Text style={{ color: "red" }}>{errors.message.message}</Text>
+          )}
         </View>
 
         <View
@@ -125,7 +131,9 @@ const ReportPostComp = ({ refRBSheet, postId }) => {
           <TouchableOpacity
             onPress={handleSubmit(onSubmit)}
             disabled={isSubmitted}
-            className={`${isSubmitted ? "bg-[#d1d1d1]" : "bg-red-500"} w-full py-3.5 rounded-full`}
+            className={`${
+              isSubmitted ? "bg-[#d1d1d1]" : "bg-red-500"
+            } w-full py-3.5 rounded-full`}
           >
             <Text
               style={{

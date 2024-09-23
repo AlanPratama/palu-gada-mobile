@@ -8,8 +8,9 @@ import {
   ScrollView,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -43,7 +44,7 @@ export default function AddPostScreen() {
   const data = catItems.map((item) => ({ label: item.name, value: item.id }));
 
   const onSubmit = async (data) => {
-    setIsSubmitted(true)
+    setIsSubmitted(true);
 
     const formData = new FormData();
     if (image) {
@@ -60,17 +61,16 @@ export default function AddPostScreen() {
     });
 
     console.log("ALSKALKSA: ", selected);
-    
 
     formData.append("districtId", selectedDistrict);
     formData.append("categoriesId", selected);
 
     const res = await PostApi.createPost(formData);
     if (res) {
-      alert("Post Success!");
+      ToastAndroid.show("Post Success!", 1500);
       navigate.goBack();
     }
-    setIsSubmitted(false)
+    setIsSubmitted(false);
   };
 
   const [image, setImage] = useState(null);
@@ -80,7 +80,7 @@ export default function AddPostScreen() {
       await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (permissionResult.granted === false) {
-      alert("Izin untuk mengakses galeri diperlukan!");
+      ToastAndroid.show("Izin untuk mengakses galeri diperlukan!", 1500);
       return;
     }
 
@@ -389,7 +389,9 @@ export default function AddPostScreen() {
             onPress={handleSubmit(onSubmit)}
             activeOpacity={0.8}
             disabled={isSubmitted}
-            className={`${isSubmitted ? "bg-[#d1d1d1]" : "bg-[#3f45f9]"} mt-4 py-4 rounded-lg`}
+            className={`${
+              isSubmitted ? "bg-[#d1d1d1]" : "bg-[#3f45f9]"
+            } mt-4 py-4 rounded-lg`}
           >
             <Text className="text-white text-lg font-semibold text-center">
               Sebarkan Postingan

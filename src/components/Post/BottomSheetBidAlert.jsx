@@ -1,5 +1,12 @@
 import React, { useRef, useState } from "react";
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  ScrollView,
+  Text,
+  ToastAndroid,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import RBSheet from "react-native-raw-bottom-sheet";
 import Divider from "../Divider";
 import BidApi from "../../apis/BidApi";
@@ -40,24 +47,21 @@ export default function BottomSheetBidAlert({ refRBSheet, objBid }) {
 }
 
 const BidAlertComp = ({ refRBSheet, objBid }) => {
+  console.log(objBid);
 
-    console.log(objBid);
+  const navigate = useNavigation();
 
-    const navigate = useNavigation()
+  const onSubmit = async () => {
+    const res = await BidApi.updateBidStatus(objBid.bid.id, objBid.status);
 
-    const onSubmit = async () => {
-      const res = await BidApi.updateBidStatus(objBid.bid.id, objBid.status)
-
-      if(res) {
-          alert("Berhasil Merubah Bid Status!")
-          navigate.navigate("PostDetail", { post: res.post })
-          refRBSheet.current?.close()
-      } else {
-        alert("Gagal Merubah Bid Status!")
-      }
-
+    if (res) {
+      ToastAndroid.show("Berhasil Merubah Bid Status!", 1500);
+      navigate.navigate("PostDetail", { post: res.post });
+      refRBSheet.current?.close();
+    } else {
+      ToastAndroid.show("Gagal Merubah Bid Status!", 1500);
     }
-    
+  };
 
   return (
     <>
@@ -70,28 +74,31 @@ const BidAlertComp = ({ refRBSheet, objBid }) => {
         }}
       >
         <View style={{ marginTop: 26 }} className="px-8">
-          <Text className="text-base font-semibold text-[#343434] mb-2 text-center">Apakah kamu yakin akan mengubah status Bid ini menjadi {objBid.status}?</Text>
+          <Text className="text-base font-semibold text-[#343434] mb-2 text-center">
+            Apakah kamu yakin akan mengubah status Bid ini menjadi{" "}
+            {objBid.status}?
+          </Text>
 
           <View className="mb-4 flex-row justify-center items-center gap-x-2 mt-3">
-          <TouchableOpacity
-            activeOpacity={0.8}
-            onPress={() => refRBSheet.current?.close()} 
-            className="w-[48%] bg-[#fff] py-3.5 rounded-full"
-          >
-            <Text className="text-[#3f45f9] text-lg font-semibold text-center">
-              Batal
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => onSubmit()}
-            activeOpacity={0.8}
-            className="w-[48%] bg-[#3f45f9] py-3.5 rounded-full"
-          >
-            <Text className="text-white text-lg font-semibold text-center">
-              Ya, saya yakin
-            </Text>
-          </TouchableOpacity>
-        </View>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => refRBSheet.current?.close()}
+              className="w-[48%] bg-[#fff] py-3.5 rounded-full"
+            >
+              <Text className="text-[#3f45f9] text-lg font-semibold text-center">
+                Batal
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => onSubmit()}
+              activeOpacity={0.8}
+              className="w-[48%] bg-[#3f45f9] py-3.5 rounded-full"
+            >
+              <Text className="text-white text-lg font-semibold text-center">
+                Ya, saya yakin
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </>

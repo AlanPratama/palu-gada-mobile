@@ -5,6 +5,7 @@ import {
   ScrollView,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -82,7 +83,7 @@ const AddReviewComp = ({ refRBSheet, postId, userId }) => {
       refRBSheet.current.close();
       navigate.goBack();
     } else {
-      alert("Gagal menawar!");
+      ToastAndroid.show("Gagal menawar!", 1500);
     }
 
     // const res = await BidApi.createBid({

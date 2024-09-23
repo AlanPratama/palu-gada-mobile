@@ -9,6 +9,7 @@ import {
   ScrollView,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -27,13 +28,13 @@ export default function EditProfileScreen() {
   // console.log("USER: ", user);
 
   const categoriesData = catItems.map((item) => ({
-    label: item.name,
-    value: item.id,
+    label: item?.name,
+    value: item?.id,
   }));
 
   const districtData = district.map((item) => ({
-    key: item.id,
-    value: item.districtName,
+    key: item?.id,
+    value: item?.districtName,
   }));
 
   console.log("USER: ", user);
@@ -46,13 +47,13 @@ export default function EditProfileScreen() {
   const [count, setCount] = useState(2);
 
   const [gender, setGender] = useState(
-    user.userGender.charAt(0).toUpperCase() +
-      user.userGender.slice(1).toLowerCase()
+    user.userGender?.charAt(0).toUpperCase() +
+      user.userGender?.slice(1).toLowerCase()
   );
-  const [birthDate, setBirthDate] = useState(new Date(user.birthDate));
-  const [selectedDistrict, setSelectedDistrict] = useState(user.district.id);
+  const [birthDate, setBirthDate] = useState(new Date(user?.birthDate));
+  const [selectedDistrict, setSelectedDistrict] = useState(user?.district?.id);
   const [selectedCategories, setSelectedCategories] = useState(
-    user.userCategories.map((item) => item.category.id)
+    user?.userCategories?.map((item) => item.category.id)
   );
   console.log(categoriesData);
 
@@ -112,12 +113,12 @@ export default function EditProfileScreen() {
     // console.log("RES: ", res);
 
     if (res?.status === "OK") {
-      alert("Update profile success!");
+      ToastAndroid.show("Update profile success!", 1500);
       await UserApi.getAuthenticated();
       navigate.goBack();
       // reset();
     } else {
-      alert("ada yang aneh coy!");
+      ToastAndroid.show("ada yang aneh coy!", 1500);
     }
   };
 
@@ -129,7 +130,7 @@ export default function EditProfileScreen() {
       await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (permissionResult.granted === false) {
-      alert("Izin untuk mengakses galeri diperlukan!");
+      ToastAndroid.show("Izin untuk mengakses galeri diperlukan!", 1500);
       return;
     }
 
@@ -388,7 +389,7 @@ export default function EditProfileScreen() {
               display="default"
               maximumDate={new Date()}
               onChange={(e) => {
-                setIsChanged(true)
+                setIsChanged(true);
                 setShowDate(false);
                 setBirthDate(new Date(e.nativeEvent.timestamp));
                 // console.log("ASASA: ", e.nativeEvent.timestamp);

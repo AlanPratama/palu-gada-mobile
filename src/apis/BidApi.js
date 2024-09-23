@@ -1,3 +1,4 @@
+import { ToastAndroid } from "react-native";
 import { setMyBids } from "../redux/slice/bidSlice";
 import store from "../redux/store";
 import { axiosInstance } from "./axiosInstance";
@@ -5,26 +6,25 @@ import PostApi from "./PostApi";
 import UserApi from "./UserApi";
 
 export default class BidApi {
-
   static async myBids(page, size = 10) {
     try {
       const res = await axiosInstance.get(`/bids`, {
         params: {
-          page, size
-        }
+          page,
+          size,
+        },
       });
       console.log("ASASA: ", res.data);
 
-      if(res.data.status === "OK") {
-        const myBids = res.data.data.items
-        const totalMyBids = res.data.data.items.length
-        store.dispatch(setMyBids({myBids, totalMyBids}))
+      if (res.data.status === "OK") {
+        const myBids = res.data.data.items;
+        const totalMyBids = res.data.data.items.length;
+        store.dispatch(setMyBids({ myBids, totalMyBids }));
       }
-
     } catch (error) {
       console.log("BidApi createBid: ", error.response);
     }
-  } 
+  }
 
   static async createBid(request) {
     console.log("REQ CREAATE BID: ", request);
@@ -34,7 +34,7 @@ export default class BidApi {
       console.log("ASASA: ", res.data);
       if (res.data.status === "Created") {
         await PostApi.getPosts();
-        alert("Bid Success!");
+        ToastAndroid.show("Bid Success!", 1500);
         return true;
       }
 
@@ -68,7 +68,7 @@ export default class BidApi {
 
   static async createReview(request) {
     console.log("REQUEST: ", request);
-    
+
     try {
       const { data } = await axiosInstance.post(`/reviews`, request);
 
@@ -112,7 +112,7 @@ export default class BidApi {
 
   static async getReviewByUserId(userId) {
     console.log("USER ID: ", userId);
-    
+
     try {
       const { data } = await axiosInstance.get(`/reviews/user/${userId}`);
 

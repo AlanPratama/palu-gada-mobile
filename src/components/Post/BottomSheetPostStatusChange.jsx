@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import {
   ScrollView,
   Text,
+  ToastAndroid,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import { SelectList } from "react-native-dropdown-select-list";
 import RBSheet from "react-native-raw-bottom-sheet";
@@ -58,21 +59,19 @@ const listStatus = [
 const PostStatusChangeComp = ({ refRBSheet, post }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [statusType, setStatusType] = useState("");
-  const navigate = useNavigation()
+  const navigate = useNavigation();
 
   const onSubmit = async () => {
-    setIsSubmitted(true)
+    setIsSubmitted(true);
     const res = await PostApi.updatePostStatus(post.id, statusType);
     console.log("LALALLAA: ", res.data);
-    
+
     if (res) {
-      alert(
-        "Berhasil ubah status"
-      );
+      ToastAndroid.show("Berhasil ubah status", 1500);
       navigate.navigate("PostDetail", { post: res.data.data });
       refRBSheet.current.close();
     }
-    setIsSubmitted(false)
+    setIsSubmitted(false);
   };
 
   return (
