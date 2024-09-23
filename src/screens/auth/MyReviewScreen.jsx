@@ -86,7 +86,7 @@ export default function MyReviewScreen() {
             reviews.map((item, index) => (
               <View
                 key={item.id + "-review-" + index}
-                className="bg-[#f3f2fe] mb-5 p-3 rounded-2xl"
+                className="bg-[#e6f0fd] mb-5 p-3 rounded-2xl"
               >
                 {/* HEADER */}
                 <View className="flex-row justify-start items-start gap-x-2">

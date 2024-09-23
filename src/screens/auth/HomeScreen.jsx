@@ -31,8 +31,8 @@ import PostsListOnFiltered from "../../components/Post/PostsListOnFiltered";
 export default function HomeScreen() {
   const navigate = useNavigation();
 
-  const [postClosest, setPostClosest] = useState([]);
-  const [postLatest, setPostLatest] = useState([]);
+  // const [postClosest, setPostClosest] = useState([]);
+  // const [postLatest, setPostLatest] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   // const [refreshing, setRefreshing] = useState(false);
 
@@ -42,33 +42,27 @@ export default function HomeScreen() {
   const { items: catItems } = useSelector((state) => state.category);
   const { totalNotRead } = useSelector((state) => state.notification);
 
-  // console.log("USER: ", user);
-  // console.log("catItems: ", catItems);
-  // console.log("postItems: ", postItems);
-  // console.log("user: ", user);
-  // console.log("district: ", district);
-
   const fetchAllData = async () => {
     await CategoryApi.getCategories();
     await DistrictApi.getDistricts();
-    const resPostClosest = await PostApi.getPostsReturn(
-      0,
-      5,
-      "",
-      "title",
-      "asc",
-      "",
-      user.district?.id
-    );
-    setPostClosest(resPostClosest);
-    const resPostLatest = await PostApi.getPostsReturn(
-      0,
-      5,
-      "",
-      "createdAt",
-      "desc"
-    );
-    setPostLatest(resPostLatest);
+    // const resPostClosest = await PostApi.getPostsReturn(
+    //   0,
+    //   5,
+    //   "",
+    //   "title",
+    //   "asc",
+    //   "",
+    //   user.district?.id
+    // );
+    // setPostClosest(resPostClosest);
+    // const resPostLatest = await PostApi.getPostsReturn(
+    //   0,
+    //   5,
+    //   "",
+    //   "createdAt",
+    //   "desc"
+    // );
+    // setPostLatest(resPostLatest);
   };
 
   const fetchNotification = async () => {
