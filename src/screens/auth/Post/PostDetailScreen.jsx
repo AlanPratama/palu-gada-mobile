@@ -64,7 +64,7 @@ export default function PostDetailScreen({ route }) {
   };
 
   const handleCheckCanDelPost = () => {
-    post.bids?.map((bid) => {
+    post.bids?.some((bid) => {
       if (
         bid.bidStatus === "REVIEWED" ||
         bid.bidStatus === "ACCEPTED" ||
@@ -332,6 +332,9 @@ export default function PostDetailScreen({ route }) {
             <View className="">
               <Text className="text-base font-medium text-[#343434]">
                 {post.user.name}
+              </Text>
+              <Text className="text-sm font-normal text-[#606060]">
+                {post.user.username}
               </Text>
             </View>
           </View>

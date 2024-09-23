@@ -26,7 +26,7 @@ export default function BottomSheetWithDrawal({ refRBSheet }) {
             marginVertical: 10,
           },
           container: {
-            height: "45%",
+            height: "62%",
           },
         }}
         customModalProps={{
@@ -56,6 +56,7 @@ const listTransferMedia = [
 ]
 
 const WithDrawalComp = ({ refRBSheet }) => {
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [payoutType, setPayoutType] = useState('')
   const { user } = useSelector((state) => state.auth);
 
@@ -66,7 +67,9 @@ const WithDrawalComp = ({ refRBSheet }) => {
     reset,
   } = useForm();
 
+
   const onSubmit = async (data) => {
+    setIsSubmitted(true)
     const res = await PayoutApi.createPayout({
       ...data,
       payoutType
@@ -77,6 +80,7 @@ const WithDrawalComp = ({ refRBSheet }) => {
       await AuthApi.getAuthenticated();
       refRBSheet.current.close()
     }
+    setIsSubmitted(false)
   }
 
   return (
@@ -99,7 +103,7 @@ const WithDrawalComp = ({ refRBSheet }) => {
             name="amount"
             rules={{
               required: "Jumlah Penarikan wajib diisi!",
-              validate: (value) => value >= 10000 && value <= user.balance || `Harga penawaran minimal 10.000 dan maksimal ${user.balance?.toLocaleString("id-ID") ?? 0}`
+              validate: (value) => value >= 30000 && value <= user.balance || `Harga penawaran minimal 30.000 dan maksimal ${user.balance?.toLocaleString("id-ID") ?? 0}`
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
@@ -175,8 +179,9 @@ const WithDrawalComp = ({ refRBSheet }) => {
         >
           <TouchableOpacity
             onPress={handleSubmit(onSubmit)}
+            disabled={isSubmitted}
             style={{
-              backgroundColor: "#3b82f6",
+              backgroundColor: isSubmitted ? "#d1d1d1" : "#3b82f6",
               flex: 1,
               paddingVertical: 14,
               borderRadius: 999,

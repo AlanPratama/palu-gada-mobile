@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   ScrollView,
@@ -47,10 +47,12 @@ export default function BottomSheetUserReport({ refRBSheet, userId }) {
 }
 
 const UserReportComp = ({ refRBSheet, userId }) => {
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const {
     control,
     handleSubmit,
     formState: { errors },
+    reset
   } = useForm();
 
   console.log("USERID: ", userId);
@@ -58,6 +60,7 @@ const UserReportComp = ({ refRBSheet, userId }) => {
   const navigate = useNavigation();
 
   const onSubmit = async (data) => {
+    setIsSubmitted(true)
     // refRBSheet.current.close();
     const res = await UserApi.userReport({
       userId,
@@ -68,9 +71,12 @@ const UserReportComp = ({ refRBSheet, userId }) => {
     
 
     if (res) {
+      reset()
       refRBSheet.current.close();
+      setIsSubmitted(false)
       // navigate.goBack();
     } else {
+      setIsSubmitted(false)
       alert("Gagal melaporkan user ini!");
     }
   };
@@ -93,6 +99,7 @@ const UserReportComp = ({ refRBSheet, userId }) => {
             control={control}
             rules={{
               required: "Pesan wajib diisi!",
+              validate: (value) => value.length >= 10 || "Minimal 10 karakter!",
             }}
             render={({ field: { onChange, value } }) => (
               <TextInput
@@ -127,8 +134,9 @@ const UserReportComp = ({ refRBSheet, userId }) => {
         >
           <TouchableOpacity
             onPress={handleSubmit(onSubmit)}
+            disabled={isSubmitted}
             style={{
-              backgroundColor: "#3b82f6",
+              backgroundColor: isSubmitted ? "#d1d1d1" : "#ef4444",
               flex: 1,
               paddingVertical: 14,
               borderRadius: 999,
@@ -142,7 +150,7 @@ const UserReportComp = ({ refRBSheet, userId }) => {
                 textAlign: "center",
               }}
             >
-              Kirim Review
+              Kirim Laporan
             </Text>
           </TouchableOpacity>
         </View>

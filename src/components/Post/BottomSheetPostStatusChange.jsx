@@ -56,20 +56,23 @@ const listStatus = [
 ];
 
 const PostStatusChangeComp = ({ refRBSheet, post }) => {
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [statusType, setStatusType] = useState("");
   const navigate = useNavigation()
 
   const onSubmit = async () => {
+    setIsSubmitted(true)
     const res = await PostApi.updatePostStatus(post.id, statusType);
     console.log("LALALLAA: ", res.data);
     
     if (res) {
       alert(
-        "Penarikan saldo berhasil di buat!\nTranfer akan segera kami proses"
+        "Berhasil ubah status"
       );
       navigate.navigate("PostDetail", { post: res.data.data });
       refRBSheet.current.close();
     }
+    setIsSubmitted(false)
   };
 
   return (
@@ -113,8 +116,9 @@ const PostStatusChangeComp = ({ refRBSheet, post }) => {
         >
           <TouchableOpacity
             onPress={() => onSubmit()}
+            disabled={isSubmitted}
             style={{
-              backgroundColor: "#3b82f6",
+              backgroundColor: isSubmitted ? "#d1d1d1" : "#3b82f6",
               flex: 1,
               paddingVertical: 14,
               borderRadius: 999,

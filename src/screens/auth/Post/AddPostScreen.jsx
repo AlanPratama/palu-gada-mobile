@@ -20,6 +20,7 @@ import { SelectList } from "react-native-dropdown-select-list";
 
 export default function AddPostScreen() {
   const navigate = useNavigation();
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [isUrgent, setIsUrgent] = useState(false);
   const { items: catItems } = useSelector((state) => state.category);
 
@@ -42,6 +43,8 @@ export default function AddPostScreen() {
   const data = catItems.map((item) => ({ label: item.name, value: item.id }));
 
   const onSubmit = async (data) => {
+    setIsSubmitted(true)
+
     const formData = new FormData();
     if (image) {
       formData.append("file", {
@@ -67,6 +70,7 @@ export default function AddPostScreen() {
       alert("Post Success!");
       navigate.goBack();
     }
+    setIsSubmitted(false)
   };
 
   const [image, setImage] = useState(null);
@@ -384,7 +388,8 @@ export default function AddPostScreen() {
           <TouchableOpacity
             onPress={handleSubmit(onSubmit)}
             activeOpacity={0.8}
-            className="bg-[#3f45f9] mt-4 py-4 rounded-lg"
+            disabled={isSubmitted}
+            className={`${isSubmitted ? "bg-[#d1d1d1]" : "bg-[#3f45f9]"} mt-4 py-4 rounded-lg`}
           >
             <Text className="text-white text-lg font-semibold text-center">
               Sebarkan Postingan
