@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import RBSheet from 'react-native-raw-bottom-sheet';
-import { useSelector } from 'react-redux';
-import AuthApi from '../../apis/AuthApi';
-import PayoutApi from '../../apis/PayoutApi';
-import { SelectList } from 'react-native-dropdown-select-list';
+import React, { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import {
+  ScrollView,
+  Text,
+  TextInput,
+  ToastAndroid,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import RBSheet from "react-native-raw-bottom-sheet";
+import { useSelector } from "react-redux";
+import AuthApi from "../../apis/AuthApi";
+import PayoutApi from "../../apis/PayoutApi";
+import { SelectList } from "react-native-dropdown-select-list";
 
 export default function BottomSheetWithDrawal({ refRBSheet }) {
   return (
@@ -37,27 +44,27 @@ export default function BottomSheetWithDrawal({ refRBSheet }) {
         <WithDrawalComp refRBSheet={refRBSheet} />
       </RBSheet>
     </View>
-  )
+  );
 }
 
 const listTransferMedia = [
   {
-    key: 'BANK_TRANSFER',
-    value: 'Transfer Bank'
+    key: "BANK_TRANSFER",
+    value: "Transfer Bank",
   },
   {
-    key: 'GOPAY',
-    value: 'Gopay'
+    key: "GOPAY",
+    value: "Gopay",
   },
   {
-    key: 'DANA',
-    value: 'Dana'
-  }
-]
+    key: "DANA",
+    value: "Dana",
+  },
+];
 
 const WithDrawalComp = ({ refRBSheet }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [payoutType, setPayoutType] = useState('')
+  const [payoutType, setPayoutType] = useState("");
   const { user } = useSelector((state) => state.auth);
 
   const {
@@ -67,21 +74,23 @@ const WithDrawalComp = ({ refRBSheet }) => {
     reset,
   } = useForm();
 
-
   const onSubmit = async (data) => {
-    setIsSubmitted(true)
+    setIsSubmitted(true);
     const res = await PayoutApi.createPayout({
       ...data,
-      payoutType
-    })
+      payoutType,
+    });
     if (res) {
-      alert('Penarikan saldo berhasil di buat!\nTranfer akan segera kami proses')
-      reset()
+      ToastAndroid.show(
+        "Penarikan saldo berhasil di buat!\nTranfer akan segera kami proses",
+        1500
+      );
+      reset();
       await AuthApi.getAuthenticated();
-      refRBSheet.current.close()
+      refRBSheet.current.close();
     }
-    setIsSubmitted(false)
-  }
+    setIsSubmitted(false);
+  };
 
   return (
     <ScrollView
@@ -93,7 +102,6 @@ const WithDrawalComp = ({ refRBSheet }) => {
       }}
     >
       <View style={{ paddingVertical: 20 }}>
-
         <View style={{ paddingHorizontal: 18, marginBottom: 25 }}>
           <Text style={{ fontWeight: "600", fontSize: 16, marginBottom: 8 }}>
             Jumlah Penarikan
@@ -103,7 +111,11 @@ const WithDrawalComp = ({ refRBSheet }) => {
             name="amount"
             rules={{
               required: "Jumlah Penarikan wajib diisi!",
-              validate: (value) => value >= 30000 && value <= user.balance || `Harga penawaran minimal 30.000 dan maksimal ${user.balance?.toLocaleString("id-ID") ?? 0}`
+              validate: (value) =>
+                (value >= 30000 && value <= user.balance) ||
+                `Harga penawaran minimal 30.000 dan maksimal ${
+                  user.balance?.toLocaleString("id-ID") ?? 0
+                }`,
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
@@ -122,7 +134,9 @@ const WithDrawalComp = ({ refRBSheet }) => {
               />
             )}
           />
-          {errors.amount && <Text style={{ color: "red" }}>{errors.amount.message}</Text>}
+          {errors.amount && (
+            <Text style={{ color: "red" }}>{errors.amount.message}</Text>
+          )}
         </View>
 
         <View style={{ paddingHorizontal: 18, marginBottom: 25 }}>
@@ -165,7 +179,11 @@ const WithDrawalComp = ({ refRBSheet }) => {
               />
             )}
           />
-          {errors.destinationNumber && <Text style={{ color: "red" }}>{errors.destinationNumber.message}</Text>}
+          {errors.destinationNumber && (
+            <Text style={{ color: "red" }}>
+              {errors.destinationNumber.message}
+            </Text>
+          )}
         </View>
 
         <View

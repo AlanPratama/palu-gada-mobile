@@ -4,7 +4,8 @@ import {
   ScrollView,
   RefreshControl,
   Image,
-  TouchableOpacity,
+  Pressable,
+  TouchableOpacity
 } from "react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
@@ -12,6 +13,7 @@ import BidApi from "../../../apis/BidApi";
 import { useSelector } from "react-redux";
 import Divider from "../../../components/Divider";
 import BottomSheetDeleteBidAlert from "../../../components/Post/BottomSheetDeleteBidAlert";
+import BottomSheetMyBidDetail from "../../../components/MyBid/BottomSheetMyBidDetail";
 
 export default function MyBidScreen() {
   const [refreshing, setRefreshing] = useState(false); // State for pull-to-refresh
@@ -24,8 +26,15 @@ export default function MyBidScreen() {
     setDelBid(delBid)
     refSheetDeleteBid.current?.open()
   }
+  const [selectedBid, setSelectedBid] = useState({});
 
   console.log("MY BIDSSS: ", myBids);
+  const refSheetMyBidDetail = useRef();
+
+  const handleOpenDetail = (bid) => {
+    setSelectedBid(bid);
+    refSheetMyBidDetail.current.open();
+  };
 
   const fetch = async () => {
     await BidApi.myBids();
@@ -66,9 +75,9 @@ export default function MyBidScreen() {
 
         {myBids.length > 0 ? (
           myBids.map((bid, i) => (
-            <View
+            <Pressable
               key={bid.id + "-bid-" + i}
-              className="bg-[#e6f0fd] w-full my-3 p-3 rounded-xl"
+              onPress={() => handleOpenDetail(bid)}
             >
               <View className="flex-row justify-start items-center gap-x-2">
                 <Image
@@ -113,11 +122,15 @@ export default function MyBidScreen() {
                   </Text>
                 </View>
               </View>
-            </View>
+            </Pressable>
           ))
         ) : (
           <Text>TIDAK ADA PENAWARAN</Text>
         )}
+        <BottomSheetMyBidDetail
+          refRBSheet={refSheetMyBidDetail}
+          objBid={selectedBid}
+        />
       </View>
 
       <BottomSheetDeleteBidAlert refRBSheet={refSheetDeleteBid} bid={delBid} />

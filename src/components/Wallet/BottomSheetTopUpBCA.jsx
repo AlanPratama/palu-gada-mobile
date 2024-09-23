@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -47,7 +48,7 @@ export default function BottomSheetTopUpBCA({ refRBSheet }) {
 }
 
 const TopUpBCAComp = ({ refRBSheet }) => {
-  const navigate = useNavigation()
+  const navigate = useNavigation();
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const {
@@ -58,23 +59,22 @@ const TopUpBCAComp = ({ refRBSheet }) => {
   } = useForm();
 
   const onSubmit = async (data) => {
-    setIsSubmitted(true)
+    setIsSubmitted(true);
     console.log("data: ", data);
-    
+
     const request = {
-      "bank": "bca",
-      "amount": data.amount,
-      "paymentType": "bank_transfer"
-    }
+      bank: "bca",
+      amount: data.amount,
+      paymentType: "bank_transfer",
+    };
     const res = await WalletApi.createPayment(request);
     console.log("res: ", res);
-    
 
-    if(res.status === "Created") {
-      navigate.replace("TopUpDetail", { payment: res.data })
+    if (res.status === "Created") {
+      navigate.replace("TopUpDetail", { payment: res.data });
     } else {
-      alert("Terjadi Error coyy")
-      setIsSubmitted(false)
+      ToastAndroid.show("Terjadi Error coyy", 1500);
+      setIsSubmitted(false);
     }
 
     // refRBSheet.current.close();
@@ -99,7 +99,8 @@ const TopUpBCAComp = ({ refRBSheet }) => {
             name="amount"
             rules={{
               required: "Nominal wajib diisi!",
-              validate: (value) => value >= 10_000 || "Minimal nominal Rp 10.000",
+              validate: (value) =>
+                value >= 10_000 || "Minimal nominal Rp 10.000",
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput

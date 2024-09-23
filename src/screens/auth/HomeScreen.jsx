@@ -8,6 +8,7 @@ import {
   RefreshControl,
   ScrollView,
   Text,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -106,7 +107,7 @@ export default function HomeScreen() {
     ) {
       navigate.navigate("AddPost");
     } else {
-      alert("Lengkapi terlebih dahulu profile anda!");
+      ToastAndroid.show("Lengkapi terlebih dahulu profile anda!", 1500);
       navigate.navigate("EditProfile");
     }
   };
@@ -223,7 +224,7 @@ export default function HomeScreen() {
               <Ionicons name="wallet-outline" size={15} color="#303030" />
               <Text className="text-[15.5px] font-semibold"> Bekerja</Text>
             </View>
-            <Text className="text-[16px] leading-6 font-bold">{totalWorking}x</Text>
+            <Text className="text-[16px] leading-6 font-bold">{totalWorking || 0}x</Text>
           </View>
         </TouchableOpacity>
       </View>

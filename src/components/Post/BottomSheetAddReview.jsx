@@ -5,6 +5,7 @@ import {
   ScrollView,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -91,6 +92,7 @@ const AddReviewComp = ({ refRBSheet, postId, userId }) => {
       refRBSheet.current.close();
       navigate.goBack();
     } else {
+      ToastAndroid.show("Gagal menawar!", 1500);
       alert("Gagal mengirim ulasan!");
     }
 

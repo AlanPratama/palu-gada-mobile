@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useRef, useState } from "react";
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Image, ScrollView, Text, ToastAndroid, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 import Divider from "../../../components/Divider";
 import BottomSheetAddBid from "../../../components/Post/BottomSheetAddBid";
@@ -47,7 +47,7 @@ export default function PostDetailScreen({ route }) {
     ) {
       refSheetAddBid.current?.open();
     } else {
-      alert("Lengkapi terlebih dahulu profile anda!");
+      ToastAndroid.show("Lengkapi terlebih dahulu profile anda!", 1500);
       navigate.navigate("EditProfile");
     }
   };
@@ -72,6 +72,12 @@ export default function PostDetailScreen({ route }) {
         setCanDelPost(false);
     });
   };
+
+
+
+
+  // 
+
 
   const fetch = async () => {
     console.log("FETCHHHH");

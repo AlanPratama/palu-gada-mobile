@@ -1,7 +1,14 @@
 import { Ionicons } from "@expo/vector-icons";
 import { setStringAsync } from "expo-clipboard";
 import React, { useEffect, useState } from "react";
-import { Alert, Image, Text, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  Image,
+  Text,
+  ToastAndroid,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import WalletApi from "../../apis/WalletApi";
 import AuthApi from "../../apis/AuthApi";
 import { useNavigation } from "@react-navigation/native";
@@ -9,7 +16,7 @@ import { useNavigation } from "@react-navigation/native";
 export default function TopUpDetailScreen({ route }) {
   const payment = route.params.payment;
   const [remainingTime, setRemainingTime] = useState(payment.expiryTime);
-  const navigate = useNavigation()
+  const navigate = useNavigation();
 
   console.log("route: ", payment);
 
@@ -42,19 +49,18 @@ export default function TopUpDetailScreen({ route }) {
   const fetchPayment = async () => {
     const res = await WalletApi.fetchPayment(payment.id);
 
-    if(res.status === "OK") {
-      if(res.data.status === "SETTLEMENT") {
-        await AuthApi.getAuthenticated()
-        alert("Payment Success!")
-        navigate.goBack()
+    if (res.status === "OK") {
+      if (res.data.status === "SETTLEMENT") {
+        await AuthApi.getAuthenticated();
+        ToastAndroid.show("Payment Success!", 1500);
+        navigate.goBack();
       } else {
-        alert("Belum Dibayar Bujang!")
+        ToastAndroid.show("Belum Dibayar Bujang!", 1500);
       }
-    }  else {
-      alert("Terjadi error coy!")
+    } else {
+      ToastAndroid.show("Terjadi error coy!", 1500);
     }
-  }
-
+  };
 
   return (
     <>
@@ -87,7 +93,10 @@ export default function TopUpDetailScreen({ route }) {
         </View>
 
         <View className="absolute bottom-2 w-full">
-          <TouchableOpacity onPress={fetchPayment} className="bg-primary py-2.5 rounded-lg border border-gray-100">
+          <TouchableOpacity
+            onPress={fetchPayment}
+            className="bg-primary py-2.5 rounded-lg border border-gray-100"
+          >
             <Text className="text-white text-center font-extrabold text-base">
               OK
             </Text>

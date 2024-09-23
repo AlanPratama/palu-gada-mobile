@@ -5,6 +5,7 @@ import {
   ScrollView,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -54,7 +55,7 @@ const UserReportComp = ({ refRBSheet, userId }) => {
     control,
     handleSubmit,
     formState: { errors },
-    reset
+    reset,
   } = useForm();
 
   console.log("USERID: ", userId);
@@ -62,7 +63,7 @@ const UserReportComp = ({ refRBSheet, userId }) => {
   const navigate = useNavigation();
 
   const onSubmit = async (data) => {
-    setIsSubmitted(true)
+    setIsSubmitted(true);
     // refRBSheet.current.close();
     const res = await UserApi.userReport({
       userId,
@@ -70,7 +71,6 @@ const UserReportComp = ({ refRBSheet, userId }) => {
     });
 
     console.log(res);
-    
 
     if (res) {
       await NotificationApi.createNotification({
@@ -82,11 +82,11 @@ const UserReportComp = ({ refRBSheet, userId }) => {
       })
       reset()
       refRBSheet.current.close();
-      setIsSubmitted(false)
+      setIsSubmitted(false);
       // navigate.goBack();
     } else {
-      setIsSubmitted(false)
-      alert("Gagal melaporkan user ini!");
+      setIsSubmitted(false);
+      ToastAndroid.show("Gagal melaporkan user ini!", 1500);
     }
   };
 
