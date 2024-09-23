@@ -27,14 +27,13 @@ import ChipCategory from "../../components/Post/ChipCategory";
 import NotificationApi from "../../apis/NotificationApi";
 import { pushLocalNotification } from "../../utils/notification.util";
 import PostsListOnFiltered from "../../components/Post/PostsListOnFiltered";
+import BidApi from "../../apis/BidApi";
 
 export default function HomeScreen() {
   const navigate = useNavigation();
 
-  // const [postClosest, setPostClosest] = useState([]);
-  // const [postLatest, setPostLatest] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
-  // const [refreshing, setRefreshing] = useState(false);
+  const [totalWorking, setTotalWorking] = useState(0);
 
   const refSheetAddPost = useRef();
 
@@ -45,34 +44,16 @@ export default function HomeScreen() {
   const fetchAllData = async () => {
     await CategoryApi.getCategories();
     await DistrictApi.getDistricts();
-    // const resPostClosest = await PostApi.getPostsReturn(
-    //   0,
-    //   5,
-    //   "",
-    //   "title",
-    //   "asc",
-    //   "",
-    //   user.district?.id
-    // );
-    // setPostClosest(resPostClosest);
-    // const resPostLatest = await PostApi.getPostsReturn(
-    //   0,
-    //   5,
-    //   "",
-    //   "createdAt",
-    //   "desc"
-    // );
-    // setPostLatest(resPostLatest);
+    const totalWork = await BidApi.getMyManyWork();
+    setTotalWorking(totalWork)
   };
 
   const fetchNotification = async () => {
     const { totalNotRead: total } = await NotificationApi.getNotification();
-    console.log("totalNotRead dari home", total);
-    // console.log('totalNotRead dari home', total);
 
     if (total > 0) {
       await pushLocalNotification(
-        `${total}${total >= 10 && "+"} Notifikasi belum terbaca`,
+        `${total}${total >= 10 && "+"} Pemberitahuan belum terbaca`,
         "Ada kabar baru buat kamu, yuk liat. ada apa ya?"
       );
     }
@@ -235,7 +216,7 @@ export default function HomeScreen() {
               <Ionicons name="wallet-outline" size={15} color="#303030" />
               <Text className="text-[15.5px] font-semibold"> Bekerja</Text>
             </View>
-            <Text className="text-[16px] leading-6 font-bold">90x</Text>
+            <Text className="text-[16px] leading-6 font-bold">{totalWorking}x</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -308,47 +289,12 @@ export default function HomeScreen() {
         </ScrollView>
       </View>
 
-      {/* <View className="px-3 mt-4">
-        <View className="flex-row justify-between items-center">
-          <Text className="text-center text-[#343434] font-bold text-[20px]">
-            Terdekat ({user.district ? user.district.districtName : "-"})
-          </Text>
-        </View>
-
-        {postClosest.length > 0 ? (
-          postClosest.map((post, i) => {
-            return <PostCard post={post} key={post.id + "-post-" + i} />;
-          })
-        ) : (
-          <Text className="text-center text-[#606060] font-medium my-6 text-[16px] capitalize">
-            Tidak ada postingan terdekat
-          </Text>
-        )}
-      </View> */}
-
       <PostsListOnFiltered districtId={user.district?.id} title={'Terdekat'} districtName={user.district ? user.district.districtName : "-"} />
 
       <View className="px-3 mt-2">
         <Divider color="#d9d9d9" width={2} />
       </View>
 
-      {/* <View className="px-3 mt-4">
-        <View className="flex-row justify-between items-center">
-          <Text className="text-center text-[#343434] font-bold text-[20px]">
-            Kerjain Aja: Terbaru
-          </Text>
-        </View>
-
-        {postLatest.length > 0 ? (
-          postLatest.map((post, i) => (
-            <PostCard post={post} key={post.id + "-post-" + i} />
-          ))
-        ) : (
-          <Text className="text-center text-[#606060] font-medium my-6 text-[16px] capitalize">
-            Tidak ada postingan terbaru
-          </Text>
-        )}
-      </View> */}
       <PostsListOnFiltered sortField={'createdAt'} sortDirection={'desc'} title={'Terbaru'} />
 
       <BottomSheetAddPost refRBSheet={refSheetAddPost} />

@@ -1,5 +1,6 @@
 import {
   addPost,
+  clearPost,
   setError,
   setIsLoading,
   setMyPost,
@@ -10,10 +11,11 @@ import store from "../redux/store";
 import { axiosInstance } from "./axiosInstance";
 
 export default class PostApi {
-  static async getPosts(page, size = 10, title) {
+  static async getPosts(page, size = 10, title, reset = false) {
     try {
       store.dispatch(setError(null));
       store.dispatch(setIsLoading(true));
+      reset && store.dispatch(clearPost());
 
       const { data } = await axiosInstance.get("/posts", {
         params: {
@@ -186,7 +188,7 @@ export default class PostApi {
 
       // store.dispatch(updatePost(items));
       store.dispatch(setPostById(items));
-      this.getPosts();
+      this.getPosts(0, 10, '', true);
       return items;
     } catch (error) {
       store.dispatch(setError(error.message));
@@ -236,7 +238,7 @@ export default class PostApi {
       console.log("POST: ", res.data.status);
       if (res.data.status === "OK") {
         store.dispatch(setPostById(res.data.data));
-        this.getPosts();
+        this.getPosts(0, 10, '', true);
       }
 
       return res

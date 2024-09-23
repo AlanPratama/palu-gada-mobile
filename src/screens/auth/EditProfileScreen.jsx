@@ -46,8 +46,8 @@ export default function EditProfileScreen() {
   const [count, setCount] = useState(2);
 
   const [gender, setGender] = useState(
-    user.userGender.charAt(0).toUpperCase() +
-      user.userGender.slice(1).toLowerCase()
+    user.userGender?.charAt(0).toUpperCase() +
+    user.userGender?.slice(1).toLowerCase()
   );
   const [birthDate, setBirthDate] = useState(new Date(user.birthDate));
   const [selectedDistrict, setSelectedDistrict] = useState(user.district.id);
@@ -170,8 +170,8 @@ export default function EditProfileScreen() {
                 uri: image
                   ? image.uri
                   : user.photoUrl
-                  ? user.photoUrl
-                  : "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
+                    ? user.photoUrl
+                    : "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
               }}
               alt="Profile Pic"
               className="w-32 h-32 rounded-full"
@@ -405,32 +405,28 @@ export default function EditProfileScreen() {
             <Ionicons name="male-female-outline" size={24} color="#303030" />
             <TouchableOpacity
               onPress={() => setGender("Male")}
-              className={`${
-                gender === "Male"
+              className={`${gender === "Male"
                   ? "border-[#3f45f9] text-[#3f45f9] bg-[#eff6ff71]"
                   : "border-[#d1d1d1] text-[#303030]"
-              } rounded-[4px] border-2 ml-2 py-1 px-2.5`}
+                } rounded-[4px] border-2 ml-2 py-1 px-2.5`}
             >
               <Text
-                className={`${
-                  gender === "Male" ? "text-[#3f45f9]" : "text-[#858585]"
-                } text-center text-sm font-normal uppercase`}
+                className={`${gender === "Male" ? "text-[#3f45f9]" : "text-[#858585]"
+                  } text-center text-sm font-normal uppercase`}
               >
                 Pria
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setGender("Female")}
-              className={`${
-                gender === "Female"
+              className={`${gender === "Female"
                   ? "border-[#3f45f9] text-[#3f45f9] bg-[#eff6ff71]"
                   : "border-[#d1d1d1] text-[#303030]"
-              } rounded-[4px] border-2 ml-2 py-1 px-2.5`}
+                } rounded-[4px] border-2 ml-2 py-1 px-2.5`}
             >
               <Text
-                className={`${
-                  gender === "Female" ? "text-[#3f45f9]" : "text-[#858585]"
-                } text-center text-sm font-normal uppercase`}
+                className={`${gender === "Female" ? "text-[#3f45f9]" : "text-[#858585]"
+                  } text-center text-sm font-normal uppercase`}
               >
                 Wanita
               </Text>
@@ -526,9 +522,8 @@ export default function EditProfileScreen() {
             onPress={handleSubmit(onSubmit)}
             activeOpacity={0.8}
             disabled={isDirty ? !isDirty : !isChanged}
-            className={`${
-              isDirty || isChanged ? "bg-[#3f45f9]" : "bg-[#d1d1d1]"
-            } w-[48%] py-3.5 rounded-full`}
+            className={`${isDirty || isChanged ? "bg-[#3f45f9]" : "bg-[#d1d1d1]"
+              } w-[48%] py-3.5 rounded-full`}
           >
             <Text className="text-white text-lg font-semibold text-center">
               Simpan
