@@ -34,7 +34,7 @@ export default function HomeScreen() {
   const [postClosest, setPostClosest] = useState([]);
   const [postLatest, setPostLatest] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
+  // const [refreshing, setRefreshing] = useState(false);
 
   const refSheetAddPost = useRef();
 
@@ -314,12 +314,11 @@ export default function HomeScreen() {
         </ScrollView>
       </View>
 
-      <View className="px-3 mt-4">
+      {/* <View className="px-3 mt-4">
         <View className="flex-row justify-between items-center">
           <Text className="text-center text-[#343434] font-bold text-[20px]">
             Terdekat ({user.district ? user.district.districtName : "-"})
           </Text>
-          {/* <Ionicons name="chevron-forward-outline" size={18} /> */}
         </View>
 
         {postClosest.length > 0 ? (
@@ -331,19 +330,19 @@ export default function HomeScreen() {
             Tidak ada postingan terdekat
           </Text>
         )}
-      </View>
-      <PostsListOnFiltered districtId={user.district?.id} title={'Terdekat'} />
+      </View> */}
+
+      <PostsListOnFiltered districtId={user.district?.id} title={'Terdekat'} districtName={user.district ? user.district.districtName : "-"} />
 
       <View className="px-3 mt-2">
         <Divider color="#d9d9d9" width={2} />
       </View>
 
-      <View className="px-3 mt-4">
+      {/* <View className="px-3 mt-4">
         <View className="flex-row justify-between items-center">
           <Text className="text-center text-[#343434] font-bold text-[20px]">
             Kerjain Aja: Terbaru
           </Text>
-          {/* <Ionicons name="chevron-forward-outline" size={18} /> */}
         </View>
 
         {postLatest.length > 0 ? (
@@ -355,7 +354,7 @@ export default function HomeScreen() {
             Tidak ada postingan terbaru
           </Text>
         )}
-      </View>
+      </View> */}
       <PostsListOnFiltered sortField={'createdAt'} sortDirection={'desc'} title={'Terbaru'} />
 
       <BottomSheetAddPost refRBSheet={refSheetAddPost} />

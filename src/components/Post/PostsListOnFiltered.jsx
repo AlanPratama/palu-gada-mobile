@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import PostApi from "../../apis/PostApi";
 import PostCard from "./PostCard";
 
-export default function PostsListOnFiltered({ districtId, sortField, sortDirection, title }) {
+export default function PostsListOnFiltered({ districtId, sortField, sortDirection, title, districtName }) {
   const { isLoading } = useSelector((state) => state.post);
   const [postItems, setPostItems] = useState([])
   const [page, setPage] = useState(0);
@@ -39,8 +39,11 @@ export default function PostsListOnFiltered({ districtId, sortField, sortDirecti
     <View className="px-3 mt-4">
       <View className="flex-row justify-between items-center">
         <Text className="text-center text-[#343434] font-bold text-[20px]">
-          Kerjain Aja: {title}
+          {title} {districtName && `(${districtName})`}
         </Text>
+        <TouchableOpacity onPress={() => resetPostItems()}>
+          <Text>Refresh</Text>
+        </TouchableOpacity>
         {/* <Ionicons name="chevron-forward-outline" size={18} /> */}
       </View>
 
