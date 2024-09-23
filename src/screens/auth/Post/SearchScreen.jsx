@@ -98,7 +98,7 @@ export default function SearchScreen() {
           keyExtractor={(post, i) => post.id + "-post-" + i}
           renderItem={({ item, index }) => {
             // console.log(index)
-            return <PostCard post={item} resetPostItems={resetPostItems} />
+            return <PostCard post={item} />
           }}
           onEndReached={handleLoadMore}
           onEndReachedThreshold={0.5}
