@@ -52,7 +52,6 @@ export default function RegisterScreen() {
                   message: "Format email tidak valid",
                 },
               }}
-              defaultValue={"user@email.com"}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
                   className='border-b-2 border-[#d1d1d1] text-[#303030] ml-2 py-2 w-[90%]'
@@ -77,7 +76,6 @@ export default function RegisterScreen() {
                 required: "Username wajib diisi",
                 minLength: { value: 6, message: "Username minimal 6 karakter" },
               }}
-              defaultValue={"usernya"}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
                   className='border-b-2 border-[#d1d1d1] text-[#303030] ml-2 py-2 w-[90%]'
@@ -106,7 +104,6 @@ export default function RegisterScreen() {
                     message: "Password minimal 8 karakter",
                   },
                 }}
-                defaultValue={"password"}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     className='border-b-2 border-[#d1d1d1] text-[#303030] ml-2 py-2'

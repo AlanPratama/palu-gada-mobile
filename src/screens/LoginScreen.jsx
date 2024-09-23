@@ -39,7 +39,6 @@ export default function LoginScreen() {
               control={control}
               name='credential'
               rules={{ required: "Username / Email wajib diisi!" }}
-              defaultValue={"alan"}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
                   onBlur={onBlur}
@@ -61,7 +60,6 @@ export default function LoginScreen() {
                 control={control}
                 name='password'
                 rules={{ required: "Password wajib diisi!" }}
-                defaultValue={"password"}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     onBlur={onBlur}

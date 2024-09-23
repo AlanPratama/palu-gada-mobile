@@ -40,7 +40,6 @@ export default class AuthApi {
           5000
         );
         return false;
-        // throw new Error("Bad Credentials");
       }
 
       await AsyncStorage.setItem("accessToken", data.accessToken);
