@@ -31,13 +31,13 @@ export default class PayoutApi {
     } catch (error) {
       if (error.response) {
         // Error dari API
-        console.log("createPayout API Response Error: ", error.response);
+        console.log("getAllMyPayout API Response Error: ", error.response);
       } else if (error.request) {
         // Tidak ada response dari API
-        console.log("createPayout No response from API: ", error);
+        console.log("getAllMyPayout No response from API: ", error);
       } else {
         // Error yang terjadi ketika membuat request
-        console.log("createPayout Error in setting up request: ", error.message);
+        console.log("getAllMyPayout Error in setting up request: ", error.message);
       }
     }
   }

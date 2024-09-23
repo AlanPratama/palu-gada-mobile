@@ -53,7 +53,7 @@ export default function HomeScreen() {
 
     if (total > 0) {
       await pushLocalNotification(
-        `${total}${total >= 10 && "+"} Notifikasi belum terbaca`,
+        `${total}${total >= 10 && "+"} Pemberitahuan belum terbaca`,
         "Ada kabar baru buat kamu, yuk liat. ada apa ya?"
       );
     }
