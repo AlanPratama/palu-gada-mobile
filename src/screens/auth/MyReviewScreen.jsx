@@ -126,6 +126,7 @@ export default function MyReviewScreen() {
                     </Text>
                   </View>
                   <TouchableOpacity
+                    onPress={() => navigate.navigate("PostDetail", { post: item.post })}
                     activeOpacity={0.7}
                     onPress={() => navigate.navigate("PostDetail", { post: item.post })}
                     className="bg-primary py-1 px-2 rounded-md"

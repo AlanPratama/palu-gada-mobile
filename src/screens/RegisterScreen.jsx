@@ -126,7 +126,7 @@ export default function RegisterScreen() {
           {errors.password && <Text style={{ color: "red" }}>{errors.password.message}</Text>}
 
           {/* Register Button */}
-          <TouchableOpacity className='bg-primary py-2 rounded-full w-full mt-6' onPress={handleSubmit(onSubmit)} disabled={isLoading}>
+          <TouchableOpacity className={`${isLoading ? "bg-[#d1d1d1]" : "bg-primary"} py-2 rounded-full w-full mt-6`} onPress={handleSubmit(onSubmit)} disabled={isLoading}>
             <Text className='text-center text-white text-lg font-semibold'>Register</Text>
           </TouchableOpacity>
 

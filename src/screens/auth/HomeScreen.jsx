@@ -1,37 +1,36 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-  RefreshControl,
-  Linking,
-} from "react-native";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { useCallback, useEffect, useRef, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  Image,
+  Linking,
+  RefreshControl,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import PagerView from "react-native-pager-view";
 
+import { useSelector } from "react-redux";
+import AuthApi from "../../apis/AuthApi";
+import NotificationApi from "../../apis/NotificationApi";
 import Divider from "../../components/Divider";
 import BottomSheetAddPost from "../../components/Post/BottomSheetAddPost";
-import { useSelector } from "react-redux";
-import CategoryApi from "../../apis/CategoryApi";
-import PostApi from "../../apis/PostApi";
-import DistrictApi from "../../apis/DistrictApi";
-import store from "../../redux/store";
-import { login, logout } from "../../redux/slice/authSlice";
-import AuthApi from "../../apis/AuthApi";
-import PostCard from "../../components/Post/PostCard";
 import ChipCategory from "../../components/Post/ChipCategory";
-import NotificationApi from "../../apis/NotificationApi";
-import { pushLocalNotification } from "../../utils/notification.util";
+import PostCard from "../../components/Post/PostCard";
 import PostsListOnFiltered from "../../components/Post/PostsListOnFiltered";
+import { login, logout } from "../../redux/slice/authSlice";
+import store from "../../redux/store";
+import { pushLocalNotification } from "../../utils/notification.util";
+import CategoryApi from "../../apis/CategoryApi";
+import DistrictApi from "../../apis/DistrictApi";
 import BidApi from "../../apis/BidApi";
 
 export default function HomeScreen() {
   const navigate = useNavigation();
-
+  // const [refreshing, setRefreshing] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [totalWorking, setTotalWorking] = useState(0);
 
@@ -40,7 +39,7 @@ export default function HomeScreen() {
   const { user } = useSelector((state) => state.auth);
   const { items: catItems } = useSelector((state) => state.category);
   const { totalNotRead } = useSelector((state) => state.notification);
-
+  
   const fetchAllData = async () => {
     await CategoryApi.getCategories();
     await DistrictApi.getDistricts();
@@ -50,8 +49,13 @@ export default function HomeScreen() {
 
   const fetchNotification = async () => {
     const { totalNotRead: total } = await NotificationApi.getNotification();
+    console.log("totalNotRead dari home", total);
 
     if (total > 0) {
+      await pushLocalNotification(
+        `${total}${total >= 10 && "+"} Notifikasi belum terbaca`,
+        "Ada kabar baru buat kamu, yuk liat. ada apa ya?"
+      );
       await pushLocalNotification(
         `${total}${total >= 10 && "+"} Pemberitahuan belum terbaca`,
         "Ada kabar baru buat kamu, yuk liat. ada apa ya?"
@@ -130,6 +134,9 @@ export default function HomeScreen() {
             className="relative"
           >
             <Ionicons name="notifications-outline" size={26} color="#343434" />
+            {totalNotRead > 0 && (
+              <View className="absolute h-2 w-2 bg-red-500 top-0 right-0 rounded-full" />
+            )}
             {totalNotRead > 0 && (
               <View className="absolute h-2 w-2 bg-red-500 top-0 right-0 rounded-full" />
             )}

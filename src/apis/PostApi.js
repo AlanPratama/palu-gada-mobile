@@ -107,7 +107,8 @@ export default class PostApi {
 
       const { data } = await axiosInstance.get(`/posts/${postId}`);
       const item = data.data;
-
+      console.log("ITEM: ", item);
+      
       store.dispatch(setPostById(item));
     } catch (error) {
       store.dispatch(setError(error.message));

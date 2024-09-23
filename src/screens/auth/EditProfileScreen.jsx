@@ -41,16 +41,18 @@ export default function EditProfileScreen() {
   const defaultSelectedCategories = user.userCategories.map((item) => item.id);
   console.log("categoriesData: ", defaultSelectedCategories);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [showDate, setShowDate] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
   const [count, setCount] = useState(2);
 
   const [gender, setGender] = useState(
-    user.userGender?.charAt(0).toUpperCase() +
-    user.userGender?.slice(1).toLowerCase()
+    user.userGender && user.userGender.charAt(0).toUpperCase() +
+    user.userGender.slice(1).toLowerCase()
   );
   const [birthDate, setBirthDate] = useState(new Date(user.birthDate));
-  const [selectedDistrict, setSelectedDistrict] = useState(user.district.id);
+  const [selectedDistrict, setSelectedDistrict] = useState(user.district && user.district.id);
   const [selectedCategories, setSelectedCategories] = useState(
     user.userCategories.map((item) => item.category.id)
   );
@@ -73,11 +75,12 @@ export default function EditProfileScreen() {
       phone: user.phone,
       address: user.address,
       nik: user.nik,
-      bankAccount: user.bankAccount,
+      bankAccount: user.bankAccount !== "null" ? user.bankAccount : null,
     },
   });
 
   const onSubmit = async (data) => {
+    setIsSubmitting(true);
     console.log("SELECTED: ", selectedCategories);
 
     const formData = new FormData();
@@ -86,7 +89,9 @@ export default function EditProfileScreen() {
     formData.append("about", data.about);
     formData.append("phone", data.phone);
     formData.append("nik", data.nik);
-    formData.append("bankAccount", data.bankAccount);
+
+    if(data.bankAccount) formData.append("bankAccount", data.bankAccount);
+    
     formData.append("address", data.address);
     formData.append("birthDate", birthDate.toISOString().split("T")[0]);
     formData.append("userGender", gender);
@@ -119,6 +124,8 @@ export default function EditProfileScreen() {
     } else {
       alert("ada yang aneh coy!");
     }
+
+    setIsSubmitting(false);
   };
 
   const [image, setImage] = useState(null);
@@ -521,9 +528,10 @@ export default function EditProfileScreen() {
           <TouchableOpacity
             onPress={handleSubmit(onSubmit)}
             activeOpacity={0.8}
-            disabled={isDirty ? !isDirty : !isChanged}
-            className={`${isDirty || isChanged ? "bg-[#3f45f9]" : "bg-[#d1d1d1]"
-              } w-[48%] py-3.5 rounded-full`}
+            disabled={isDirty ? !isDirty : !isChanged ? !isChanged : isSubmitting}
+            className={`${
+              isDirty || isChanged || isSubmitting ? "bg-[#3f45f9]" : "bg-[#d1d1d1]"
+            } w-[48%] py-3.5 rounded-full`}
           >
             <Text className="text-white text-lg font-semibold text-center">
               Simpan
