@@ -45,7 +45,7 @@ export default function PostsListOnFiltered({ districtId, sortField, sortDirecti
       </View>
 
       {postItems.length != 0 ? postItems.map(item => (
-        <PostCard post={item} resetPostItems={resetPostItems} key={item.id + '-' + title} />
+        <PostCard post={item} key={item.id + '-' + title} />
       )) : (
         <View className='flex-1 h-96 items-center justify-center'>
           <Text className='text-lg'>{isLoading && page == 0 ? 'Loading...' : 'Data tidak di temukan'}</Text>
