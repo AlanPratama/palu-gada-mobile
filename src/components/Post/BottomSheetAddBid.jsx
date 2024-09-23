@@ -70,9 +70,10 @@ const AddBidComp = ({ refRBSheet, post }) => {
             icon: notifIcon.post,
           })
             refRBSheet.current.close()
-            navigate.goBack()
+            navigate.navigate("PostDetail", { post })
         } else {
-            alert("Gagal menawar!")
+            ToastAndroid.show("Gagal Mengirim Penawaran!", 2000);
+            // alert("Gagal menawar!")
         }
       setIsSubmitted(false)
         reset()

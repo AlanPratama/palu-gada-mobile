@@ -13,13 +13,13 @@ export default function LandingScreen() {
       </Animated.View>
       <View className='px-8'>
         <Animated.Text entering={ZoomIn.delay(300)} className='text-3xl text-center font-bold text-primary'>
-          Discover Your
+          Cari Pekerjaan?
         </Animated.Text>
         <Animated.Text entering={ZoomIn.delay(400)} className='text-3xl text-center font-bold text-primary'>
-          Palu Gada Job Here
+          Kerjain Aja Di Sini
         </Animated.Text>
         <Animated.Text entering={ZoomIn.delay(500)} className='text-center text-sm font-medium text-[#555555] my-4'>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Est, dolorem esse. Reiciendis dolorum!
+          Cari pekerjaan yang sesuai dengan kemampuan, waktu, dan jadwalmu
         </Animated.Text>
         <Animated.View entering={ZoomIn.delay(600)} className='flex-row justify-center items-center gap-x-4 mt-6'>
           <TouchableOpacity activeOpacity={0.75} onPress={() => navigate.navigate("Login")} className='bg-primary py-2 px-3 rounded-md w-[42%]'>

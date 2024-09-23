@@ -75,13 +75,15 @@ export default function MyBidScreen() {
 
         {myBids.length > 0 ? (
           myBids.map((bid, i) => (
-            <Pressable
+            <TouchableOpacity
+              activeOpacity={0.75}
               key={bid.id + "-bid-" + i}
               onPress={() => handleOpenDetail(bid)}
+              className="bg-[#e6f0fd] rounded-2xl p-2.5 my-3"
             >
               <View className="flex-row justify-start items-center gap-x-2">
                 <Image
-                  source={{ uri: bid.user.photoUrl }}
+                  source={bid.post.imageUrl ? { uri: bid.post.imageUrl } : require("../../../../assets/imgPlaceholder.png")}
                   className="w-14 h-14 rounded-xl"
                 />
                 <View className="w-[78%]">
@@ -106,9 +108,9 @@ export default function MyBidScreen() {
                 </View>
               </View>
               <Divider twClass={"my-2"} width={2} color="#bfdbfe" />
-              <Text>{bid.message}</Text>
+              <Text className="text-base text-[#343434]">{bid.message}</Text>
               <View className="mt-3 flex-row justify-between items-center">
-                <Text>
+                <Text className="text-base font-semibold text-[#343434]">
                   Rp {bid.amount ? bid.amount.toLocaleString("id-ID") : 0}
                 </Text>
                 <View className="flex-row justify-center items-center gap-x-2">
@@ -117,15 +119,25 @@ export default function MyBidScreen() {
                       <Text className="text-white font-medium">Hapus</Text>
                     </TouchableOpacity>
                   )}
-                  <Text className="bg-primary text-white font-medium px-2.5 py-1 rounded-full">
+                  <Text className={`text-white ${bid.status === "PENDING"
+                ? "bg-yellow-400"
+                : bid.status === "ACCEPTED"
+                ? "bg-green-400"
+                : bid.status === "REJECTED"
+                ? "bg-red-400"
+                : bid.status === "FINISH"
+                ? "bg-blue-400"
+                : "bg-purple-400"} font-medium px-2.5 py-1 rounded-full`}>
                     {bid.status}
                   </Text>
                 </View>
               </View>
-            </Pressable>
+            </TouchableOpacity>
           ))
         ) : (
-          <Text>TIDAK ADA PENAWARAN</Text>
+          <View className="justify-center items-center min-h-screen">
+            <Text>TIDAK ADA PENAWARAN</Text>
+          </View>
         )}
         <BottomSheetMyBidDetail
           refRBSheet={refSheetMyBidDetail}

@@ -65,14 +65,12 @@ export default function TopUpDetailScreen({ route }) {
   return (
     <>
       <Image
-        source={{
-          uri: "https://imgs.search.brave.com/rArZHbLIJROU4DsZykn8ChxL751pDVfxV2Y2-L6EgE4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jNC53/YWxscGFwZXJmbGFy/ZS5jb20vd2FsbHBh/cGVyLzY0My8yODUv/MjIxL3NpbXBsZS1i/YWNrZ3JvdW5kLWJs/dWUtZ3JhZGllbnQt/d2F2ZWZvcm1zLXdh/bGxwYXBlci1wcmV2/aWV3LmpwZw",
-        }}
+        source={require("../../../assets/bgPayment.png")}
         className="absolute top-0 min-h-screen w-full"
       />
       <View className="min-h-screen p-3 items-center justify-center">
         <View className="relative justify-center items-center w-full bg-primary border border-gray-100 rounded-xl pt-6 pb-12 px-3">
-          <Text className="text-2xl font-medium text-[#fff] mb-3">
+          <Text className="text-2xl capitalize font-medium text-[#fff] mb-3">
             {payment.bank} Virtual Number
           </Text>
           <TouchableOpacity

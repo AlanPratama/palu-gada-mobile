@@ -1,7 +1,15 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import React, { useEffect, useRef, useState } from "react";
-import { Image, ScrollView, Text, ToastAndroid, TouchableOpacity, View } from "react-native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import {
+  Image,
+  RefreshControl,
+  ScrollView,
+  Text,
+  ToastAndroid,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useSelector } from "react-redux";
 import Divider from "../../../components/Divider";
 import BottomSheetAddBid from "../../../components/Post/BottomSheetAddBid";
@@ -24,6 +32,7 @@ export default function PostDetailScreen({ route }) {
   const [alreadyBid, setAlreadyBid] = useState(false);
   const [userDetail, setUserDetail] = useState({});
   const [canDelPost, setCanDelPost] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   const navigate = useNavigation();
 
@@ -59,7 +68,11 @@ export default function PostDetailScreen({ route }) {
 
   const handleDeleteButton = () => {
     if (canDelPost) refSheetAlertDeletePost.current?.open();
-    else alert("TIDAK BISA HAPUS POSTINGAN!");
+    else
+      ToastAndroid.show(
+        "Tidak bisa menghapus postingan ini. Karena terdapat penawaran yang sudah berjalan!",
+        5000
+      );
   };
 
   const handleCheckCanDelPost = () => {
@@ -73,11 +86,7 @@ export default function PostDetailScreen({ route }) {
     });
   };
 
-
-
-
-  // 
-
+  //
 
   const fetch = async () => {
     console.log("FETCHHHH");
@@ -87,7 +96,21 @@ export default function PostDetailScreen({ route }) {
   useEffect(() => {
     fetch();
     handleCheckCanDelPost();
-  }, []);
+  }, [postParam]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetch();
+      handleCheckCanDelPost();
+    }, [])
+  );
+
+  // Function for pull-to-refresh
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetch();
+    setRefreshing(false);
+  };
 
   useEffect(() => {
     const hasBid = post?.bids?.some((bid) => bid.user.id === user.id);
@@ -98,6 +121,10 @@ export default function PostDetailScreen({ route }) {
     <ScrollView
       showsVerticalScrollIndicator={false}
       className="min-h-screen bg-white"
+      contentContainerStyle={{ paddingBottom: 10 }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
     >
       {post.id ? (
         <>
@@ -138,18 +165,6 @@ export default function PostDetailScreen({ route }) {
           </View>
 
           <View className="p-3">
-            {/* <View className="flex-row justify-start items-start gap-x-3 mb-4">
-          <Image source={{ uri: "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg" }} alt="" className="w-[68px] h-[68px] rounded-full" />
-        <View>
-        <Text className="text-base font-normal text-[#343434]">
-          Alan Pratama Rusfi
-        </Text>
-        <Divider color="#9ca3af"/>
-          <Text className="text-[17px] font-semibold text-[#343434]">
-            Kuburin kucing aku, aku tidak kuat kalau ngubur kucing kesayangan aku sendiri
-          </Text>
-        </View>
-        </View> */}
             <Text className="text-xl font-semibold text-[#343434]">
               {post.title}
             </Text>
@@ -161,9 +176,7 @@ export default function PostDetailScreen({ route }) {
             {post.imageUrl && (
               <Image
                 source={{
-                  uri: post.imageUrl
-                    ? post.imageUrl
-                    : "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
+                  uri: post.imageUrl,
                 }}
                 alt=""
                 className="w-full h-[350px] mb-5 rounded-xl"
@@ -182,6 +195,14 @@ export default function PostDetailScreen({ route }) {
                 </TouchableOpacity>
               ))}
             </View>
+
+            {post.isUrgent && (
+              <View className="flex-row mt-2">
+                <TouchableOpacity className="bg-red-100 rounded-full px-3.5 py-1">
+                  <Text className="text-red-500 font-semibold">Mendesak</Text>
+                </TouchableOpacity>
+              </View>
+            )}
 
             <View className="mt-3 flex-row justify-start items-center">
               <Text className="text-[17px] font-medium text-[#343434]">
@@ -306,18 +327,15 @@ export default function PostDetailScreen({ route }) {
                     console.log(bid.user);
                     return (
                       <TouchableOpacity
+                      className="border border-gray-200 justify-center items-center rounded-full mr-2.5"
                         key={i + "image"}
                         activeOpacity={0.7}
                         onPress={() => handleUserDetail(bid.user)}
                       >
                         <Image
-                          source={{
-                            uri: bid.user.photoUrl
-                              ? bid.user.photoUrl
-                              : "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
-                          }}
+                          source={bid.user.photoUrl ? { uri: bid.user.photoUrl } : require("../../../../assets/userImgPlaceholder.png")}
                           alt={bid.user.photoUrl}
-                          className="w-[70px] h-[70px] mr-2.5 rounded-full"
+                          className="w-[70px] h-[70px] rounded-full"
                           style={{
                             shadowColor: "#000",
                             shadowOffset: {
@@ -340,25 +358,26 @@ export default function PostDetailScreen({ route }) {
             </View>
 
             <View className="mt-6">
-              <Text className="mb-3 text-[18px] font-medium text-[#343434]">
+              <Text className="mb-2 text-[18px] font-medium text-[#343434]">
                 Pemilik
               </Text>
               <View className="flex-row justify-start items-start gap-x-3.5">
-                <Image
-                  source={{
-                    uri: post.user.photoUrl
-                      ? post.user.photoUrl
-                      : "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
-                  }}
-                  alt=""
-                  className="w-[68px] h-[68px] rounded-full"
-                />
+                <View className="border border-gray-200 justify-center items-center rounded-full">
+                  <Image
+                    source={post.user.photoUrl ? { uri: post.user.photoUrl } : require("../../../../assets/userImgPlaceholder.png")}
+                    alt=""
+                    className="w-[68px] h-[68px] rounded-full"
+                  />
+                </View>
                 <View className="">
                   <Text className="text-base font-medium text-[#343434]">
                     {post.user.name}
                   </Text>
                   <Text className="text-sm font-normal text-[#606060]">
                     {post.user.username}
+                  </Text>
+                  <Text className="text-sm font-normal text-[#606060]">
+                    {post.user.district ? post.user.district.districtName : "-"}
                   </Text>
                 </View>
               </View>
@@ -396,7 +415,9 @@ export default function PostDetailScreen({ route }) {
         </>
       ) : (
         <View className="min-h-screen justify-center items-center">
-          <Text className="text-xl text-[#343434] font-semibold">Loading...</Text>
+          <Text className="text-xl text-[#343434] font-semibold">
+            Loading...
+          </Text>
         </View>
       )}
     </ScrollView>

@@ -49,6 +49,15 @@ export default function AddPostScreen() {
   const onSubmit = async (data) => {
     setIsSubmitted(true);
 
+    if (parseInt(data.budgetMin) >= parseInt(data.budgetMax)) {
+      ToastAndroid.show(
+        "Harga minimal harus lebih kecil dari harga maksimal",
+        2500
+      );
+      setIsSubmitted(false);
+      return;
+    }
+
     const formData = new FormData();
     if (image) {
       formData.append("file", {
@@ -257,9 +266,9 @@ export default function AddPostScreen() {
                     control={control}
                     rules={{
                       required: "Maksimal budget wajib diisi!",
-                      validate: (value) =>
-                        value >= 1 ||
-                        "Maksimal budget harus lebih besar dari 0",
+                      // validate: (value) =>
+                      //   value >= watch("budgetMin") ||
+                      //   "Maksimal budget harus lebih besar dari 0",
                     }}
                     render={({ field: { onChange, onBlur, value } }) => (
                       <TextInput
@@ -285,11 +294,11 @@ export default function AddPostScreen() {
                 {errors.budgetMax.message}
               </Text>
             )}
-            {watch("budgetMin") >= watch("budgetMax") && (
+            {/* {watch("budgetMin") >= watch("budgetMax") && (
               <Text className="text-red-500 mt-1">
                 Max budget harus lebih besar dari min budget
               </Text>
-            )}
+            )} */}
           </View>
 
           <View className="mb-6">
@@ -371,7 +380,7 @@ export default function AddPostScreen() {
               data={data}
               labelField="label"
               valueField="value"
-              placeholder="Select Categories"
+              placeholder="Pilih Kategori"
               search
               value={selected}
               onChange={(item) => {

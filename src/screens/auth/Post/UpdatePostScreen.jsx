@@ -23,6 +23,7 @@ export default function UpdatePostScreen({ route }) {
   const { post } = route.params;
   const navigate = useNavigation();
   const [isUrgent, setIsUrgent] = useState(post.isUrgent);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const { items: catItems } = useSelector((state) => state.category);
 
   const { district } = useSelector((state) => state.district);
@@ -70,6 +71,17 @@ export default function UpdatePostScreen({ route }) {
   }, [selectedDistrict]);
 
   const onSubmit = async (data) => {
+    setIsSubmitted(true);
+
+    if (parseInt(data.budgetMin) >= parseInt(data.budgetMax)) {
+      ToastAndroid.show(
+        "Harga minimal harus lebih kecil dari harga maksimal",
+        2500
+      );
+      setIsSubmitted(false);
+      return;
+    }
+
     console.log("LKALSKA: ", selected);
 
     const formData = new FormData();
@@ -100,6 +112,7 @@ export default function UpdatePostScreen({ route }) {
       ToastAndroid.show("Gagal Update Postingan", 1500);
     }
 
+    setIsSubmitted(false);
     // reset();
   };
 
@@ -282,9 +295,6 @@ export default function UpdatePostScreen({ route }) {
                     control={control}
                     rules={{
                       required: "Maksimal budget wajib diisi!",
-                      validate: (value) =>
-                        value >= 1 ||
-                        "Maksimal budget harus lebih besar dari 0",
                     }}
                     render={({ field: { onChange, onBlur, value } }) => (
                       <TextInput
@@ -310,11 +320,11 @@ export default function UpdatePostScreen({ route }) {
                 {errors.budgetMax.message}
               </Text>
             )}
-            {watch("budgetMin") >= watch("budgetMax") && (
+            {/* {watch("budgetMin") >= watch("budgetMax") && (
               <Text className="text-red-500 mt-1">
                 Max budget harus lebih besar dari min budget
               </Text>
-            )}
+            )} */}
           </View>
 
           <View className="mb-6">
@@ -402,7 +412,7 @@ export default function UpdatePostScreen({ route }) {
               data={data}
               labelField="label"
               valueField="value"
-              placeholder="Select Categories"
+              placeholder="Pilih Kategori"
               search
               value={selected}
               onChange={(item) => {
@@ -413,18 +423,31 @@ export default function UpdatePostScreen({ route }) {
             />
           </View>
 
-          <TouchableOpacity
-            onPress={handleSubmit(onSubmit)}
-            activeOpacity={0.8}
-            disabled={isDirty ? !isDirty : !isChanged}
-            className={`${
-              isDirty || isChanged ? "bg-[#3f45f9]" : "bg-[#d1d1d1]"
-            } mt-4 py-4 rounded-lg`}
-          >
-            <Text className="text-white text-lg font-semibold text-center">
-              Simpan
-            </Text>
-          </TouchableOpacity>
+          {isSubmitted ? (
+            <TouchableOpacity
+              onPress={handleSubmit(onSubmit)}
+              activeOpacity={0.8}
+              disabled={true}
+              className={`bg-[#d1d1d1] mt-4 py-4 rounded-lg`}
+            >
+              <Text className="text-white text-lg font-semibold text-center">
+                Simpan
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              onPress={handleSubmit(onSubmit)}
+              activeOpacity={0.8}
+              disabled={isDirty ? !isDirty : !isChanged}
+              className={`${
+                isDirty || isChanged ? "bg-[#3f45f9]" : "bg-[#d1d1d1]"
+              } mt-4 py-4 rounded-lg`}
+            >
+              <Text className="text-white text-lg font-semibold text-center">
+                Simpan
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       </ScrollView>
     </KeyboardAwareScrollView>

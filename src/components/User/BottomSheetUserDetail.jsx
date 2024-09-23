@@ -84,9 +84,7 @@ const UserDetailComp = ({ refRBSheet, user: userDetail }) => {
       >
         <View className="bg-black">
           <Image
-            source={{
-              uri: "https://cdn.vectorstock.com/i/500p/42/94/blue-abstract-background-modern-gradient-vector-50754294.jpg",
-            }}
+            source={require("../../../assets/wallpaper.png")}
             className="w-full h-[102px]"
           />
           <View className="bg-white w-full justify-start items-center">

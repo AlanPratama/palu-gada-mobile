@@ -84,16 +84,18 @@ export default function MyReviewScreen() {
         >
           {reviews.length > 0 ? (
             reviews.map((item, index) => (
-              <View
+              <TouchableOpacity
+                onPress={() => navigate.navigate("PostDetail", { post: item.post })}
+                activeOpacity={0.75}
                 key={item.id + "-review-" + index}
                 className="bg-[#e6f0fd] mb-5 p-3 rounded-2xl"
               >
                 {/* HEADER */}
                 <View className="flex-row justify-start items-start gap-x-2">
                   <Image
-                    source={{
-                      uri: "https://cdn.dribbble.com/userupload/14945917/file/original-2379bba74d2cace09311ecdc0d1c373b.png?resize=752x",
-                    }}
+                    source={!item.user.photoUrl
+                      ? require("../../../assets/userImgPlaceholder.png")
+                      : { uri: item.user.photoUrl }}
                     className="w-12 h-12 rounded-full"
                   />
                   <View>
@@ -125,18 +127,18 @@ export default function MyReviewScreen() {
                       - ({item.rating})
                     </Text>
                   </View>
-                  <TouchableOpacity
+                  {/* <TouchableOpacity
                     onPress={() => navigate.navigate("PostDetail", { post: item.post })}
                     activeOpacity={0.7}
-                    onPress={() => navigate.navigate("PostDetail", { post: item.post })}
+                    // onPress={() => navigate.navigate("PostDetail", { post: item.post })}
                     className="bg-primary py-1 px-2 rounded-md"
                   >
                     <Text className="text-white text-center text-sm font-semibold">
                       Detail
                     </Text>
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                 </View>
-              </View>
+              </TouchableOpacity>
             ))
           ) : (
             <Text className="text-center text-base font-normal text-[#606060]">

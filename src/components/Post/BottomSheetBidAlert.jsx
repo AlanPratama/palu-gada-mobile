@@ -1,16 +1,13 @@
-import React, { useRef, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import React, { useState } from "react";
 import {
-  Image,
-  ScrollView,
   Text,
   ToastAndroid,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import RBSheet from "react-native-raw-bottom-sheet";
-import Divider from "../Divider";
 import BidApi from "../../apis/BidApi";
-import { useNavigation } from "@react-navigation/native";
 import NotificationApi from "../../apis/NotificationApi";
 import { notifIcon } from "../../utils/notification.util";
 
@@ -59,7 +56,7 @@ const BidAlertComp = ({ refRBSheet, objBid }) => {
       const res = await BidApi.updateBidStatus(objBid.bid.id, objBid.status)
       
       if(res) {
-        ToastAndroid.show("Berhasil Merubah Bid Status!", 1500);
+        ToastAndroid.show("Berhasil Merubah Penawaran Status!", 1500);
           navigate.navigate("PostDetail", { post: res.post })
           await NotificationApi.createNotification({
             userId: objBid.bid.user.id,
@@ -70,7 +67,7 @@ const BidAlertComp = ({ refRBSheet, objBid }) => {
           })
           refRBSheet.current?.close()
       } else {
-        ToastAndroid.show("Gagal Merubah Bid Status!", 1500);
+        ToastAndroid.show("Gagal Merubah Status Penawaran!", 1500);
       }
 
       setIsSubmitted(false)
@@ -88,7 +85,7 @@ const BidAlertComp = ({ refRBSheet, objBid }) => {
       >
         <View style={{ marginTop: 26 }} className="px-8">
           <Text className="text-base font-semibold text-[#343434] mb-2 text-center">
-            Apakah kamu yakin akan mengubah status Bid ini menjadi{" "}
+            Apakah kamu yakin akan mengubah status penawaran ini menjadi{" "}
             {objBid.status}?
           </Text>
 

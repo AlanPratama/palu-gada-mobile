@@ -83,7 +83,7 @@ const WithDrawalComp = ({ refRBSheet }) => {
     if (res) {
       ToastAndroid.show(
         "Penarikan saldo berhasil di buat!\nTranfer akan segera kami proses",
-        1500
+        5000
       );
       reset();
       await AuthApi.getAuthenticated();

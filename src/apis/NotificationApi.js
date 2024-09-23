@@ -63,21 +63,17 @@ export default class NotificationApi {
       const {data} = await axiosInstance.post("/notifications", request);
       console.log("CREATE NOTIF: ", data);
       
-      // ToastAndroid.show("Password berhasil di ubah", 5000);
       store.dispatch(clearNotification())
       this.getNotification()
     } catch (error) {
       if (error.response) {
-        // Error dari API
         console.log("NotificationApi create notif API Response Error: ", error.response.data);
       } else if (error.request) {
-        // Tidak ada response dari API
         console.log("NotificationApi create notif No response from API: ", error.request);
       } else {
-        // Error yang terjadi ketika membuat request
         console.log("NotificationApi create notif Error in setting up request: ", error.message);
       }
-      ToastAndroid.show(error?.response?.data?.message ?? error?.message, 5000);
+      // ToastAndroid.show(error?.response?.data?.message ?? error?.message, 5000);
     }
   }
 }

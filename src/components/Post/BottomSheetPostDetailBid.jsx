@@ -90,27 +90,7 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
                   key={bid.id + "-bid-" + i}
                   className="my-3.5 flex-row justify-start items-start gap-x-2.5"
                 >
-                  {/* <Image
-                    source={{
-                      uri: bid.user.photoUrl
-                        ? bid.user.photoUrl
-                        : "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
-                    }}
-                    alt=""
-                    className="w-[88px] h-[88px] border border-gray-200 rounded-xl"
-                  /> */}
                   <View className="w-[100%] bg-[#f6f6f6] p-2.5 rounded-xl">
-                    <View className="flex-row justify-between items-center">
-                      {/* <Text className="text-sm font-bold text-primary">
-                      {post ? post.postCategories[0].category : "Apa Aja"}
-                    </Text> */}
-                      {/* <View className="flex-row justify-center items-center gap-x-1">
-                      <Text className="text-sm font-normal text-[#343434]">
-                        {calculateTimeAgo("2024-09-15 15:29:07.797796")}
-                      </Text>
-                      <Ionicons name="time-outline" size={18} />
-                    </View> */}
-                    </View>
                     <Text
                       numberOfLines={1}
                       className="text-[17px] font-bold text-[#343434]"
@@ -119,10 +99,7 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
                       {bid.user.name ? bid.user.name : bid.user.username}
                     </Text>
                     <Text className="text-sm font-normal text-[#343434]">
-                      {bid.message} Lorem ipsum dolor sit amet consectetur
-                      adipisicing elit. Totam repellat minima magni! Lorem ipsum
-                      dolor sit amet. Lorem ipsum dolor sit amet consectetur
-                      adipisicing elit..
+                      {bid.message}
                     </Text>
                     <Divider color="#707070" twClass="my-2.5" />
                     <View className="flex-row justify-evenly items-center mb-2">
@@ -145,7 +122,7 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
                             }
                             className="bg-red-200 py-1 px-2 rounded-full w-[48%]"
                           >
-                            <Text className="text-center text-red-500">
+                            <Text className="text-center text-red-600 font-normal">
                               Reject
                             </Text>
                           </TouchableOpacity>
@@ -156,7 +133,7 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
                               }
                               className="bg-blue-200 py-1 px-2 rounded-full w-[48%]"
                             >
-                              <Text className="text-center text-blue-500">
+                              <Text className="text-center text-blue-600 font-normal">
                                 Terima
                               </Text>
                             </TouchableOpacity>
@@ -167,7 +144,7 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
                               }
                               className="bg-blue-200 py-1 px-2 rounded-full w-[48%]"
                             >
-                              <Text className="text-center text-blue-500">
+                              <Text className="text-center text-blue-600 font-normal">
                                 Saldo Kurang
                               </Text>
                             </TouchableOpacity>
@@ -178,18 +155,18 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
                           onPress={() => openRefSheetDialogue(bid, "FINISH")}
                           className="bg-blue-200 py-1 px-2 rounded-full w-[100%]"
                         >
-                          <Text className="text-center text-blue-500">
+                          <Text className="text-center text-blue-600 font-normal">
                             Selesaikan
                           </Text>
                         </TouchableOpacity>
                       ) : bid.bidStatus === "REJECTED" ? (
                         <TouchableOpacity
                           onPress={() =>
-                            ToastAndroid.show("Bid Telah Ditolak!", 1500)
+                            ToastAndroid.show("Penawaran Telah Ditolak!", 1500)
                           }
                           className="bg-red-200 py-1 px-2 rounded-full w-[100%]"
                         >
-                          <Text className="text-center text-red-500">
+                          <Text className="text-center text-red-600 font-normal">
                             DITOLAK
                           </Text>
                         </TouchableOpacity>
@@ -205,7 +182,7 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
                       ) : (
                         <TouchableOpacity
                           onPress={() =>
-                            ToastAndroid.show("Bid Telah Selesai!", 1500)
+                            ToastAndroid.show("Penawaran Telah Selesai!", 1500)
                           }
                           className="bg-green-200 py-1 px-2 rounded-full w-[100%]"
                         >
@@ -239,7 +216,7 @@ const PostDetailBidComp = ({ refRBSheet, post }) => {
         <BottomSheetBidAlert refRBSheet={dialogueRefSheet} objBid={objBid} />
         <BottomSheetAddReview
           refRBSheet={reviewRefSheet}
-          postId={post.id}
+          post={post}
           userId={userId}
         />
       </View>

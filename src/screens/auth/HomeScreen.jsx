@@ -142,12 +142,6 @@ export default function HomeScreen() {
               <View className="absolute h-2 w-2 bg-red-500 top-0 right-0 rounded-full" />
             )}
           </TouchableOpacity>
-          {/* <TouchableOpacity
-            onPress={() => Linking.openURL("https://wa.wizard.id/b8dd7a")}
-            activeOpacity={0.5}
-          >
-            <Ionicons name="logo-whatsapp" size={26} color="#343434" />
-          </TouchableOpacity> */}
         </View>
       </View>
 
@@ -214,8 +208,7 @@ export default function HomeScreen() {
             </Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity
-          activeOpacity={0.5}
+        <View
           className="flex-row justify-evenly items-center w-[48%]"
         >
           {/* <View className=""><Ionicons name='wallet-outline' size={28} color='#303030' /></View> */}
@@ -226,11 +219,12 @@ export default function HomeScreen() {
             </View>
             <Text className="text-[16px] leading-6 font-bold">{totalWorking || 0}x</Text>
           </View>
-        </TouchableOpacity>
+        </View>
       </View>
 
       <View className="px-3 mb-4 flex-row justify-center items-center gap-x-2">
         <TouchableOpacity
+          onPress={() => navigate.navigate("WayOfWork")}
           activeOpacity={0.7}
           className="bg-orange-500 py-2.5 rounded-lg w-[48%] flex-row justify-center items-center"
         >

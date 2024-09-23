@@ -9,7 +9,7 @@ export default function OnBoardingItem({ item }) {
       <Image
         source={item.image}
         style={{ width: width - 50, resizeMode: "contain" }}
-        className="flex-1 justify-centerrequire('../../assets/onboard1.png')"
+        className="flex-1 justify-center"
       />
 
       <View className='flex-[0.3]'>

@@ -41,7 +41,8 @@ export default function PostsListOnFiltered({ districtId, sortField, sortDirecti
         <Text className="text-center text-[#343434] font-bold text-[20px]">
           {title} {districtName && `(${districtName})`}
         </Text>
-        <TouchableOpacity onPress={() => resetPostItems()}>
+        <TouchableOpacity onPress={() => resetPostItems()} className="flex-row justify-center items-center gap-x-1">
+          <Ionicons name="refresh-outline" size={18} color="black" />
           <Text>Refresh</Text>
         </TouchableOpacity>
         {/* <Ionicons name="chevron-forward-outline" size={18} /> */}

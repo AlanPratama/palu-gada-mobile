@@ -23,7 +23,6 @@ export default function MyReportPostScreen() {
     <ScrollView
       showsVerticalScrollIndicator={false}
       className="min-h-screen bg-white"
-      contentContainerStyle={{ paddingBottom: 110 }}
     >
       <View className="flex-row justify-start items-center gap-x-2 p-3">
         <TouchableOpacity
@@ -38,34 +37,49 @@ export default function MyReportPostScreen() {
         </TouchableOpacity>
       </View>
 
-      <View className="mt-4 p-3">
+      <View className="p-3">
         {reports.length > 0 ? (
           reports.map((report, i) => (
             <TouchableOpacity
-              key={report.id + "-REPORT-" + i}
-              activeOpacity={0.7}
-              onPress={() => navigate.navigate("PostDetail", {})}
-              className="p-5 bg-[#f6f6f6] rounded-xl"
+              activeOpacity={0.75}
+              key={report.id + "-report-" + i}
+              onPress={() =>
+                navigate.navigate("PostDetail", { post: report.post })
+              }
+              className="bg-[#e6f0fd] rounded-2xl p-3 my-3"
             >
-              <Image
-                source={{
-                  uri: report.post.imageUrl
-                  ? report.post.imageUrl
-                  : "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
-                }}
-                alt="report"
-                className="w-full h-[250px] rounded-xl mb-1.5"
-              />
-              <Text
-                numberOfLines={1}
-                className="mb-1.5 text-lg font-medium text-[#343434]"
-              >
-                {report.post.title}
-              </Text>
-              <Divider />
-              <Text className="my-1.5 text-base font-normal text-[#343434]">
-                {report.message}
-              </Text>
+              <View className="flex-row justify-start items-center gap-x-2">
+                <Image
+                  source={
+                    report.post.imageUrl
+                      ? { uri: report.post.imageUrl }
+                      : require("../../../../assets/imgPlaceholder.png")
+                  }
+                  className="w-14 h-14 rounded-xl"
+                />
+                <View className="w-[78%]">
+                  <Text
+                    numberOfLines={1}
+                    className="text-[14px] font-normal text-[#606060]"
+                  >
+                    {report.user.name}
+                  </Text>
+                  <Text
+                    numberOfLines={1}
+                    className="text-[16px] font-semibold text-[#343434]"
+                  >
+                    {report.post.title}
+                  </Text>
+                  <Text
+                    numberOfLines={1}
+                    className="text-[14px] font-normal text-[#606060]"
+                  >
+                    {report.post.description}
+                  </Text>
+                </View>
+              </View>
+              <Divider twClass={"my-2"} width={2} color="#bfdbfe" />
+              <Text>Pesan: {report.message}</Text>
             </TouchableOpacity>
           ))
         ) : (

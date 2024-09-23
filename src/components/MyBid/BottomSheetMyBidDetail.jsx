@@ -38,6 +38,9 @@ export default function BottomSheetMyBidDetail({ refRBSheet, objBid }) {
             height: "82%",
           },
         }}
+        customModalProps={{
+          animationType: "slide",
+        }}
       >
         <BidDetailComp objBid={objBid} />
       </RBSheet>
@@ -52,11 +55,11 @@ const BidDetailComp = ({ objBid }) => {
         <Text style={styles.sectionTitle}>Detail Penawaran</Text>
         <View style={styles.bidInfo}>
           <Text style={styles.label}>Jumlah:</Text>
-          <Text style={styles.value}>Rp {objBid.amount}</Text>
+          <Text style={styles.value}>Rp {objBid.amount ? objBid.amount.toLocaleString("id-ID") : 0}</Text>
         </View>
         <View style={styles.bidInfo}>
           <Text style={styles.label}>Fee:</Text>
-          <Text style={styles.value}>Rp {objBid.fee}</Text>
+          <Text style={styles.value}>Rp {objBid.fee ? objBid.fee.toLocaleString("id-ID") : 0}</Text>
         </View>
         <View style={styles.bidInfo}>
           <Text style={styles.label}>Status:</Text>
@@ -135,7 +138,7 @@ const BidDetailComp = ({ objBid }) => {
           <View style={styles.postMeta}>
             <Ionicons name="cash-outline" size={16} color="#666" />
             <Text style={styles.postMetaText}>
-              Budget: Rp {objBid.post?.budgetMin} - Rp {objBid.post?.budgetMax}
+              Budget: Rp {objBid.post?.budgetMin ? objBid.post?.budgetMin.toLocaleString("id-ID") : 0} - Rp {objBid.post?.budgetMax ? objBid.post?.budgetMax.toLocaleString("id-ID") : 0}
             </Text>
           </View>
           {objBid.post?.isUrgent && (
@@ -182,7 +185,7 @@ const styles = StyleSheet.create({
   },
   userInfo: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
   },
   avatar: {
     width: 80,

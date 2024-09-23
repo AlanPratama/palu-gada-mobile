@@ -34,7 +34,7 @@ export default class BidApi {
       console.log("ASASA: ", res.data);
       if (res.data.status === "Created") {
         await PostApi.getPosts(0, 10, '', true);
-        ToastAndroid.show("Bid Success!", 1500);
+        ToastAndroid.show("Berhasil Mengirim Penawaran!", 1500);
         return true;
       }
 

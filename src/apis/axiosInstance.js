@@ -51,8 +51,7 @@ axiosInstance.interceptors.response.use(
           const { data } = await axiosInstance.post("/auth/refresh", {
             refreshToken: refreshToken,
           });
-          console.log(data,accessToken);
-          
+
           await AsyncStorage.setItem("accessToken", data.accessToken);
           originalRequest._retry = true;
           console.log("pake refresh token, access tokenya ganti");
