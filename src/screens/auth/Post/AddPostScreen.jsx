@@ -77,7 +77,7 @@ export default function AddPostScreen() {
         isRead: false,
         icon: notifIcon.post,
       })
-      alert("Post Success!");
+      ToastAndroid.show("Post Success!", 1500);
       navigate.goBack();
     }
     setIsSubmitted(false);

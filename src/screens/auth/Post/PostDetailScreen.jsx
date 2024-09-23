@@ -1,19 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useRef, useState } from "react";
-<<<<<<< HEAD
-import {
-  Image,
-  ScrollView,
-  Text,
-  ToastAndroid,
-  TouchableOpacity,
-  View,
-} from "react-native";
-=======
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Image, ScrollView, Text, ToastAndroid, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
->>>>>>> development
 import Divider from "../../../components/Divider";
 import BottomSheetAddBid from "../../../components/Post/BottomSheetAddBid";
 import BottomSheetPostDeleteAlert from "../../../components/Post/BottomSheetPostDeleteAlert";
@@ -44,14 +33,6 @@ export default function PostDetailScreen({ route }) {
   const refSheetUserDetail = useRef();
   const refSheetAlertDeletePost = useRef();
   const refSheetPostStatusChange = useRef();
-<<<<<<< HEAD
-
-  useEffect(() => {
-    const hasBid = post?.bids?.some((bid) => bid.user.id === user.id);
-    setAlreadyBid(hasBid);
-  }, [post.bids]);
-=======
->>>>>>> development
 
   const hanldeTambahPenawaran = () => {
     if (
@@ -78,7 +59,7 @@ export default function PostDetailScreen({ route }) {
 
   const handleDeleteButton = () => {
     if (canDelPost) refSheetAlertDeletePost.current?.open();
-    else ToastAndroid.show("TIDAK BISA HAPUS POSTINGAN!", 1500);
+    else alert("TIDAK BISA HAPUS POSTINGAN!");
   };
 
   const handleCheckCanDelPost = () => {
@@ -91,6 +72,12 @@ export default function PostDetailScreen({ route }) {
         setCanDelPost(false);
     });
   };
+
+
+
+
+  // 
+
 
   const fetch = async () => {
     console.log("FETCHHHH");
@@ -112,41 +99,6 @@ export default function PostDetailScreen({ route }) {
       showsVerticalScrollIndicator={false}
       className="min-h-screen bg-white"
     >
-<<<<<<< HEAD
-      <View className=" flex-row justify-between items-center p-3">
-        <View className="flex-row justify-start items-center gap-x-2">
-          <TouchableOpacity
-            onPress={() => navigate.goBack()}
-            activeOpacity={0.5}
-            className="flex-row justify-start items-center"
-          >
-            <Ionicons name="chevron-back" size={24} color="black" />
-            <Text className="text-xl text-[#343434] font-semibold ml-1">
-              Kembali
-            </Text>
-          </TouchableOpacity>
-        </View>
-        {post.user.id !== user.id ? (
-          <TouchableOpacity
-            onPress={() => refSheetReportPost.current?.open()}
-            activeOpacity={0.7}
-            className="flex-row justify-center items-center bg-red-500 px-2 py-1 rounded"
-          >
-            <Ionicons name="megaphone-outline" size={24} color={"#fff"} />
-            <Text className="text-white ml-2 font-semibold">Laporkan</Text>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity
-            onPress={() => refSheetPostStatusChange.current?.open()}
-            activeOpacity={0.7}
-            className="flex-row justify-center items-center bg-indigo-500 px-2 py-1.5 rounded"
-          >
-            <Ionicons name="brush-outline" size={18} color={"#fff"} />
-            <Text className="text-white ml-2 font-semibold">Ganti Status</Text>
-          </TouchableOpacity>
-        )}
-      </View>
-=======
       {post.id ? (
         <>
           <View className=" flex-row justify-between items-center p-3">
@@ -184,7 +136,6 @@ export default function PostDetailScreen({ route }) {
               </TouchableOpacity>
             )}
           </View>
->>>>>>> development
 
           <View className="p-3">
             {/* <View className="flex-row justify-start items-start gap-x-3 mb-4">
@@ -250,100 +201,9 @@ export default function PostDetailScreen({ route }) {
             {new Date(post.deadline).toLocaleDateString("id-ID")}
           </Text>
         </View> */}
-<<<<<<< HEAD
-        <View className="mt-1.5 flex-row justify-start items-center">
-          <Text className="text-[17px] font-medium text-[#343434]">Kota: </Text>
-          <Text className="text-[17px] font-normal text-[#343434]">
-            {post.district.districtName} ({post.district.province})
-          </Text>
-        </View>
-
-        <View className="flex-row justify-evenly items-center mt-6">
-          <TouchableOpacity
-            activeOpacity={0.7}
-            className="flex-row justify-center items-center gap-x-2"
-          >
-            <Ionicons
-              name="information-circle-outline"
-              size={24}
-              color="#343434"
-            />
-            <Text>
-              {post.status === "AVAILABLE"
-                ? "Tersedia"
-                : post.status === "NOT_AVAILABLE"
-                ? "Tidak Tersedia"
-                : "Expired"}
-            </Text>
-          </TouchableOpacity>
-          <Divider color="#9ca3af" orientation="vertical" />
-
-          <View className="flex-row justify-center items-center gap-x-2">
-            <Ionicons name="person-outline" size={24} color="#343434" />
-            <Text>{post.bids?.length} Bids</Text>
-          </View>
-          <Divider color="#9ca3af" orientation="vertical" />
-          <View className="flex-row justify-center items-center gap-x-2">
-            <Ionicons name="time-outline" size={24} color="#343434" />
-            <Text>{post.finishDay} Hari</Text>
-          </View>
-        </View>
-
-        <View className="mt-6">
-          {post.user.id === user.id ? (
-            <View className="flex-row justify-between items-center">
-              <TouchableOpacity
-                onPress={() => refSheetPostDetailBid.current?.open()}
-                activeOpacity={0.7}
-                className="bg-primary w-[32%] py-2.5 rounded-full "
-              >
-                <Text className="text-base text-white text-center font-semibold">
-                  Penawaran
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => navigate.push("UpdatePost", { post })}
-                activeOpacity={0.7}
-                className="bg-green-500 w-[32%] py-2.5 rounded-full "
-              >
-                <Text className="text-base text-white text-center font-semibold">
-                  Edit
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={handleDeleteButton}
-                activeOpacity={0.7}
-                className="bg-red-500 w-[32%] py-2.5 rounded-full "
-              >
-                <Text className="text-base text-white text-center font-semibold">
-                  Hapus
-                </Text>
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <TouchableOpacity
-              onPress={hanldeTambahPenawaran}
-              activeOpacity={0.7}
-              disabled={
-                alreadyBid ||
-                post.status === "NOT_AVAILABLE" ||
-                post.status === "EXPIRED"
-              }
-              className={`${
-                alreadyBid ||
-                post.status === "NOT_AVAILABLE" ||
-                post.status === "EXPIRED"
-                  ? "bg-gray-400"
-                  : "bg-primary"
-              } w-full py-3.5 rounded-full`}
-            >
-              <Text className="text-base text-white text-center font-semibold">
-                Tambah Penawaran
-=======
             <View className="mt-1.5 flex-row justify-start items-center">
               <Text className="text-[17px] font-medium text-[#343434]">
                 Kota:{" "}
->>>>>>> development
               </Text>
               <Text className="text-[17px] font-normal text-[#343434]">
                 {post.district.districtName} ({post.district.province})
@@ -510,12 +370,6 @@ export default function PostDetailScreen({ route }) {
             refRBSheet={refSheetUserDetail}
             user={userDetail}
           />
-<<<<<<< HEAD
-          <BottomSheetPostStatusChange
-            refRBSheet={refSheetPostStatusChange}
-            post={post}
-          />
-=======
 
           {canDelPost && (
             <BottomSheetPostDeleteAlert
@@ -539,7 +393,6 @@ export default function PostDetailScreen({ route }) {
           ) : (
             <BottomSheetAddBid refRBSheet={refSheetAddBid} post={post} />
           )}
->>>>>>> development
         </>
       ) : (
         <View className="min-h-screen justify-center items-center">

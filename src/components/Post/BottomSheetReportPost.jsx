@@ -74,7 +74,7 @@ const ReportPostComp = ({ refRBSheet, post }) => {
         isRead: false,
         icon: notifIcon.report,
       })
-      alert("Berhasil Report Postingan!")
+      ToastAndroid.show("Berhasil Report Postingan!", 1500);
       refRBSheet.current.close();
       setIsSubmitted(false);
     } else {

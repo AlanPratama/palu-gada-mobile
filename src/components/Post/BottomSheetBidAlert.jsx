@@ -59,7 +59,7 @@ const BidAlertComp = ({ refRBSheet, objBid }) => {
       const res = await BidApi.updateBidStatus(objBid.bid.id, objBid.status)
       
       if(res) {
-          alert("Berhasil Merubah Bid Status!")
+        ToastAndroid.show("Berhasil Merubah Bid Status!", 1500);
           navigate.navigate("PostDetail", { post: res.post })
           await NotificationApi.createNotification({
             userId: objBid.bid.user.id,
@@ -70,12 +70,11 @@ const BidAlertComp = ({ refRBSheet, objBid }) => {
           })
           refRBSheet.current?.close()
       } else {
-        alert("Gagal Merubah Bid Status!")
+        ToastAndroid.show("Gagal Merubah Bid Status!", 1500);
       }
 
       setIsSubmitted(false)
     }
-  };
 
   return (
     <>
@@ -118,3 +117,4 @@ const BidAlertComp = ({ refRBSheet, objBid }) => {
       </View>
     </>
   );
+}

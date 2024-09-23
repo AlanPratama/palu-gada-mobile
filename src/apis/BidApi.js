@@ -1,5 +1,4 @@
 import { ToastAndroid } from "react-native";
-import { setMyBids } from "../redux/slice/bidSlice";
 import { deleteMyBid, setMyBids } from "../redux/slice/bidSlice";
 import store from "../redux/store";
 import { axiosInstance } from "./axiosInstance";

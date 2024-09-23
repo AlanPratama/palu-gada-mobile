@@ -77,8 +77,6 @@ const AddBidComp = ({ refRBSheet, post }) => {
       setIsSubmitted(false)
         reset()
     }
-    reset();
-  };
 
   return (
     <ScrollView
@@ -197,4 +195,4 @@ const AddBidComp = ({ refRBSheet, post }) => {
         </View>
       </ScrollView>
     );
-  };
+  }
