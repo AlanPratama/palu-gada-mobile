@@ -1,16 +1,11 @@
-import React from "react";
-import { Controller, useForm } from "react-hook-form";
-import {
-  ScrollView,
-  Text,
-  TextInput,
-  ToastAndroid,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import RBSheet from "react-native-raw-bottom-sheet";
-import BidApi from "../../apis/BidApi";
-import { useNavigation } from "@react-navigation/native";
+import React, { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import RBSheet from 'react-native-raw-bottom-sheet';
+import BidApi from '../../apis/BidApi';
+import { useNavigation } from '@react-navigation/native';
+import NotificationApi from '../../apis/NotificationApi';
+import { notifIcon } from '../../utils/notification.util';
 
 export default function BottomSheetAddBid({ refRBSheet, post }) {
   return (
@@ -53,22 +48,34 @@ const AddBidComp = ({ refRBSheet, post }) => {
     formState: { errors },
     reset,
   } = useForm();
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const navigate = useNavigation();
 
-  const onSubmit = async (data) => {
-    refRBSheet.current.close();
-    const res = await BidApi.createBid({
-      postId: post.id,
-      amount: parseInt(data.amount),
-      message: data.message,
-    });
+    const onSubmit = async (data) => {
+      setIsSubmitted(true)
+        refRBSheet.current.close()
+        const res = await BidApi.createBid({
+            postId: post.id,
+            amount: parseInt(data.amount),
+            message: data.message
+        })
 
-    if (res) {
-      refRBSheet.current.close();
-      navigate.goBack();
-    } else {
-      ToastAndroid.show("Gagal menawar!", 1500);
+        if(res) {
+          await NotificationApi.createNotification({
+            userId: post.user.id,
+            title: "Ada Penawaran Terbaru!",
+            description: `Ada penawaran terbaru untuk postingan ${post.title}. Pesan: ${data.message}`,
+            isRead: false,
+            icon: notifIcon.post,
+          })
+            refRBSheet.current.close()
+            navigate.goBack()
+        } else {
+            alert("Gagal menawar!")
+        }
+      setIsSubmitted(false)
+        reset()
     }
     reset();
   };
@@ -153,40 +160,41 @@ const AddBidComp = ({ refRBSheet, post }) => {
           {errors.message && (
             <Text style={{ color: "red" }}>{errors.message.message}</Text>
           )}
-        </View>
-
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-evenly",
-            gap: 8,
-            paddingHorizontal: 18,
-            paddingBottom: 25,
-          }}
-        >
-          <TouchableOpacity
-            onPress={handleSubmit(onSubmit)}
+          </View>
+            
+          <View
             style={{
-              backgroundColor: "#3b82f6",
-              flex: 1,
-              paddingVertical: 14,
-              borderRadius: 999,
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-evenly",
+              gap: 8,
+              paddingHorizontal: 18,
+              paddingBottom: 25,
             }}
           >
-            <Text
+            <TouchableOpacity
+              disabled={isSubmitted}
+              onPress={handleSubmit(onSubmit)}
               style={{
-                color: "#fff",
-                fontWeight: 600,
-                fontSize: 16,
-                textAlign: "center",
+                backgroundColor: isSubmitted ? "#d1d1d1" : "#3b82f6",
+                flex: 1,
+                paddingVertical: 14,
+                borderRadius: 999,
               }}
             >
-              Kirim Penawaran
-            </Text>
-          </TouchableOpacity>
+              <Text
+                style={{
+                  color: "#fff",
+                  fontWeight: 600,
+                  fontSize: 16,
+                  textAlign: "center",
+                }}
+              >
+                Kirim Penawaran
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    </ScrollView>
-  );
-};
+      </ScrollView>
+    );
+  };

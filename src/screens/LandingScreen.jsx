@@ -22,10 +22,10 @@ export default function LandingScreen() {
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Est, dolorem esse. Reiciendis dolorum!
         </Animated.Text>
         <Animated.View entering={ZoomIn.delay(600)} className='flex-row justify-center items-center gap-x-4 mt-6'>
-          <TouchableOpacity onPress={() => navigate.navigate("Login")} className='bg-primary py-2 px-3 rounded-md w-[42%]'>
+          <TouchableOpacity activeOpacity={0.75} onPress={() => navigate.navigate("Login")} className='bg-primary py-2 px-3 rounded-md w-[42%]'>
             <Text className='text-center text-white text-xl font-semibold'>Login</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigate.navigate("Register")} className='py-2 px-3 rounded-md w-[42%]'>
+          <TouchableOpacity activeOpacity={0.75} onPress={() => navigate.navigate("Register")} className='py-2 px-3 rounded-md w-[42%]'>
             <Text className='text-center text-[#262626] text-xl font-semibold'>Register</Text>
           </TouchableOpacity>
         </Animated.View>

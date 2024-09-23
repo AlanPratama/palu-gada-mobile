@@ -18,12 +18,15 @@ import { useSelector } from "react-redux";
 import PostApi from "../../../apis/PostApi";
 import { MultiSelect } from "react-native-element-dropdown";
 import { SelectList } from "react-native-dropdown-select-list";
+import NotificationApi from "../../../apis/NotificationApi";
+import { notifIcon } from "../../../utils/notification.util";
 
 export default function AddPostScreen() {
   const navigate = useNavigation();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isUrgent, setIsUrgent] = useState(false);
   const { items: catItems } = useSelector((state) => state.category);
+  const { user } = useSelector((state) => state.auth)
 
   const { district } = useSelector((state) => state.district);
 
@@ -67,7 +70,14 @@ export default function AddPostScreen() {
 
     const res = await PostApi.createPost(formData);
     if (res) {
-      ToastAndroid.show("Post Success!", 1500);
+      await NotificationApi.createNotification({
+        userId: user.id,
+        title: "Postingan Berhasil Ditambahkan!",
+        description: `Postingan ${data.title} telah disebar, tunggu yang lain melihat postingan kamu!`,
+        isRead: false,
+        icon: notifIcon.post,
+      })
+      alert("Post Success!");
       navigate.goBack();
     }
     setIsSubmitted(false);

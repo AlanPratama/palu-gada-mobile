@@ -12,6 +12,8 @@ import {
 import RBSheet from "react-native-raw-bottom-sheet";
 import StarRating from "react-native-star-rating-widget";
 import BidApi from "../../apis/BidApi";
+import NotificationApi from "../../apis/NotificationApi";
+import { notifIcon } from "../../utils/notification.util";
 
 export default function BottomSheetAddReview({ refRBSheet, postId, userId }) {
   return (
@@ -80,10 +82,18 @@ const AddReviewComp = ({ refRBSheet, postId, userId }) => {
     });
 
     if (res) {
+      await NotificationApi.createNotification({
+        userId: post.user.id,
+        title: "Ada ulasanmu terbaru!",
+        description: `Seseorang telah menulis ulasan untuk kamu! Ulasan: ${data.comment}`,
+        isRead: false,
+        icon: notifIcon.review,
+      })
       refRBSheet.current.close();
       navigate.goBack();
     } else {
       ToastAndroid.show("Gagal menawar!", 1500);
+      alert("Gagal mengirim ulasan!");
     }
 
     // const res = await BidApi.createBid({
@@ -185,7 +195,7 @@ const AddReviewComp = ({ refRBSheet, postId, userId }) => {
                 textAlign: "center",
               }}
             >
-              Kirim Review
+              Kirim Ulasan
             </Text>
           </TouchableOpacity>
         </View>

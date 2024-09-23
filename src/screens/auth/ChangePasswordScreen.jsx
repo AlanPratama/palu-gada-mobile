@@ -10,12 +10,16 @@ import {
   View,
 } from "react-native";
 import UserApi from "../../apis/UserApi";
+import NotificationApi from "../../apis/NotificationApi";
+import { notifIcon } from "../../utils/notification.util";
+import { useSelector } from "react-redux";
 
 export default function ChangePasswordScreen() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigation();
+  const { user } = useSelector((state) => state.auth)
 
   const {
     control,
@@ -33,6 +37,13 @@ export default function ChangePasswordScreen() {
       passwordConfirm: data.confirmPassword,
     });
     if (res) {
+      await NotificationApi.createNotification({
+        userId: user.id,
+        title: "Password Berhasil Diubah!",
+        description: "Password kamu telah diubah.",
+        isRead: false,
+        icon: notifIcon.password,
+      });
       reset();
       navigate.goBack();
     }
@@ -86,7 +97,7 @@ export default function ChangePasswordScreen() {
                   <Controller
                     control={control}
                     name="newPassword"
-                    rules={{ required: "Password baru wajib diisi!" }}
+                    rules={{ required: "Password baru wajib diisi!", validate: (value) => value.length >= 8 || "Password minimal 8 karakter!" }}
                     render={({ field: { onChange, onBlur, value } }) => (
                       <TextInput
                         onBlur={onBlur}

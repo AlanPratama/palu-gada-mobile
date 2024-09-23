@@ -11,7 +11,7 @@ const PostCard = ({ post, resetPostItems }) => {
     <TouchableOpacity
       onPress={() => {
         resetPostItems && resetPostItems()
-        navigate.navigate("PostDetail", {
+        navigate.push("PostDetail", {
           post
         })
       }}

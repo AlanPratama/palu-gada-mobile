@@ -42,16 +42,18 @@ export default function EditProfileScreen() {
   const defaultSelectedCategories = user.userCategories.map((item) => item.id);
   console.log("categoriesData: ", defaultSelectedCategories);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [showDate, setShowDate] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
   const [count, setCount] = useState(2);
 
   const [gender, setGender] = useState(
-    user.userGender?.charAt(0).toUpperCase() +
-      user.userGender?.slice(1).toLowerCase()
+    user.userGender && user.userGender.charAt(0).toUpperCase() +
+    user.userGender.slice(1).toLowerCase()
   );
-  const [birthDate, setBirthDate] = useState(new Date(user?.birthDate));
-  const [selectedDistrict, setSelectedDistrict] = useState(user?.district?.id);
+  const [birthDate, setBirthDate] = useState(new Date(user.birthDate));
+  const [selectedDistrict, setSelectedDistrict] = useState(user.district && user.district.id);
   const [selectedCategories, setSelectedCategories] = useState(
     user?.userCategories?.map((item) => item.category.id)
   );
@@ -74,11 +76,12 @@ export default function EditProfileScreen() {
       phone: user.phone,
       address: user.address,
       nik: user.nik,
-      bankAccount: user.bankAccount,
+      bankAccount: user.bankAccount !== "null" ? user.bankAccount : null,
     },
   });
 
   const onSubmit = async (data) => {
+    setIsSubmitting(true);
     console.log("SELECTED: ", selectedCategories);
 
     const formData = new FormData();
@@ -87,7 +90,9 @@ export default function EditProfileScreen() {
     formData.append("about", data.about);
     formData.append("phone", data.phone);
     formData.append("nik", data.nik);
-    formData.append("bankAccount", data.bankAccount);
+
+    if(data.bankAccount) formData.append("bankAccount", data.bankAccount);
+    
     formData.append("address", data.address);
     formData.append("birthDate", birthDate.toISOString().split("T")[0]);
     formData.append("userGender", gender);
@@ -120,6 +125,8 @@ export default function EditProfileScreen() {
     } else {
       ToastAndroid.show("ada yang aneh coy!", 1500);
     }
+
+    setIsSubmitting(false);
   };
 
   const [image, setImage] = useState(null);
@@ -171,8 +178,8 @@ export default function EditProfileScreen() {
                 uri: image
                   ? image.uri
                   : user.photoUrl
-                  ? user.photoUrl
-                  : "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
+                    ? user.photoUrl
+                    : "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
               }}
               alt="Profile Pic"
               className="w-32 h-32 rounded-full"
@@ -406,32 +413,28 @@ export default function EditProfileScreen() {
             <Ionicons name="male-female-outline" size={24} color="#303030" />
             <TouchableOpacity
               onPress={() => setGender("Male")}
-              className={`${
-                gender === "Male"
+              className={`${gender === "Male"
                   ? "border-[#3f45f9] text-[#3f45f9] bg-[#eff6ff71]"
                   : "border-[#d1d1d1] text-[#303030]"
-              } rounded-[4px] border-2 ml-2 py-1 px-2.5`}
+                } rounded-[4px] border-2 ml-2 py-1 px-2.5`}
             >
               <Text
-                className={`${
-                  gender === "Male" ? "text-[#3f45f9]" : "text-[#858585]"
-                } text-center text-sm font-normal uppercase`}
+                className={`${gender === "Male" ? "text-[#3f45f9]" : "text-[#858585]"
+                  } text-center text-sm font-normal uppercase`}
               >
                 Pria
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setGender("Female")}
-              className={`${
-                gender === "Female"
+              className={`${gender === "Female"
                   ? "border-[#3f45f9] text-[#3f45f9] bg-[#eff6ff71]"
                   : "border-[#d1d1d1] text-[#303030]"
-              } rounded-[4px] border-2 ml-2 py-1 px-2.5`}
+                } rounded-[4px] border-2 ml-2 py-1 px-2.5`}
             >
               <Text
-                className={`${
-                  gender === "Female" ? "text-[#3f45f9]" : "text-[#858585]"
-                } text-center text-sm font-normal uppercase`}
+                className={`${gender === "Female" ? "text-[#3f45f9]" : "text-[#858585]"
+                  } text-center text-sm font-normal uppercase`}
               >
                 Wanita
               </Text>
@@ -526,9 +529,9 @@ export default function EditProfileScreen() {
           <TouchableOpacity
             onPress={handleSubmit(onSubmit)}
             activeOpacity={0.8}
-            disabled={isDirty ? !isDirty : !isChanged}
+            disabled={isDirty ? !isDirty : !isChanged ? !isChanged : isSubmitting}
             className={`${
-              isDirty || isChanged ? "bg-[#3f45f9]" : "bg-[#d1d1d1]"
+              isDirty || isChanged || isSubmitting ? "bg-[#3f45f9]" : "bg-[#d1d1d1]"
             } w-[48%] py-3.5 rounded-full`}
           >
             <Text className="text-white text-lg font-semibold text-center">
