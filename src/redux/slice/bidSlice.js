@@ -14,6 +14,10 @@ export const bidSlice = createSlice({
       state.myBids = myBids;
       state.totalMyBids = totalMyBids;
     },
+    deleteMyBid: (state, action) => {
+      state.myBids = state.myBids.filter((bid) => bid.id != action.payload)
+      state.totalMyBids -= 1
+    },
     setIsLoading: (state, action) => {
       state.isLoading = action.payload;
     },
@@ -23,5 +27,5 @@ export const bidSlice = createSlice({
   },
 });
 
-export const { setMyBids, setIsLoading, setError } = bidSlice.actions;
+export const { setMyBids, deleteMyBid, setIsLoading, setError } = bidSlice.actions;
 export default bidSlice.reducer;

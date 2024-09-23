@@ -1,13 +1,29 @@
-import { View, Text, ScrollView, RefreshControl, Image } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  RefreshControl,
+  Image,
+  TouchableOpacity,
+} from "react-native";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import BidApi from "../../../apis/BidApi";
 import { useSelector } from "react-redux";
 import Divider from "../../../components/Divider";
+import BottomSheetDeleteBidAlert from "../../../components/Post/BottomSheetDeleteBidAlert";
 
 export default function MyBidScreen() {
   const [refreshing, setRefreshing] = useState(false); // State for pull-to-refresh
   const { myBids } = useSelector((state) => state.bid);
+
+  const [delBid, setDelBid] = useState({})
+  const refSheetDeleteBid = useRef()
+
+  const handleOpenDelBottomSheet = (delBid) => {
+    setDelBid(delBid)
+    refSheetDeleteBid.current?.open()
+  }
 
   console.log("MY BIDSSS: ", myBids);
 
@@ -18,7 +34,7 @@ export default function MyBidScreen() {
   useEffect(() => {
     fetch();
   }, []);
-  // useFocusEffect to refresh data when screen gains focus
+  
   useFocusEffect(
     useCallback(() => {
       fetch();
@@ -86,9 +102,16 @@ export default function MyBidScreen() {
                 <Text>
                   Rp {bid.amount ? bid.amount.toLocaleString("id-ID") : 0}
                 </Text>
-                <Text className="bg-primary text-white font-medium px-2.5 py-1 rounded-full">
-                  {bid.status}
-                </Text>
+                <View className="flex-row justify-center items-center gap-x-2">
+                  {bid.status === "PENDING" && (
+                    <TouchableOpacity onPress={() => handleOpenDelBottomSheet(bid)} activeOpacity={0.7} className="bg-red-500 px-2.5 py-1 rounded-full">
+                      <Text className="text-white font-medium">Hapus</Text>
+                    </TouchableOpacity>
+                  )}
+                  <Text className="bg-primary text-white font-medium px-2.5 py-1 rounded-full">
+                    {bid.status}
+                  </Text>
+                </View>
               </View>
             </View>
           ))
@@ -96,6 +119,8 @@ export default function MyBidScreen() {
           <Text>TIDAK ADA PENAWARAN</Text>
         )}
       </View>
+
+      <BottomSheetDeleteBidAlert refRBSheet={refSheetDeleteBid} bid={delBid} />
     </ScrollView>
   );
 }

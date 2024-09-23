@@ -1,4 +1,4 @@
-import { setMyBids } from "../redux/slice/bidSlice";
+import { deleteMyBid, setMyBids } from "../redux/slice/bidSlice";
 import store from "../redux/store";
 import { axiosInstance } from "./axiosInstance";
 import PostApi from "./PostApi";
@@ -117,6 +117,30 @@ export default class BidApi {
       const { data } = await axiosInstance.get(`/reviews/user/${userId}`);
 
       console.log("data: ", data);
+
+      return data;
+    } catch (error) {
+      if (error.response) {
+        // Error dari API
+        console.log("API Response Error: ", error.response);
+      } else if (error.request) {
+        // Tidak ada response dari API
+        console.log("No response from API: ", error.request);
+      } else {
+        // Error yang terjadi ketika membuat request
+        console.log("Error in setting up request: ", error.message);
+      }
+    }
+  }
+
+  static async deleteBidById(bidId) {
+    console.log("BID ID: ", bidId);
+    
+    try {
+      const { data } = await axiosInstance.delete(`/bids/${bidId}`);
+
+      console.log("data: ", data);
+      store.dispatch(deleteMyBid(bidId))
 
       return data;
     } catch (error) {
