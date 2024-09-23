@@ -20,6 +20,8 @@ export const notificationSlice = createSlice({
     error: null,
   },
   reducers: {
+
+
     setNotification: (state, action) => {
       state.items = [...state.items, ...action.payload];
       state.total += action.payload.length;

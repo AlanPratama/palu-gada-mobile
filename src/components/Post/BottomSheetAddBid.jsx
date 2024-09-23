@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import BidApi from '../../apis/BidApi';
 import { useNavigation } from '@react-navigation/native';
+import NotificationApi from '../../apis/NotificationApi';
+import { notifIcon } from '../../utils/notification.util';
 
 export default function BottomSheetAddBid({ refRBSheet, post }) {
   return (
@@ -49,10 +51,12 @@ const AddBidComp = ({ refRBSheet, post }) => {
     formState: { errors },
     reset
   } = useForm();
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const navigate = useNavigation()
 
     const onSubmit = async (data) => {
+      setIsSubmitted(true)
         refRBSheet.current.close()
         const res = await BidApi.createBid({
             postId: post.id,
@@ -61,11 +65,19 @@ const AddBidComp = ({ refRBSheet, post }) => {
         })
 
         if(res) {
+          await NotificationApi.createNotification({
+            userId: post.user.id,
+            title: "Ada Penawaran Terbaru!",
+            description: `Ada penawaran terbaru untuk postingan ${post.title}. Pesan: ${data.message}`,
+            isRead: false,
+            icon: notifIcon.post,
+          })
             refRBSheet.current.close()
             navigate.goBack()
         } else {
             alert("Gagal menawar!")
         }
+      setIsSubmitted(false)
         reset()
     }
 
@@ -152,9 +164,10 @@ const AddBidComp = ({ refRBSheet, post }) => {
             }}
           >
             <TouchableOpacity
+              disabled={isSubmitted}
               onPress={handleSubmit(onSubmit)}
               style={{
-                backgroundColor: "#3b82f6",
+                backgroundColor: isSubmitted ? "#d1d1d1" : "#3b82f6",
                 flex: 1,
                 paddingVertical: 14,
                 borderRadius: 999,

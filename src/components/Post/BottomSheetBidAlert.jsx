@@ -4,6 +4,8 @@ import RBSheet from "react-native-raw-bottom-sheet";
 import Divider from "../Divider";
 import BidApi from "../../apis/BidApi";
 import { useNavigation } from "@react-navigation/native";
+import NotificationApi from "../../apis/NotificationApi";
+import { notifIcon } from "../../utils/notification.util";
 
 export default function BottomSheetBidAlert({ refRBSheet, objBid }) {
   return (
@@ -42,20 +44,29 @@ export default function BottomSheetBidAlert({ refRBSheet, objBid }) {
 const BidAlertComp = ({ refRBSheet, objBid }) => {
 
     console.log(objBid);
-
+    const [isSubmitted, setIsSubmitted] = useState(false);
     const navigate = useNavigation()
 
     const onSubmit = async () => {
+      setIsSubmitted(true)
       const res = await BidApi.updateBidStatus(objBid.bid.id, objBid.status)
-
+      
       if(res) {
           alert("Berhasil Merubah Bid Status!")
           navigate.navigate("PostDetail", { post: res.post })
+          await NotificationApi.createNotification({
+            userId: objBid.bid.user.id,
+            title: "Status Penawaran Berubah!",
+            description: `Status penawaran telah berubah untuk postingan ${res.post.title}. Status: ${objBid.status}`,
+            isRead: false,
+            icon: notifIcon.bid,
+          })
           refRBSheet.current?.close()
       } else {
         alert("Gagal Merubah Bid Status!")
       }
 
+      setIsSubmitted(false)
     }
     
 
@@ -85,7 +96,8 @@ const BidAlertComp = ({ refRBSheet, objBid }) => {
           <TouchableOpacity
             onPress={() => onSubmit()}
             activeOpacity={0.8}
-            className="w-[48%] bg-[#3f45f9] py-3.5 rounded-full"
+            disabled={isSubmitted}
+            className={`${isSubmitted ? "bg-[#d1d1d1]" : "bg-[#3f45f9]"} w-[48%] py-3.5 rounded-full`}
           >
             <Text className="text-white text-lg font-semibold text-center">
               Ya, saya yakin

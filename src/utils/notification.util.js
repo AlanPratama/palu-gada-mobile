@@ -2,6 +2,16 @@ import * as Notifications from 'expo-notifications';
 import { isDevice } from 'expo-device';
 import { Platform } from 'react-native';
 
+export const notifIcon = {
+  bid: "cash-outline",
+  post: "albums-outline",
+  report: "alert-circle-outline",
+  wallet: "wallet-outline",
+  review: "star-outline",
+  user: "person-outline",
+  password: "key-outline",
+}
+
 export async function pushLocalNotification(title, body, data = null) {
   await Notifications.scheduleNotificationAsync({
     content: {

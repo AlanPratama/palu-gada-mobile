@@ -11,6 +11,8 @@ import {
 import RBSheet from "react-native-raw-bottom-sheet";
 import BidApi from "../../apis/BidApi";
 import UserApi from "../../apis/UserApi";
+import NotificationApi from "../../apis/NotificationApi";
+import { notifIcon } from "../../utils/notification.util";
 
 export default function BottomSheetUserReport({ refRBSheet, userId }) {
   return (
@@ -71,6 +73,13 @@ const UserReportComp = ({ refRBSheet, userId }) => {
     
 
     if (res) {
+      await NotificationApi.createNotification({
+        userId: userId,
+        title: "Akunmu dilaporkan!",
+        description: `Seseorang telah melaporkan kamu! Pesan: ${data.message}`,
+        isRead: false,
+        icon: notifIcon.report,
+      })
       reset()
       refRBSheet.current.close();
       setIsSubmitted(false)

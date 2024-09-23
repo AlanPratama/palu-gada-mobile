@@ -12,7 +12,7 @@ import { calculateTimeAgo } from "../../utils/time.util";
 
 export default function NotificationScreen() {
   const navigate = useNavigation();
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [endPage, setEndPage] = useState(false)
   const [refreshing, setRefreshing] = useState(false);
 
@@ -78,8 +78,8 @@ export default function NotificationScreen() {
           activeOpacity={0.5}
           className="flex-row justify-start items-center"
         >
-          <Text className="text-xl text-[#343434] font-semibold ml-1">
-            Mark All Read
+          <Text className="text-base text-[#343434] font-semibold ml-1">
+            Tandai Dibaca
           </Text>
         </TouchableOpacity>
       </View>
@@ -95,17 +95,17 @@ export default function NotificationScreen() {
               className={`${item.isRead ? 'bg-transparent' : 'bg-slate-50'} px-6 py-4 flex-row justify-start items-start gap-x-4 border-y border-slate-200`}
             >
               <View className="border border-gray-200 rounded-full p-2">
-                <Ionicons name="notifications-outline" size={32} color="#343434" />
+                <Ionicons name={item.icon} size={32} color="#343434" />
               </View>
 
-              <View>
+              <View className="w-[77%]">
                 <Text>
                   {calculateTimeAgo(item.createdAt)}
                 </Text>
-                <Text className="text-[#343434] font-semibold text-lg">
+                <Text className="text-[#343434] font-semibold text-base">
                   {item.title}
                 </Text>
-                <Text classNam="text-[#343434]">
+                <Text classNam="text-[#707070]">
                   {item.description}
                 </Text>
               </View>

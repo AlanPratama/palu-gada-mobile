@@ -341,7 +341,7 @@ export default function PostDetailScreen({ route }) {
         </View>
       </View>
 
-      <BottomSheetReportPost refRBSheet={refSheetReportPost} postId={post.id} />
+      <BottomSheetReportPost refRBSheet={refSheetReportPost} post={post} />
       <BottomSheetUserDetail
         refRBSheet={refSheetUserDetail}
         user={userDetail}

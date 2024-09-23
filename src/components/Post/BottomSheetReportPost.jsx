@@ -9,8 +9,10 @@ import {
 } from "react-native";
 import RBSheet from "react-native-raw-bottom-sheet";
 import PostApi from "../../apis/PostApi";
+import NotificationApi from "../../apis/NotificationApi";
+import { notifIcon } from "../../utils/notification.util";
 
-export default function BottomSheetReportPost({ refRBSheet, postId }) {
+export default function BottomSheetReportPost({ refRBSheet, post }) {
   return (
     <View>
       <RBSheet
@@ -38,13 +40,13 @@ export default function BottomSheetReportPost({ refRBSheet, postId }) {
         height={500}
         openDuration={250}
       >
-        <ReportPostComp refRBSheet={refRBSheet} postId={postId} />
+        <ReportPostComp refRBSheet={refRBSheet} post={post} />
       </RBSheet>
     </View>
   );
 }
 
-const ReportPostComp = ({ refRBSheet, postId }) => {
+const ReportPostComp = ({ refRBSheet, post }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const {
     control,
@@ -56,14 +58,21 @@ const ReportPostComp = ({ refRBSheet, postId }) => {
   const onSubmit = async (data) => {
     setIsSubmitted(true)
     console.log("MEASA:", data);
-    console.log("JALSAJAAA:", postId);
+    console.log("JALSAJAAA:", post.id);
     const request = {
-      postId: postId,
+      postId: post.id,
       message: data.message,
     }
     const res = await PostApi.reportPost(request);
     if(res) {
       reset()
+      await NotificationApi.createNotification({
+        userId: post.user.id,
+        title: "Postinganmu dilaporkan!",
+        description: `Seseorang telah melaporkan postingan kamu (${post.title}). Pesan: ${data.message}`,
+        isRead: false,
+        icon: notifIcon.report,
+      })
       alert("Berhasil Report Postingan!")
       refRBSheet.current.close();
       setIsSubmitted(false)
