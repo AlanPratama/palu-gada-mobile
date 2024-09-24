@@ -6,7 +6,8 @@ import { logout, setError, setIsLoading } from "../redux/slice/authSlice";
 import store from "../redux/store";
 
 export const axiosInstance = axios.create({
-  baseURL: process?.env?.EXPO_PUBLIC_API_URL || "http://206.189.80.9:8081/api/v1",
+  // baseURL: process?.env?.EXPO_PUBLIC_API_URL || "http://206.189.80.9:8081/api/v1",
+  baseURL: "http://206.189.80.9:8081/api/v1",
   timeout: 10000,
 });
 
