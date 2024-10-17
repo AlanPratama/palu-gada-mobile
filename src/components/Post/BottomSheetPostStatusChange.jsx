@@ -1,19 +1,18 @@
-import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
 import {
   ScrollView,
-  StyleSheet,
   Text,
-  TextInput,
   ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
+import { SelectList } from "react-native-dropdown-select-list";
 import RBSheet from "react-native-raw-bottom-sheet";
-import WalletApi from "../../apis/WalletApi";
+import AuthApi from "../../apis/AuthApi";
+import PostApi from "../../apis/PostApi";
+import { useNavigation } from "@react-navigation/native";
 
-export default function BottomSheetTopUpBCA({ refRBSheet }) {
+export default function BottomSheetPostStatusChange({ refRBSheet, post }) {
   return (
     <View>
       <RBSheet
@@ -32,52 +31,47 @@ export default function BottomSheetTopUpBCA({ refRBSheet }) {
             marginVertical: 10,
           },
           container: {
-            height: "32%",
+            height: "30%",
           },
         }}
         customModalProps={{
           animationType: "slide",
         }}
-        height={500}
         openDuration={250}
       >
-        <TopUpBCAComp refRBSheet={refRBSheet} />
+        <PostStatusChangeComp refRBSheet={refRBSheet} post={post} />
       </RBSheet>
     </View>
   );
 }
 
-const TopUpBCAComp = ({ refRBSheet }) => {
-  const navigate = useNavigation();
+const listStatus = [
+  {
+    key: "AVAILABLE",
+    value: "Tersedia",
+  },
+  {
+    key: "NOT_AVAILABLE",
+    value: "Tidak Tersedia",
+  },
+];
+
+const PostStatusChangeComp = ({ refRBSheet, post }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [statusType, setStatusType] = useState("");
+  const navigate = useNavigation();
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm();
-
-  const onSubmit = async (data) => {
+  const onSubmit = async () => {
     setIsSubmitted(true);
-    console.log("data: ", data);
+    const res = await PostApi.updatePostStatus(post.id, statusType);
+    console.log("LALALLAA: ", res.data);
 
-    const request = {
-      bank: "bca",
-      amount: data.amount,
-      paymentType: "bank_transfer",
-    };
-    const res = await WalletApi.createPayment(request);
-    console.log("res: ", res);
-
-    if (res.status === "Created") {
-      navigate.replace("TopUpDetail", { payment: res.data });
-    } else {
-      ToastAndroid.show("Terjadi Error coyy", 1500);
-      setIsSubmitted(false);
+    if (res) {
+      ToastAndroid.show("Berhasil ubah status", 1500);
+      navigate.navigate("PostDetail", { post: res.data.data });
+      refRBSheet.current.close();
     }
-
-    // refRBSheet.current.close();
+    setIsSubmitted(false);
   };
 
   return (
@@ -89,39 +83,25 @@ const TopUpBCAComp = ({ refRBSheet }) => {
         backgroundColor: "white",
       }}
     >
-      <View style={{ marginTop: 26 }}>
+      <View style={{ paddingVertical: 20 }}>
         <View style={{ paddingHorizontal: 18, marginBottom: 25 }}>
           <Text style={{ fontWeight: "600", fontSize: 16, marginBottom: 8 }}>
-            Nominal
+            Status
           </Text>
-          <Controller
-            control={control}
-            name="amount"
-            rules={{
-              required: "Nominal wajib diisi!",
-              validate: (value) =>
-                value >= 10_000 || "Minimal nominal Rp 10.000",
+          <SelectList
+            maxHeight={500}
+            setSelected={(key) => setStatusType(key)}
+            data={listStatus}
+            save="key"
+            defaultOption={{
+              key: post.status,
+              value:
+                post.status === "AVAILABLE" ? "Tersedia" : "Tidak Tersedia",
             }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                keyboardType="numeric"
-                placeholder="100.000"
-                style={{
-                  padding: 10,
-                  paddingHorizontal: 16,
-                  borderRadius: 10,
-                  borderWidth: 1,
-                  borderColor: "gray",
-                }}
-              />
-            )}
+            label="Transfer Type"
+            placeholder="Pilih Status..."
+            searchPlaceholder="Cari..."
           />
-          {errors.amount && (
-            <Text style={{ color: "red" }}>{errors.amount.message}</Text>
-          )}
         </View>
 
         <View
@@ -131,12 +111,11 @@ const TopUpBCAComp = ({ refRBSheet }) => {
             justifyContent: "space-evenly",
             gap: 8,
             paddingHorizontal: 18,
-            paddingBottom: 25,
           }}
         >
           <TouchableOpacity
+            onPress={() => onSubmit()}
             disabled={isSubmitted}
-            onPress={handleSubmit(onSubmit)}
             style={{
               backgroundColor: isSubmitted ? "#d1d1d1" : "#3b82f6",
               flex: 1,

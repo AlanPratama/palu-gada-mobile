@@ -9,7 +9,7 @@ import AuthApi from "../apis/AuthApi";
 import { useSelector } from "react-redux";
 
 export default function LoginScreen() {
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(true);
   const navigate = useNavigation();
   const { isLoading } = useSelector((state) => state.auth);
 
@@ -39,7 +39,6 @@ export default function LoginScreen() {
               control={control}
               name='credential'
               rules={{ required: "Username / Email wajib diisi!" }}
-              defaultValue={"alan"}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
                   onBlur={onBlur}
@@ -61,7 +60,6 @@ export default function LoginScreen() {
                 control={control}
                 name='password'
                 rules={{ required: "Password wajib diisi!" }}
-                defaultValue={"password"}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     onBlur={onBlur}
@@ -80,7 +78,7 @@ export default function LoginScreen() {
           </View>
           {errors.password && <Text style={{ color: "red" }}>{errors.password.message}</Text>}
 
-          <TouchableOpacity onPress={handleSubmit(onSubmit)} className='bg-primary py-2 rounded-full w-full mt-6' disabled={isLoading}>
+          <TouchableOpacity onPress={handleSubmit(onSubmit)} className={`${isLoading ? "bg-[#d1d1d1]" : "bg-primary"} py-2 rounded-full w-full mt-6`} disabled={isLoading}>
             <Text className='text-center text-white text-lg font-semibold'>Login</Text>
           </TouchableOpacity>
           <View className='flex-row justify-center items-center mt-4'>

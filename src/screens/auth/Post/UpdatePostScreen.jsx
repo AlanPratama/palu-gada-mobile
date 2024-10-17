@@ -8,6 +8,7 @@ import {
   ScrollView,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -22,13 +23,14 @@ export default function UpdatePostScreen({ route }) {
   const { post } = route.params;
   const navigate = useNavigation();
   const [isUrgent, setIsUrgent] = useState(post.isUrgent);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const { items: catItems } = useSelector((state) => state.category);
 
   const { district } = useSelector((state) => state.district);
 
   console.log("ojan", post);
 
-  const [isChanged, setIsChanged] = useState(false)
+  const [isChanged, setIsChanged] = useState(false);
 
   const {
     control,
@@ -47,12 +49,12 @@ export default function UpdatePostScreen({ route }) {
     },
   });
 
-  const selectedCategories = post.postCategories?.map((item) => item.id)
+  const selectedCategories = post.postCategories?.map((item) => item.id);
   console.log("POST CAT: ", selectedCategories);
-  
+
   const [selected, setSelected] = useState(selectedCategories);
   const [selectedDistrict, setSelectedDistrict] = useState(post.district.id);
-  const [count, setCount] = useState(2)
+  const [count, setCount] = useState(2);
 
   const districtData = district.map((item) => ({
     key: item.id,
@@ -64,13 +66,24 @@ export default function UpdatePostScreen({ route }) {
   console.log("DATA: ", data);
 
   useEffect(() => {
-    setCount(count-1)
-    if(count-1 <= 0) setIsChanged(true)
-  }, [selectedDistrict])
+    setCount(count - 1);
+    if (count - 1 <= 0) setIsChanged(true);
+  }, [selectedDistrict]);
 
   const onSubmit = async (data) => {
+    setIsSubmitted(true);
+
+    if (parseInt(data.budgetMin) >= parseInt(data.budgetMax)) {
+      ToastAndroid.show(
+        "Harga minimal harus lebih kecil dari harga maksimal",
+        2500
+      );
+      setIsSubmitted(false);
+      return;
+    }
+
     console.log("LKALSKA: ", selected);
-    
+
     const formData = new FormData();
     if (image) {
       formData.append("file", {
@@ -93,12 +106,13 @@ export default function UpdatePostScreen({ route }) {
     if (res) {
       console.log(res);
 
-      alert("Berhasil Update Postingan");
+      ToastAndroid.show("Berhasil Update Postingan", 1500);
       navigate.navigate("PostDetail", { post: res });
     } else {
-      alert("Gagal Update Postingan");
+      ToastAndroid.show("Gagal Update Postingan", 1500);
     }
 
+    setIsSubmitted(false);
     // reset();
   };
 
@@ -110,7 +124,7 @@ export default function UpdatePostScreen({ route }) {
       await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (permissionResult.granted === false) {
-      alert("Izin untuk mengakses galeri diperlukan!");
+      ToastAndroid.show("Izin untuk mengakses galeri diperlukan!", 1500);
       return;
     }
 
@@ -134,7 +148,7 @@ export default function UpdatePostScreen({ route }) {
         type: `image/${fileType}`, // Mendapatkan tipe file dari ekstensi
         name: `photo.${fileType}`, // Nama file untuk dikirim ke server
       });
-      setIsChanged(true)
+      setIsChanged(true);
     }
   };
   return (
@@ -281,9 +295,6 @@ export default function UpdatePostScreen({ route }) {
                     control={control}
                     rules={{
                       required: "Maksimal budget wajib diisi!",
-                      validate: (value) =>
-                        value >= 1 ||
-                        "Maksimal budget harus lebih besar dari 0",
                     }}
                     render={({ field: { onChange, onBlur, value } }) => (
                       <TextInput
@@ -309,11 +320,11 @@ export default function UpdatePostScreen({ route }) {
                 {errors.budgetMax.message}
               </Text>
             )}
-            {watch("budgetMin") >= watch("budgetMax") && (
+            {/* {watch("budgetMin") >= watch("budgetMax") && (
               <Text className="text-red-500 mt-1">
                 Max budget harus lebih besar dari min budget
               </Text>
-            )}
+            )} */}
           </View>
 
           <View className="mb-6">
@@ -378,7 +389,7 @@ export default function UpdatePostScreen({ route }) {
                 dropdownItemStyles={{ backgroundColor: "transparent" }}
                 dropdownTextStyles={{ color: "#4a5568" }}
                 setSelected={(key) => {
-                  setSelectedDistrict(key)
+                  setSelectedDistrict(key);
                 }}
                 defaultOption={{
                   key: post.district.id,
@@ -401,27 +412,42 @@ export default function UpdatePostScreen({ route }) {
               data={data}
               labelField="label"
               valueField="value"
-              placeholder="Select Categories"
+              placeholder="Pilih Kategori"
               search
               value={selected}
               onChange={(item) => {
-                setIsChanged(true)
+                setIsChanged(true);
                 setSelected(item);
               }}
               selectedStyle={{ backgroundColor: "#e0e0e0" }}
             />
           </View>
 
-          <TouchableOpacity
-            onPress={handleSubmit(onSubmit)}
-            activeOpacity={0.8}
-            disabled={isDirty ? !isDirty : !isChanged}
-            className={`${isDirty || isChanged ?  "bg-[#3f45f9]" : "bg-[#d1d1d1]"} mt-4 py-4 rounded-lg`}
-          >
-            <Text className="text-white text-lg font-semibold text-center">
-              Simpan
-            </Text>
-          </TouchableOpacity>
+          {isSubmitted ? (
+            <TouchableOpacity
+              onPress={handleSubmit(onSubmit)}
+              activeOpacity={0.8}
+              disabled={true}
+              className={`bg-[#d1d1d1] mt-4 py-4 rounded-lg`}
+            >
+              <Text className="text-white text-lg font-semibold text-center">
+                Simpan
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              onPress={handleSubmit(onSubmit)}
+              activeOpacity={0.8}
+              disabled={isDirty ? !isDirty : !isChanged}
+              className={`${
+                isDirty || isChanged ? "bg-[#3f45f9]" : "bg-[#d1d1d1]"
+              } mt-4 py-4 rounded-lg`}
+            >
+              <Text className="text-white text-lg font-semibold text-center">
+                Simpan
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       </ScrollView>
     </KeyboardAwareScrollView>

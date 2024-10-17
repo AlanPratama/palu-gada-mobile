@@ -77,6 +77,7 @@ export default function PostByCategory({ route }) {
         </View>
 
         <FlatList
+          className="h-[650px] pb-[200px]"
           data={postItems}
           keyExtractor={(post, i) => post.id + "-post-" + i}
           renderItem={({ item, index }) => {

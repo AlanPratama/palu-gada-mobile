@@ -1,10 +1,12 @@
 import { Ionicons } from "@expo/vector-icons/build/Icons";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import RBSheet from "react-native-raw-bottom-sheet";
 import Divider from "../Divider";
 import BidApi from "../../apis/BidApi";
 import { StarRatingDisplay } from "react-native-star-rating-widget";
+import { useSelector } from "react-redux";
+import BottomSheetUserReport from "./BottomSheetUserReport";
 
 export default function BottomSheetUserDetail({
   refRBSheet,
@@ -37,15 +39,17 @@ export default function BottomSheetUserDetail({
   );
 }
 
-const UserDetailComp = ({ refRBSheet, user }) => {
+const UserDetailComp = ({ refRBSheet, user: userDetail }) => {
   // console.log(user);
-
+  const { user } = useSelector((state) => state.auth);
   const [userReview, setUserReview] = useState([]);
   const [userCountRating, setUserCountRating] = useState(0);
   const [userRating, setUserRating] = useState(0);
 
+  const refSheetUserReport = useRef()
+
   const fetch = async () => {
-    const data = await BidApi.getReviewByUserId(user.id);
+    const data = await BidApi.getReviewByUserId(userDetail.id);
     const sumAllRating = data.data.items.reduce(
       (total, currentItem) => total + currentItem.rating,
       0
@@ -80,19 +84,17 @@ const UserDetailComp = ({ refRBSheet, user }) => {
       >
         <View className="bg-black">
           <Image
-            source={{
-              uri: "https://cdn.vectorstock.com/i/500p/42/94/blue-abstract-background-modern-gradient-vector-50754294.jpg",
-            }}
+            source={require("../../../assets/wallpaper.png")}
             className="w-full h-[102px]"
           />
           <View className="bg-white w-full justify-start items-center">
             <View className="-mt-16 p-4 bg-white rounded-[200px]">
               <Image
-                source={{
-                  uri: user.photoUrl
-                    ? user.photoUrl
-                    : "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
-                }}
+                source={
+                  !userDetail.photoUrl
+                    ? require("../../../assets/userImgPlaceholder.png")
+                    : { uri: userDetail.photoUrl }
+                }
                 className="w-32 h-32 rounded-full"
               />
             </View>
@@ -104,20 +106,25 @@ const UserDetailComp = ({ refRBSheet, user }) => {
           <View className="my-0 w-full bg-white rounded-full">
             <View className="px-6 py-2 mb-2">
               <Text className="text-xl font-bold text-[#343434] capitalize">
-                {user.name}
+                {userDetail.name}
               </Text>
               <Text className="text-base font-semibold text-[#707070] capitalize">
-                {user.username}
+                {userDetail.username}
               </Text>
 
               <Text className="my-2 text-sm font-normal text-[#343434]">
-                {user.about ? user.about : "-"}
+                {userDetail.about ? userDetail.about : "-"}
               </Text>
 
               <View className="flex-row justify-start items-center gap-x-2">
                 <View className="flex-row justify-start items-center">
                   {/* <Ionicons name="star" size={16} color={"orange"} /> */}
-                  <StarRatingDisplay rating={userRating} maxStars={5} starSize={20} starStyle={{ marginHorizontal: -2 }} />
+                  <StarRatingDisplay
+                    rating={userRating}
+                    maxStars={5}
+                    starSize={20}
+                    starStyle={{ marginHorizontal: -2 }}
+                  />
                 </View>
                 <Text className="text-sm font-semibold text-[#808080] capitalize">
                   ({userCountRating} Reviews)
@@ -130,41 +137,65 @@ const UserDetailComp = ({ refRBSheet, user }) => {
               <View className="my-2 flex-row justify-start items-center gap-x-2">
                 <Ionicons name="mail-outline" size={18} />
                 <Text className="text-base font-normal text-[#343434] w-[95%]">
-                  {user.email}
+                  {userDetail.email}
                 </Text>
               </View>
 
               <View className="my-2 flex-row justify-start items-center gap-x-2">
                 <Ionicons name="call-outline" size={18} />
                 <Text className="text-base font-normal text-[#343434] w-[95%]">
-                  {user.phone}
+                  {userDetail.phone}
                 </Text>
               </View>
 
               <View className="my-2 flex-row justify-start items-center gap-x-2">
                 <Ionicons name="map-outline" size={18} />
                 <Text className="text-base font-normal text-[#343434] w-[95%]">
-                  {user.district.districtName} ({user.district.province})
+                  {userDetail.district ? userDetail.district.districtName : "-"}{" "}
+                  ({userDetail.district ? userDetail.district.province : "-"})
                 </Text>
               </View>
 
               <View className="my-2 flex-row justify-start items-start gap-x-2">
                 <Ionicons name="location-outline" size={18} />
                 <Text className="text-base font-normal text-[#343434] w-[95%]">
-                  {user.address}
+                  {userDetail.address}
                 </Text>
               </View>
             </View>
           </View>
         </View>
       </ScrollView>
-      <View className="absolute bottom-0 bg-white w-full py-3.5 px-3">
-        <TouchableOpacity
-          onPress={() => refRBSheet.current?.close()}
-          className="bg-primary py-3.5 rounded-full w-full"
-        >
-          <Text className="text-white text-center font-semibold">Tutup</Text>
-        </TouchableOpacity>
+      <View className="absolute bottom-0 flex-row justify-between items-center bg-white w-full py-3.5 px-3">
+        {userDetail.id === user.id ? (
+          <TouchableOpacity
+            onPress={() => refRBSheet.current?.close()}
+            className="bg-primary py-3.5 rounded-full w-full"
+          >
+            <Text className="text-white text-center font-semibold">Tutup</Text>
+          </TouchableOpacity>
+        ) : (
+          <>
+          <TouchableOpacity
+              onPress={() => refSheetUserReport.current?.open()}
+              className="bg-red-500 py-3.5 rounded-full w-[48.5%]"
+            >
+              <Text className="text-white text-center font-semibold">
+                Laporkan
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => refRBSheet.current?.close()}
+              className="bg-primary py-3.5 rounded-full w-[48.5%]"
+            >
+              <Text className="text-white text-center font-semibold">
+                Tutup
+              </Text>
+            </TouchableOpacity>
+
+          </>
+        )}
+        <BottomSheetUserReport refRBSheet={refSheetUserReport} userId={userDetail.id} />
       </View>
     </>
   );

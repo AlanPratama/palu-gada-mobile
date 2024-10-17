@@ -4,13 +4,16 @@ import {
   ScrollView,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
 import RBSheet from "react-native-raw-bottom-sheet";
 import PostApi from "../../apis/PostApi";
+import NotificationApi from "../../apis/NotificationApi";
+import { notifIcon } from "../../utils/notification.util";
 
-export default function BottomSheetReportPost({ refRBSheet, postId }) {
+export default function BottomSheetReportPost({ refRBSheet, post }) {
   return (
     <View>
       <RBSheet
@@ -29,7 +32,7 @@ export default function BottomSheetReportPost({ refRBSheet, postId }) {
             marginVertical: 10,
           },
           container: {
-            height: "45%",
+            height: "40%",
           },
         }}
         customModalProps={{
@@ -38,32 +41,45 @@ export default function BottomSheetReportPost({ refRBSheet, postId }) {
         height={500}
         openDuration={250}
       >
-        <ReportPostComp refRBSheet={refRBSheet} postId={postId} />
+        <ReportPostComp refRBSheet={refRBSheet} post={post} />
       </RBSheet>
     </View>
   );
 }
 
-const ReportPostComp = ({ refRBSheet, postId }) => {
+const ReportPostComp = ({ refRBSheet, post }) => {
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const {
     control,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm();
 
   const onSubmit = async (data) => {
+    setIsSubmitted(true);
     console.log("MEASA:", data);
-    console.log("JALSAJAAA:", postId);
+    console.log("JALSAJAAA:", post.id);
     const request = {
-      postId: postId,
+      postId: post.id,
       message: data.message,
-    }
+    };
     const res = await PostApi.reportPost(request);
     if(res) {
-      alert("Berhasil Report Postingan!")
+      reset()
+      await NotificationApi.createNotification({
+        userId: post.user.id,
+        title: "Postinganmu dilaporkan!",
+        description: `Seseorang telah melaporkan postingan kamu (${post.title}). Pesan: ${data.message}`,
+        isRead: false,
+        icon: notifIcon.report,
+      })
+      ToastAndroid.show("Berhasil Report Postingan!", 1500);
       refRBSheet.current.close();
+      setIsSubmitted(false);
     } else {
-      alert("Gagal Report Postingan!")
+      ToastAndroid.show("Gagal Report Postingan!", 1500);
+      setIsSubmitted(false);
     }
   };
 
@@ -84,7 +100,10 @@ const ReportPostComp = ({ refRBSheet, postId }) => {
           <Controller
             control={control}
             name="message"
-            rules={{ required: "Pesan wajib diisi!" }}
+            rules={{
+              required: "Pesan wajib diisi!",
+              validate: (value) => value.length >= 10 || "Minimal 10 karakter!",
+            }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
                 onChangeText={onChange}
@@ -103,7 +122,9 @@ const ReportPostComp = ({ refRBSheet, postId }) => {
               />
             )}
           />
-          {errors.message && <Text style={{ color: "red" }}>{errors.message.message}</Text>}
+          {errors.message && (
+            <Text style={{ color: "red" }}>{errors.message.message}</Text>
+          )}
         </View>
 
         <View
@@ -118,7 +139,10 @@ const ReportPostComp = ({ refRBSheet, postId }) => {
         >
           <TouchableOpacity
             onPress={handleSubmit(onSubmit)}
-            className="bg-red-500 w-full py-3.5 rounded-full"
+            disabled={isSubmitted}
+            className={`${
+              isSubmitted ? "bg-[#d1d1d1]" : "bg-red-500"
+            } w-full py-3.5 rounded-full`}
           >
             <Text
               style={{

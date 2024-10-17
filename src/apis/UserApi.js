@@ -45,7 +45,7 @@ export default class UserApi {
 
   static async changePassword(request) {
     try {
-      const { data } = await axiosInstance.put("/users/change-password", request);
+      const { data } = await axiosInstance.put("/users/reset-password", request);
       ToastAndroid.show("Password berhasil di ubah", 5000);
       return data;
     } catch (error) {
@@ -60,6 +60,28 @@ export default class UserApi {
         console.log("UserApi changePassword Error in setting up request: ", error.message);
       }
       ToastAndroid.show(error?.response?.data?.message ?? error?.message, 5000);
+    }
+  }
+
+  static async userReport(request) {
+    console.log("REQUEST: ", request);
+    try {
+      const { data } = await axiosInstance.post(`/user-reports`, request);
+
+      console.log("data: ", data);
+
+      return true;
+    } catch (error) {
+      if (error.response) {
+        // Error dari API
+        console.log("API Response Error: ", error.response);
+      } else if (error.request) {
+        // Tidak ada response dari API
+        console.log("No response from API: ", error.request);
+      } else {
+        // Error yang terjadi ketika membuat request
+        console.log("Error in setting up request: ", error.message);
+      }
     }
   }
 }

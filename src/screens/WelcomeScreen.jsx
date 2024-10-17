@@ -30,7 +30,7 @@ export default function WelcomeScreen({ route }) {
         KERJAIN AJA
       </Animated.Text>
       <Animated.Text entering={ZoomIn.delay(400)} className='italic text-2xl text-center font-semibold text-primary'>
-        Apa Lu Mau, Gue Ada
+        Semua Bisa DiKerjain Aja Di Sini
       </Animated.Text>
     </View>
 

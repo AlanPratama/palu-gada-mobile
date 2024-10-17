@@ -9,6 +9,7 @@ import {
   ScrollView,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -27,13 +28,13 @@ export default function EditProfileScreen() {
   // console.log("USER: ", user);
 
   const categoriesData = catItems.map((item) => ({
-    label: item.name,
-    value: item.id,
+    label: item?.name,
+    value: item?.id,
   }));
 
   const districtData = district.map((item) => ({
-    key: item.id,
-    value: item.districtName,
+    key: item?.id,
+    value: item?.districtName,
   }));
 
   console.log("USER: ", user);
@@ -41,18 +42,23 @@ export default function EditProfileScreen() {
   const defaultSelectedCategories = user.userCategories.map((item) => item.id);
   console.log("categoriesData: ", defaultSelectedCategories);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [showDate, setShowDate] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
   const [count, setCount] = useState(2);
 
   const [gender, setGender] = useState(
-    user.userGender.charAt(0).toUpperCase() +
-      user.userGender.slice(1).toLowerCase()
+    user.userGender &&
+      user.userGender.charAt(0).toUpperCase() +
+        user.userGender.slice(1).toLowerCase()
   );
   const [birthDate, setBirthDate] = useState(new Date(user.birthDate));
-  const [selectedDistrict, setSelectedDistrict] = useState(user.district.id);
+  const [selectedDistrict, setSelectedDistrict] = useState(
+    user.district && user.district.id
+  );
   const [selectedCategories, setSelectedCategories] = useState(
-    user.userCategories.map((item) => item.category.id)
+    user?.userCategories?.map((item) => item.category.id)
   );
   console.log(categoriesData);
 
@@ -73,11 +79,12 @@ export default function EditProfileScreen() {
       phone: user.phone,
       address: user.address,
       nik: user.nik,
-      bankAccount: user.bankAccount,
+      bankAccount: user.bankAccount !== "null" ? user.bankAccount : null,
     },
   });
 
   const onSubmit = async (data) => {
+    setIsSubmitting(true);
     console.log("SELECTED: ", selectedCategories);
 
     const formData = new FormData();
@@ -86,7 +93,9 @@ export default function EditProfileScreen() {
     formData.append("about", data.about);
     formData.append("phone", data.phone);
     formData.append("nik", data.nik);
-    formData.append("bankAccount", data.bankAccount);
+
+    if (data.bankAccount) formData.append("bankAccount", data.bankAccount);
+
     formData.append("address", data.address);
     formData.append("birthDate", birthDate.toISOString().split("T")[0]);
     formData.append("userGender", gender);
@@ -112,13 +121,15 @@ export default function EditProfileScreen() {
     // console.log("RES: ", res);
 
     if (res?.status === "OK") {
-      alert("Update profile success!");
+      ToastAndroid.show("Update profile berhasil!", 1500);
       await UserApi.getAuthenticated();
       navigate.goBack();
       // reset();
     } else {
-      alert("ada yang aneh coy!");
+      ToastAndroid.show("Update profile gagal!", 1500);
     }
+
+    setIsSubmitting(false);
   };
 
   const [image, setImage] = useState(null);
@@ -129,7 +140,7 @@ export default function EditProfileScreen() {
       await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (permissionResult.granted === false) {
-      alert("Izin untuk mengakses galeri diperlukan!");
+      ToastAndroid.show("Izin untuk mengakses galeri diperlukan!", 1500);
       return;
     }
 
@@ -166,13 +177,13 @@ export default function EditProfileScreen() {
             className="rounded-full border-2 border-gray-100 my-6"
           >
             <Image
-              source={{
-                uri: image
-                  ? image.uri
-                  : user.photoUrl
-                  ? user.photoUrl
-                  : "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
-              }}
+              source={
+                image
+                  ? { uri: image.uri }
+                  : !user.photoUrl
+                  ? require("../../../assets/userImgPlaceholder.png")
+                  : { uri: user.photoUrl }
+              }
               alt="Profile Pic"
               className="w-32 h-32 rounded-full"
             />
@@ -341,11 +352,11 @@ export default function EditProfileScreen() {
             <Controller
               control={control}
               name="bankAccount"
-              rules={{
-                required: "Bank Account wajib diisi!",
-                validate: (value) =>
-                  value.length >= 8 || "Bank Account minimal 8 digit!",
-              }}
+              // rules={{
+              //   required: "Bank Account wajib diisi!",
+              //   validate: (value) =>
+              //     value.length >= 8 || "Bank Account minimal 8 digit!",
+              // }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
                   onBlur={onBlur}
@@ -388,7 +399,7 @@ export default function EditProfileScreen() {
               display="default"
               maximumDate={new Date()}
               onChange={(e) => {
-                setIsChanged(true)
+                setIsChanged(true);
                 setShowDate(false);
                 setBirthDate(new Date(e.nativeEvent.timestamp));
                 // console.log("ASASA: ", e.nativeEvent.timestamp);
@@ -522,18 +533,31 @@ export default function EditProfileScreen() {
               Batal
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={handleSubmit(onSubmit)}
-            activeOpacity={0.8}
-            disabled={isDirty ? !isDirty : !isChanged}
-            className={`${
-              isDirty || isChanged ? "bg-[#3f45f9]" : "bg-[#d1d1d1]"
-            } w-[48%] py-3.5 rounded-full`}
-          >
-            <Text className="text-white text-lg font-semibold text-center">
-              Simpan
-            </Text>
-          </TouchableOpacity>
+          {isSubmitting ? (
+            <TouchableOpacity
+              onPress={handleSubmit(onSubmit)}
+              activeOpacity={0.8}
+              disabled={true}
+              className={`bg-[#d1d1d1] w-[48%] py-3.5 rounded-full`}
+            >
+              <Text className="text-white text-lg font-semibold text-center">
+                Simpan
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              onPress={handleSubmit(onSubmit)}
+              activeOpacity={0.8}
+              disabled={isDirty ? !isDirty : !isChanged}
+              className={`${
+                isDirty || isChanged ? "bg-[#3f45f9]" : "bg-[#d1d1d1]"
+              } w-[48%] py-3.5 rounded-full`}
+            >
+              <Text className="text-white text-lg font-semibold text-center">
+                Simpan
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </ScrollView>

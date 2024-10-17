@@ -8,8 +8,9 @@ import {
   ScrollView,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -17,11 +18,15 @@ import { useSelector } from "react-redux";
 import PostApi from "../../../apis/PostApi";
 import { MultiSelect } from "react-native-element-dropdown";
 import { SelectList } from "react-native-dropdown-select-list";
+import NotificationApi from "../../../apis/NotificationApi";
+import { notifIcon } from "../../../utils/notification.util";
 
 export default function AddPostScreen() {
   const navigate = useNavigation();
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [isUrgent, setIsUrgent] = useState(false);
   const { items: catItems } = useSelector((state) => state.category);
+  const { user } = useSelector((state) => state.auth)
 
   const { district } = useSelector((state) => state.district);
 
@@ -42,6 +47,17 @@ export default function AddPostScreen() {
   const data = catItems.map((item) => ({ label: item.name, value: item.id }));
 
   const onSubmit = async (data) => {
+    setIsSubmitted(true);
+
+    if (parseInt(data.budgetMin) >= parseInt(data.budgetMax)) {
+      ToastAndroid.show(
+        "Harga minimal harus lebih kecil dari harga maksimal",
+        2500
+      );
+      setIsSubmitted(false);
+      return;
+    }
+
     const formData = new FormData();
     if (image) {
       formData.append("file", {
@@ -57,16 +73,23 @@ export default function AddPostScreen() {
     });
 
     console.log("ALSKALKSA: ", selected);
-    
 
     formData.append("districtId", selectedDistrict);
     formData.append("categoriesId", selected);
 
     const res = await PostApi.createPost(formData);
     if (res) {
-      alert("Post Success!");
+      await NotificationApi.createNotification({
+        userId: user.id,
+        title: "Postingan Berhasil Ditambahkan!",
+        description: `Postingan ${data.title} telah disebar, tunggu yang lain melihat postingan kamu!`,
+        isRead: false,
+        icon: notifIcon.post,
+      })
+      ToastAndroid.show("Post Success!", 1500);
       navigate.goBack();
     }
+    setIsSubmitted(false);
   };
 
   const [image, setImage] = useState(null);
@@ -76,7 +99,7 @@ export default function AddPostScreen() {
       await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (permissionResult.granted === false) {
-      alert("Izin untuk mengakses galeri diperlukan!");
+      ToastAndroid.show("Izin untuk mengakses galeri diperlukan!", 1500);
       return;
     }
 
@@ -243,9 +266,9 @@ export default function AddPostScreen() {
                     control={control}
                     rules={{
                       required: "Maksimal budget wajib diisi!",
-                      validate: (value) =>
-                        value >= 1 ||
-                        "Maksimal budget harus lebih besar dari 0",
+                      // validate: (value) =>
+                      //   value >= watch("budgetMin") ||
+                      //   "Maksimal budget harus lebih besar dari 0",
                     }}
                     render={({ field: { onChange, onBlur, value } }) => (
                       <TextInput
@@ -271,11 +294,11 @@ export default function AddPostScreen() {
                 {errors.budgetMax.message}
               </Text>
             )}
-            {watch("budgetMin") >= watch("budgetMax") && (
+            {/* {watch("budgetMin") >= watch("budgetMax") && (
               <Text className="text-red-500 mt-1">
                 Max budget harus lebih besar dari min budget
               </Text>
-            )}
+            )} */}
           </View>
 
           <View className="mb-6">
@@ -357,7 +380,7 @@ export default function AddPostScreen() {
               data={data}
               labelField="label"
               valueField="value"
-              placeholder="Select Categories"
+              placeholder="Pilih Kategori"
               search
               value={selected}
               onChange={(item) => {
@@ -384,7 +407,10 @@ export default function AddPostScreen() {
           <TouchableOpacity
             onPress={handleSubmit(onSubmit)}
             activeOpacity={0.8}
-            className="bg-[#3f45f9] mt-4 py-4 rounded-lg"
+            disabled={isSubmitted}
+            className={`${
+              isSubmitted ? "bg-[#d1d1d1]" : "bg-[#3f45f9]"
+            } mt-4 py-4 rounded-lg`}
           >
             <Text className="text-white text-lg font-semibold text-center">
               Sebarkan Postingan

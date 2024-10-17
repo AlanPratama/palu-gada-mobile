@@ -1,7 +1,15 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import React, { useRef } from "react";
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import React, { useCallback, useRef, useState } from "react";
+import {
+  Image,
+  Linking,
+  RefreshControl,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import AuthApi from "../../apis/AuthApi";
 import { useSelector } from "react-redux";
 import BottomSheetUserDetail from "../../components/User/BottomSheetUserDetail";
@@ -10,6 +18,7 @@ export default function ProfileScreen() {
   const navigate = useNavigation();
 
   const { user } = useSelector((state) => state.auth);
+  const [refreshing, setRefreshing] = useState(false);
   const refSheetUserDetail = useRef();
   console.log(user);
 
@@ -23,23 +32,44 @@ export default function ProfileScreen() {
     }
   };
 
+  const getAuthenticated = async () => {
+    await AuthApi.getAuthenticated()
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      getAuthenticated();
+    }, [])
+  );
+
+  // Function for pull-to-refresh
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await getAuthenticated();
+    setRefreshing(false);
+  };
+
   return (
-    <ScrollView contentContainerStyle={{ paddingBottom: 80, backgroundColor: "white" }} showsVerticalScrollIndicator={false}>
+    <ScrollView
+      contentContainerStyle={{ paddingBottom: 80, backgroundColor: "white" }}
+      showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       <View className="justify-start items-center min-h-screen">
         <Image
-          source={{
-            uri: "https://cdn.vectorstock.com/i/500p/42/94/blue-abstract-background-modern-gradient-vector-50754294.jpg",
-          }}
+          source={require("../../../assets/wallpaper.png")}
           className="w-full h-[102px]"
         />
         <View className="bg-white w-full justify-start items-center">
           <View className="-mt-16 p-4 bg-white rounded-[200px]">
             <Image
-              source={{
-                uri: user.photoUrl
-                  ? user.photoUrl
-                  : "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
-              }}
+              source={
+                !user.photoUrl
+                  ? require("../../../assets/userImgPlaceholder.png")
+                  : { uri: user.photoUrl }
+              }
               className="w-32 h-32 rounded-full"
             />
           </View>
@@ -179,6 +209,7 @@ export default function ProfileScreen() {
               shadowRadius: 1.0,
               elevation: 1,
             }}
+            onPress={() => Linking.openURL("https://wa.wizard.id/b8dd7a")}
             className="border-t border-gray-50 my-2 w-full flex-row justify-between items-center bg-white p-2 rounded-full"
             activeOpacity={0.85}
           >
@@ -228,7 +259,11 @@ export default function ProfileScreen() {
             />
           </TouchableOpacity>
         </View>
-        <BottomSheetUserDetail refRBSheet={refSheetUserDetail} user={user} animation="fade" />
+        <BottomSheetUserDetail
+          refRBSheet={refSheetUserDetail}
+          user={user}
+          animation="fade"
+        />
       </View>
     </ScrollView>
   );

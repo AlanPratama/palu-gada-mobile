@@ -64,7 +64,7 @@ export default function SearchScreen() {
   };
 
   return (
-    <View className='bg-white min-h-screen p-3'>
+    <View className='bg-white min-h-screen p-3 flex-1'>
       <View className='relative'>
         <TextInput
           value={search}
@@ -92,7 +92,7 @@ export default function SearchScreen() {
         </ScrollView>
       </View>
 
-      <View>
+      <View className='flex-grow pb-12'>
         <FlatList
           data={postItems}
           keyExtractor={(post, i) => post.id + "-post-" + i}
@@ -100,11 +100,18 @@ export default function SearchScreen() {
             // console.log(index)
             return <PostCard post={item} />
           }}
-          onEndReached={handleLoadMore}
+          // onEndReached={handleLoadMore}
           onEndReachedThreshold={0.5}
-          ListFooterComponent={isLoading && page != 0 ? <Text className='text-center'>Loading...</Text> : null}
+          ListFooterComponent={isLoading && page != 0 ? (
+            <Text className='text-center'>Loading...</Text>
+          ) : !endPage && !isLoading && (
+            <TouchableOpacity onPress={() => setPage((prev) => prev + 1)} className="flex-row justify-center items-center gap-x-1">
+              <Ionicons name="chevron-down-circle-outline" size={20} />
+              <Text className="text-center text-base font-medium">Load More</Text>
+            </TouchableOpacity>
+          )}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 320 }}
+          contentContainerStyle={{ paddingBottom: endPage ? 120 : 200 }}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }

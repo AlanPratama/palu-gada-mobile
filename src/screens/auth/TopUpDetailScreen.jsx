@@ -1,7 +1,14 @@
 import { Ionicons } from "@expo/vector-icons";
 import { setStringAsync } from "expo-clipboard";
 import React, { useEffect, useState } from "react";
-import { Alert, Image, Text, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  Image,
+  Text,
+  ToastAndroid,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import WalletApi from "../../apis/WalletApi";
 import AuthApi from "../../apis/AuthApi";
 import { useNavigation } from "@react-navigation/native";
@@ -9,7 +16,7 @@ import { useNavigation } from "@react-navigation/native";
 export default function TopUpDetailScreen({ route }) {
   const payment = route.params.payment;
   const [remainingTime, setRemainingTime] = useState(payment.expiryTime);
-  const navigate = useNavigation()
+  const navigate = useNavigation();
 
   console.log("route: ", payment);
 
@@ -42,31 +49,28 @@ export default function TopUpDetailScreen({ route }) {
   const fetchPayment = async () => {
     const res = await WalletApi.fetchPayment(payment.id);
 
-    if(res.status === "OK") {
-      if(res.data.status === "SETTLEMENT") {
-        await AuthApi.getAuthenticated()
-        alert("Payment Success!")
-        navigate.goBack()
+    if (res.status === "OK") {
+      if (res.data.status === "SETTLEMENT") {
+        await AuthApi.getAuthenticated();
+        ToastAndroid.show("Payment Success!", 1500);
+        navigate.goBack();
       } else {
-        alert("Belum Dibayar Bujang!")
+        ToastAndroid.show("Belum Dibayar Bujang!", 1500);
       }
-    }  else {
-      alert("Terjadi error coy!")
+    } else {
+      ToastAndroid.show("Terjadi error coy!", 1500);
     }
-  }
-
+  };
 
   return (
     <>
       <Image
-        source={{
-          uri: "https://imgs.search.brave.com/rArZHbLIJROU4DsZykn8ChxL751pDVfxV2Y2-L6EgE4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jNC53/YWxscGFwZXJmbGFy/ZS5jb20vd2FsbHBh/cGVyLzY0My8yODUv/MjIxL3NpbXBsZS1i/YWNrZ3JvdW5kLWJs/dWUtZ3JhZGllbnQt/d2F2ZWZvcm1zLXdh/bGxwYXBlci1wcmV2/aWV3LmpwZw",
-        }}
+        source={require("../../../assets/bgPayment.png")}
         className="absolute top-0 min-h-screen w-full"
       />
       <View className="min-h-screen p-3 items-center justify-center">
         <View className="relative justify-center items-center w-full bg-primary border border-gray-100 rounded-xl pt-6 pb-12 px-3">
-          <Text className="text-2xl font-medium text-[#fff] mb-3">
+          <Text className="text-2xl capitalize font-medium text-[#fff] mb-3">
             {payment.bank} Virtual Number
           </Text>
           <TouchableOpacity
@@ -87,7 +91,10 @@ export default function TopUpDetailScreen({ route }) {
         </View>
 
         <View className="absolute bottom-2 w-full">
-          <TouchableOpacity onPress={fetchPayment} className="bg-primary py-2.5 rounded-lg border border-gray-100">
+          <TouchableOpacity
+            onPress={fetchPayment}
+            className="bg-primary py-2.5 rounded-lg border border-gray-100"
+          >
             <Text className="text-white text-center font-extrabold text-base">
               OK
             </Text>

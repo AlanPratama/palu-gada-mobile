@@ -1,4 +1,5 @@
-import { setError, setIsLoading, setNotification } from "../redux/slice/notificationSlice";
+import { ToastAndroid } from "react-native";
+import { clearNotification, setError, setIsLoading, setNotification } from "../redux/slice/notificationSlice";
 import store from "../redux/store";
 import { axiosInstance } from "./axiosInstance";
 
@@ -15,6 +16,7 @@ const countTotalNotRead = (notifications) => {
 export default class NotificationApi {
   static async getNotification(page = 0, size = 10) {
     try {
+      store.dispatch(clearNotification())
       store.dispatch(setError(null));
       store.dispatch(setIsLoading(true));
 
@@ -53,6 +55,25 @@ export default class NotificationApi {
       console.log("NotificationApi getNotification message: ", error.message);
     } finally {
       store.dispatch(setIsLoading(false));
+    }
+  }
+
+  static async createNotification(request) {
+    try {
+      const {data} = await axiosInstance.post("/notifications", request);
+      console.log("CREATE NOTIF: ", data);
+      
+      store.dispatch(clearNotification())
+      this.getNotification()
+    } catch (error) {
+      if (error.response) {
+        console.log("NotificationApi create notif API Response Error: ", error.response.data);
+      } else if (error.request) {
+        console.log("NotificationApi create notif No response from API: ", error.request);
+      } else {
+        console.log("NotificationApi create notif Error in setting up request: ", error.message);
+      }
+      // ToastAndroid.show(error?.response?.data?.message ?? error?.message, 5000);
     }
   }
 }

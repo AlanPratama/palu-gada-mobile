@@ -1,30 +1,30 @@
-import { setMyBids } from "../redux/slice/bidSlice";
+import { ToastAndroid } from "react-native";
+import { deleteMyBid, setMyBids } from "../redux/slice/bidSlice";
 import store from "../redux/store";
 import { axiosInstance } from "./axiosInstance";
 import PostApi from "./PostApi";
 import UserApi from "./UserApi";
 
 export default class BidApi {
-
   static async myBids(page, size = 10) {
     try {
       const res = await axiosInstance.get(`/bids`, {
         params: {
-          page, size
-        }
+          page,
+          size,
+        },
       });
       console.log("ASASA: ", res.data);
 
-      if(res.data.status === "OK") {
+      if (res.data.status === "OK") {
         const myBids = res.data.data.items
         const totalMyBids = res.data.data.items.length
-        store.dispatch(setMyBids({myBids, totalMyBids}))
+        store.dispatch(setMyBids({ myBids, totalMyBids }))
       }
-
     } catch (error) {
       console.log("BidApi createBid: ", error.response);
     }
-  } 
+  }
 
   static async createBid(request) {
     console.log("REQ CREAATE BID: ", request);
@@ -33,8 +33,8 @@ export default class BidApi {
       const res = await axiosInstance.post("/bids", request);
       console.log("ASASA: ", res.data);
       if (res.data.status === "Created") {
-        await PostApi.getPosts();
-        alert("Bid Success!");
+        await PostApi.getPosts(0, 10, '', true);
+        ToastAndroid.show("Berhasil Mengirim Penawaran!", 1500);
         return true;
       }
 
@@ -55,9 +55,9 @@ export default class BidApi {
       // bids/6/status?status=ACCEPTED
       console.log("ASASA: ", res);
       if (res?.data?.status === "OK") {
-        await PostApi.getPosts();
+        await PostApi.getPosts(0, 10, '', true);
         await UserApi.getAuthenticated();
-        return true;
+        return res.data.data;
       }
 
       return false;
@@ -68,7 +68,7 @@ export default class BidApi {
 
   static async createReview(request) {
     console.log("REQUEST: ", request);
-    
+
     try {
       const { data } = await axiosInstance.post(`/reviews`, request);
 
@@ -112,7 +112,7 @@ export default class BidApi {
 
   static async getReviewByUserId(userId) {
     console.log("USER ID: ", userId);
-    
+
     try {
       const { data } = await axiosInstance.get(`/reviews/user/${userId}`);
 
@@ -129,6 +129,48 @@ export default class BidApi {
       } else {
         // Error yang terjadi ketika membuat request
         console.log("Error in setting up request: ", error.message);
+      }
+    }
+  }
+
+  static async deleteBidById(bidId) {
+    console.log("BID ID: ", bidId);
+
+    try {
+      const { data } = await axiosInstance.delete(`/bids/${bidId}`);
+
+      console.log("data: ", data);
+      store.dispatch(deleteMyBid(bidId))
+
+      return data;
+    } catch (error) {
+      if (error.response) {
+        // Error dari API
+        console.log("API Response Error: ", error.response);
+      } else if (error.request) {
+        // Tidak ada response dari API
+        console.log("No response from API: ", error.request);
+      } else {
+        // Error yang terjadi ketika membuat request
+        console.log("Error in setting up request: ", error.message);
+      }
+    }
+  }
+
+  static async getMyManyWork() {
+    try {
+      const { data } = await axiosInstance.get(`/bids/count-accepted`);
+      return data.data;
+    } catch (error) {
+      if (error.response) {
+        // Error dari API
+        console.log("getMyManyWork: API Response Error: ", error.response);
+      } else if (error.request) {
+        // Tidak ada response dari API
+        console.log("getMyManyWork: No response from API: ", error.request);
+      } else {
+        // Error yang terjadi ketika membuat request
+        console.log("getMyManyWork: Error in setting up request: ", error.message);
       }
     }
   }

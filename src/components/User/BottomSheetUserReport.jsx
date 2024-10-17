@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   ScrollView,
-  StyleSheet,
   Text,
   TextInput,
   ToastAndroid,
@@ -11,9 +10,12 @@ import {
   View,
 } from "react-native";
 import RBSheet from "react-native-raw-bottom-sheet";
-import WalletApi from "../../apis/WalletApi";
+import BidApi from "../../apis/BidApi";
+import UserApi from "../../apis/UserApi";
+import NotificationApi from "../../apis/NotificationApi";
+import { notifIcon } from "../../utils/notification.util";
 
-export default function BottomSheetTopUpBCA({ refRBSheet }) {
+export default function BottomSheetUserReport({ refRBSheet, userId }) {
   return (
     <View>
       <RBSheet
@@ -32,7 +34,7 @@ export default function BottomSheetTopUpBCA({ refRBSheet }) {
             marginVertical: 10,
           },
           container: {
-            height: "32%",
+            height: "33%",
           },
         }}
         customModalProps={{
@@ -41,16 +43,14 @@ export default function BottomSheetTopUpBCA({ refRBSheet }) {
         height={500}
         openDuration={250}
       >
-        <TopUpBCAComp refRBSheet={refRBSheet} />
+        <UserReportComp refRBSheet={refRBSheet} userId={userId} />
       </RBSheet>
     </View>
   );
 }
 
-const TopUpBCAComp = ({ refRBSheet }) => {
-  const navigate = useNavigation();
+const UserReportComp = ({ refRBSheet, userId }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
-
   const {
     control,
     handleSubmit,
@@ -58,26 +58,36 @@ const TopUpBCAComp = ({ refRBSheet }) => {
     reset,
   } = useForm();
 
+  console.log("USERID: ", userId);
+
+  const navigate = useNavigation();
+
   const onSubmit = async (data) => {
     setIsSubmitted(true);
-    console.log("data: ", data);
-
-    const request = {
-      bank: "bca",
-      amount: data.amount,
-      paymentType: "bank_transfer",
-    };
-    const res = await WalletApi.createPayment(request);
-    console.log("res: ", res);
-
-    if (res.status === "Created") {
-      navigate.replace("TopUpDetail", { payment: res.data });
-    } else {
-      ToastAndroid.show("Terjadi Error coyy", 1500);
-      setIsSubmitted(false);
-    }
-
     // refRBSheet.current.close();
+    const res = await UserApi.userReport({
+      userId,
+      message: data.message,
+    });
+
+    console.log(res);
+
+    if (res) {
+      await NotificationApi.createNotification({
+        userId: userId,
+        title: "Akunmu dilaporkan!",
+        description: `Seseorang telah melaporkan kamu! Pesan: ${data.message}`,
+        isRead: false,
+        icon: notifIcon.report,
+      })
+      reset()
+      refRBSheet.current.close();
+      setIsSubmitted(false);
+      // navigate.goBack();
+    } else {
+      setIsSubmitted(false);
+      ToastAndroid.show("Gagal melaporkan user ini!", 1500);
+    }
   };
 
   return (
@@ -92,23 +102,19 @@ const TopUpBCAComp = ({ refRBSheet }) => {
       <View style={{ marginTop: 26 }}>
         <View style={{ paddingHorizontal: 18, marginBottom: 25 }}>
           <Text style={{ fontWeight: "600", fontSize: 16, marginBottom: 8 }}>
-            Nominal
+            Pesan
           </Text>
           <Controller
             control={control}
-            name="amount"
             rules={{
-              required: "Nominal wajib diisi!",
-              validate: (value) =>
-                value >= 10_000 || "Minimal nominal Rp 10.000",
+              required: "Pesan wajib diisi!",
+              validate: (value) => value.length >= 10 || "Minimal 10 karakter!",
             }}
-            render={({ field: { onChange, onBlur, value } }) => (
+            render={({ field: { onChange, value } }) => (
               <TextInput
                 value={value}
                 onChangeText={onChange}
-                onBlur={onBlur}
-                keyboardType="numeric"
-                placeholder="100.000"
+                placeholder="Masukkan Pesan..."
                 style={{
                   padding: 10,
                   paddingHorizontal: 16,
@@ -118,9 +124,10 @@ const TopUpBCAComp = ({ refRBSheet }) => {
                 }}
               />
             )}
+            name="message"
           />
-          {errors.amount && (
-            <Text style={{ color: "red" }}>{errors.amount.message}</Text>
+          {errors.message && (
+            <Text style={{ color: "red" }}>{errors.message.message}</Text>
           )}
         </View>
 
@@ -135,10 +142,10 @@ const TopUpBCAComp = ({ refRBSheet }) => {
           }}
         >
           <TouchableOpacity
-            disabled={isSubmitted}
             onPress={handleSubmit(onSubmit)}
+            disabled={isSubmitted}
             style={{
-              backgroundColor: isSubmitted ? "#d1d1d1" : "#3b82f6",
+              backgroundColor: isSubmitted ? "#d1d1d1" : "#ef4444",
               flex: 1,
               paddingVertical: 14,
               borderRadius: 999,
@@ -152,7 +159,7 @@ const TopUpBCAComp = ({ refRBSheet }) => {
                 textAlign: "center",
               }}
             >
-              Submit
+              Kirim Laporan
             </Text>
           </TouchableOpacity>
         </View>

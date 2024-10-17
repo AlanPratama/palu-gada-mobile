@@ -5,14 +5,17 @@ import {
   ScrollView,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from "react-native";
 import RBSheet from "react-native-raw-bottom-sheet";
 import StarRating from "react-native-star-rating-widget";
 import BidApi from "../../apis/BidApi";
+import NotificationApi from "../../apis/NotificationApi";
+import { notifIcon } from "../../utils/notification.util";
 
-export default function BottomSheetAddReview({ refRBSheet, postId, userId }) {
+export default function BottomSheetAddReview({ refRBSheet, post, userId }) {
   return (
     <View>
       <RBSheet
@@ -42,7 +45,7 @@ export default function BottomSheetAddReview({ refRBSheet, postId, userId }) {
       >
         <AddReviewComp
           refRBSheet={refRBSheet}
-          postId={postId}
+          post={post}
           userId={userId}
         />
       </RBSheet>
@@ -50,13 +53,14 @@ export default function BottomSheetAddReview({ refRBSheet, postId, userId }) {
   );
 }
 
-const AddReviewComp = ({ refRBSheet, postId, userId }) => {
+const AddReviewComp = ({ refRBSheet, post, userId }) => {
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm();
   const [rating, setRating] = useState(5);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   console.log("RATING: ", rating);
 
   const reviews = [
@@ -70,20 +74,31 @@ const AddReviewComp = ({ refRBSheet, postId, userId }) => {
   const navigate = useNavigation();
 
   const onSubmit = async (data) => {
+    setIsSubmitted(true);
     // refRBSheet.current.close();
     const res = await BidApi.createReview({
-      postId,
+      postId: post.id,
       userId,
       rating,
       comment: data.comment,
     });
 
     if (res) {
+      await NotificationApi.createNotification({
+        userId: post.user.id,
+        title: "Ada ulasanmu terbaru!",
+        description: `Seseorang telah menulis ulasan untuk kamu! Ulasan: ${data.comment}`,
+        isRead: false,
+        icon: notifIcon.review,
+      })
       refRBSheet.current.close();
-      navigate.goBack();
+      ToastAndroid.show("Berhasil Mengirim Ulasan!", 1500);
+      navigate.navigate("PostDetail", { post });
     } else {
-      alert("Gagal menawar!");
+      ToastAndroid.show("Gagal Mengirim Ulasan!", 2000);
+      // alert("Gagal mengirim ulasan!");
     }
+    setIsSubmitted(false);
 
     // const res = await BidApi.createBid({
     //     postId: post.id,
@@ -169,8 +184,9 @@ const AddReviewComp = ({ refRBSheet, postId, userId }) => {
         >
           <TouchableOpacity
             onPress={handleSubmit(onSubmit)}
+            disabled={isSubmitted}
             style={{
-              backgroundColor: "#3b82f6",
+              backgroundColor: isSubmitted ? "#d1d1d1" : "#3b82f6",
               flex: 1,
               paddingVertical: 14,
               borderRadius: 999,
@@ -184,7 +200,7 @@ const AddReviewComp = ({ refRBSheet, postId, userId }) => {
                 textAlign: "center",
               }}
             >
-              Kirim Review
+              Kirim Ulasan
             </Text>
           </TouchableOpacity>
         </View>

@@ -23,7 +23,8 @@ export default function MyPostScreen() {
   const [endPage, setEndPage] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
-  console.log("MY POST: ", myPost);
+  // console.log("MY POST: ", myPost);
+  // console.log("page: ", page);
 
   const searchPost = async () => {
     Keyboard.dismiss();
@@ -47,8 +48,8 @@ export default function MyPostScreen() {
 
   const loadPosts = async (pageNumber = 0, searchQuery = "") => {
     if (!isLoading) {
-      const result = await PostApi.getMyPosts(pageNumber, 1, searchQuery);
-      if (result.length < 1) {
+      const result = await PostApi.getMyPosts(pageNumber, 10, searchQuery);
+      if (result.length < 10) {
         setEndPage(true);
       }
     }
@@ -117,22 +118,27 @@ export default function MyPostScreen() {
           data={myPost}
           keyExtractor={(post, i) => post.id + "-post-" + i}
           renderItem={({ item, index }) => {
-            return <PostCard post={item} resetPostItems={resetPostItems} />;
+            return <PostCard post={item} />;
           }}
           // onEndReached={handleLoadMore}
           onEndReachedThreshold={0.5}
           ListFooterComponent={
             isLoading && page != 0 ? (
               <Text className="text-center">Loading...</Text>
-            ) : null
+            ) : !endPage && !isLoading && (
+              <TouchableOpacity onPress={() => setPage((prev) => prev + 1)} className="flex-row justify-center items-center gap-x-1">
+                <Ionicons name="chevron-down-circle-outline" size={20} />
+                <Text className="text-center text-base font-medium">Load More</Text>
+              </TouchableOpacity>
+            )
           }
           showsVerticalScrollIndicator={false}
-          // contentContainerStyle={{ paddingBottom: 320 }}
+          contentContainerStyle={{ paddingBottom: endPage ? 120 : 200, flex: 1 }}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
           ListEmptyComponent={
-            <View className="items-center justify-center">
+            <View className="items-center justify-center mt-48">
               <Text className="text-lg">
                 {isLoading && page == 0
                   ? "Loading..."
@@ -141,12 +147,6 @@ export default function MyPostScreen() {
             </View>
           }
         />
-        {!endPage && (
-          <TouchableOpacity onPress={() => setPage((prev) => prev + 1)} className="flex-row justify-center items-center gap-x-1">
-            <Ionicons name="chevron-down-circle-outline" size={20} />
-            <Text className="text-center text-base font-medium">Load More</Text>
-          </TouchableOpacity>
-        )}
       </View>
     </View>
   );

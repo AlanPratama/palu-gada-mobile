@@ -25,6 +25,7 @@ import MyPostScreen from "../screens/auth/Post/MyPostScreen";
 import UpdatePostScreen from "../screens/auth/Post/UpdatePostScreen";
 import MyReportPostScreen from "../screens/auth/Post/MyReportPostScreen";
 import MyReviewScreen from "../screens/auth/MyReviewScreen";
+import WayOfWorkScreen from "../screens/auth/WayOfWorkScreen";
 
 export default function AppNavigator() {
   const Stack = createNativeStackNavigator();
@@ -93,6 +94,7 @@ export default function AppNavigator() {
                   name="ChangePassword"
                   component={ChangePasswordScreen}
                 />
+                <Stack.Screen name="WayOfWork" component={WayOfWorkScreen} />
                 <Stack.Screen name="PostDetail" component={PostDetailScreen} />
                 <Stack.Screen name="Wallet" component={WalletScreen} />
                 <Stack.Screen name="MyReview" component={MyReviewScreen} />

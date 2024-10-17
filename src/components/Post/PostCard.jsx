@@ -9,20 +9,17 @@ const PostCard = ({ post, resetPostItems }) => {
 
   return (
     <TouchableOpacity
-      onPress={() =>
-        navigate.navigate("PostDetail", {
-          post, resetPostItems
+      onPress={() => {
+        resetPostItems && resetPostItems()
+        navigate.push("PostDetail", {
+          post
         })
-      }
+      }}
       activeOpacity={0.5}
       className="my-3.5 flex-row justify-start items-start gap-x-2.5"
     >
       <Image
-        source={{
-          uri: post.imageUrl
-            ? post.imageUrl
-            : "https://www.waifu.com.mx/wp-content/uploads/2023/05/Rei-Ayanami-20.jpg",
-        }}
+        source={!post.imageUrl ? require("../../../assets/imgPlaceholder.png") : { uri: post.imageUrl }}
         alt=""
         className="w-[88px] h-[88px] border border-gray-200 rounded-xl"
       />
